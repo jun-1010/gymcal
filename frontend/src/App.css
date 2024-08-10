@@ -1,0 +1,13 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  /* 1rem */
+  font-size: 14px;
+}
+
+.element {
+  padding: 1rem;
+}
