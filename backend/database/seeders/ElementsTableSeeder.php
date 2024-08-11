@@ -20,12 +20,13 @@ class ElementsTableSeeder extends Seeder
         // 各行を処理してデータベースに挿入
         foreach ($csvData as $row) {
             DB::table('elements')->insert([
-                'event' => $row[0],
-                'element_group' => $row[1],
-                'name' => $row[2],
-                'alias' => $row[3],
-                'difficulty' => $row[4],
-                'row_number' => $row[5],
+                'id' => $row[0],  // IDをCSVから取得
+                'event' => $row[1],
+                'element_group' => $row[2],
+                'name' => $row[3],
+                'alias' => $row[4],
+                'difficulty' => $row[5],
+                'row_number' => $row[6],
             ]);
         }
     }
