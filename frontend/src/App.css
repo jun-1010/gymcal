@@ -1,13 +1,169 @@
+/* 変数 */
+:root {
+  --black: #333;
+  --dark-gray: #999;
+  --gray: #ddd;
+  --light-gray: #f6f6f6;
+  --white: #fff;
+  --header-height: 5dvh;
+  --group-tabs-height: 2rem;
+}
+
 * {
   padding: 0;
   margin: 0;
+  /* タップ時ハイライトを消す */
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
 }
 
 html {
   /* 1rem */
-  font-size: 14px;
+  font-size: 16px;
+  color: var(--black);
+  background-color: var(--light-gray);
+  height: 100dvh;
 }
 
-.element {
-  padding: 1rem;
+.header {
+  margin: 1.5rem 3rem;
+  height: var(--header-height);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .header__title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    a {
+      text-decoration: none;
+      color: var(--black);
+    }
+  }
+}
+
+/********************************************
+種目ボタン
+********************************************/
+.event-buttons {
+  margin: 1rem auto;
+  display: flex;
+  width: fit-content;
+  background-color: var(--gray);
+  border-radius: 1rem;
+  .event-buttons__item {
+    cursor: pointer;
+    padding: 0.5rem;
+    width: 6rem;
+    text-align: center;
+    &:hover:not(.event-buttons__item--active) {
+      color: var(--dark-gray);
+    }
+  }
+  .event-buttons__item--active {
+    border-radius: 1.5rem;
+    transition: color 0.5s, background-color 0.5s;
+    color: var(--white);
+    background-color: var(--black);
+  }
+}
+
+/********************************************
+要求グループタブ 
+********************************************/
+.group-tabs {
+  background-color: var(--white);
+  display: flex;
+  gap: 1rem;
+  /* border-bottom: 0.2rem solid var(--gray); */
+  .group-tabs__item {
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+  .group-tabs__item:hover:not(.group-tabs__item--active) {
+    color: var(--dark-gray);
+  }
+  .group-tabs__item--active {
+    transition: all 0.2s;
+    border-bottom: 0.1rem solid var(--dark-gray);
+    font-weight: bold;
+  }
+}
+
+/********************************************
+難度表
+********************************************/
+.elements {
+  margin: 0 1.5rem;
+  padding: 1.5rem;
+  background-color: var(--white);
+  border-radius: 1rem;
+  box-shadow: 0 0.2rem 0.5rem 0.1rem var(--gray);
+  .elements__header {
+    height: var(--group-tabs-height);
+    position: sticky;
+    top: 0;
+  }
+  .elements__group {
+    padding: 2rem 0;
+    max-height: calc(80dvh - var(--header-height) - var(--group-tabs-height));
+    overflow: scroll;
+
+    &::-webkit-scrollbar {
+      background-color: var(--light-gray);
+      width: 0.5rem;
+      height: 0.5rem;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--gray);
+      border-radius: 0.5rem;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: var(--dark-gray);
+    }
+
+    .elements__row {
+      display: flex;
+      flex-wrap: nowrap;
+
+      .elements__tile {
+        min-width: 15rem;
+        min-height: 5rem;
+        padding: 1rem;
+        margin: 0.2rem;
+        border-radius: 0.5rem;
+        background-color: var(--white);
+        box-shadow: 0 0 0.2rem 0.05rem var(--gray);
+        .elements__label-box {
+          display: flex;
+          justify-content: left;
+          align-items: center;
+          gap: 0.2rem;
+          margin-bottom: 0.5rem;
+          .elements__difficulty {
+            background-color: var(--gray);
+            padding: 0.2rem;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 1rem;
+          }
+          .elements__alias {
+            font-weight: bold;
+            padding: 0.2rem;
+          }
+        }
+      }
+
+      .elements__tile--active {
+        &:hover {
+          /* background-color: var(--light-gray);
+          cursor: pointer; */
+        }
+      }
+    }
+  }
 }
