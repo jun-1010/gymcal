@@ -105,7 +105,7 @@ html {
   }
   .elements__group {
     padding: 2rem 0;
-    max-height: calc(80dvh - var(--header-height) - var(--group-tabs-height));
+    max-height: calc(85dvh - var(--header-height) - var(--group-tabs-height));
     overflow: scroll;
 
     &::-webkit-scrollbar {
