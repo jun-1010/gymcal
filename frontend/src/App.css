@@ -15,6 +15,20 @@
   /* タップ時ハイライトを消す */
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
+  &::-webkit-scrollbar {
+    background-color: var(--light-gray);
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--gray);
+    border-radius: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--dark-gray);
+  }
 }
 
 html {
@@ -39,6 +53,16 @@ html {
       color: var(--black);
     }
   }
+  .header__routine {
+    cursor: pointer;
+    /* transition: transform 0.5s; */
+  }
+}
+
+.main {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 1.5rem;
 }
 
 /********************************************
@@ -73,11 +97,16 @@ html {
 .group-tabs {
   background-color: var(--white);
   display: flex;
-  gap: 1rem;
-  /* border-bottom: 0.2rem solid var(--gray); */
+  gap: 0.5rem;
+  overflow-x: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   .group-tabs__item {
     cursor: pointer;
     padding: 0.5rem;
+    /* background-color: var(--light-gray); */
+    white-space: nowrap;
   }
   .group-tabs__item:hover:not(.group-tabs__item--active) {
     color: var(--dark-gray);
@@ -93,8 +122,8 @@ html {
 難度表
 ********************************************/
 .elements {
-  margin: 0 1.5rem;
-  padding: 1.5rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
   background-color: var(--white);
   border-radius: 1rem;
   box-shadow: 0 0.2rem 0.5rem 0.1rem var(--gray);
@@ -104,31 +133,16 @@ html {
     top: 0;
   }
   .elements__group {
-    padding: 2rem 0;
-    max-height: calc(85dvh - var(--header-height) - var(--group-tabs-height));
+    padding: 2.5rem 0 2rem 0;
+    height: calc(85dvh - var(--header-height) - var(--group-tabs-height));
     overflow: scroll;
-
-    &::-webkit-scrollbar {
-      background-color: var(--light-gray);
-      width: 0.5rem;
-      height: 0.5rem;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: var(--gray);
-      border-radius: 0.5rem;
-    }
-
-    &::-webkit-scrollbar-thumb:hover {
-      background-color: var(--dark-gray);
-    }
 
     .elements__row {
       display: flex;
       flex-wrap: nowrap;
 
       .elements__tile {
-        min-width: 15rem;
+        min-width: 13rem;
         min-height: 5rem;
         padding: 1rem;
         margin: 0.2rem;
@@ -156,12 +170,61 @@ html {
             padding: 0.2rem;
           }
         }
+        .elements__name {
+          font-size: 0.9rem;
+        }
       }
 
       .elements__tile--active {
         &:hover {
-          /* background-color: var(--light-gray);
-          cursor: pointer; */
+          background-color: var(--light-gray);
+          cursor: pointer;
+        }
+      }
+
+      .elements__tile--disabled {
+        opacity: 0.4;
+      }
+    }
+  }
+}
+
+/* routineが開いているとき */
+.elements--side {
+  width: calc(50%);
+}
+
+/********************************************
+演技構成表
+********************************************/
+.routine {
+  background-color: aliceblue;
+  width: calc(50% - 1rem);
+  padding: 1.5rem;
+  background-color: var(--white);
+  border-radius: 1rem;
+  box-shadow: 0 0.2rem 0.5rem 0.1rem var(--gray);
+
+  .routine__header {
+    height: var(--group-tabs-height);
+    position: sticky;
+    top: 0;
+  }
+
+  .routine__elements {
+    height: calc(85dvh - var(--header-height) - var(--group-tabs-height));
+    overflow: scroll;
+    background-color: var(--gray);
+    .routine__element {
+      padding: 0.5rem;
+      background-color: var(--light-gray);
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 13fr 1fr;
+      .routine__element--name {
+        overflow-x: scroll;
+        white-space: nowrap;
+        &::-webkit-scrollbar {
+          display: none;
         }
       }
     }
