@@ -1,5 +1,7 @@
 export const difficulties = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
+export const element_groups = ["I", "II", "III", "IV", "V"];
+
 export enum Events {
   床 = 1,
   あん馬 = 2,

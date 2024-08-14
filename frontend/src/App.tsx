@@ -7,18 +7,20 @@ import {
 } from "./Element";
 import "./App.css";
 import GroupTabs from "./components/GroupTabs";
-import { Events, ElementGroup } from "./Type";
+import { Events, ElementGroup, difficulties, element_groups } from "./Type";
 import EventButtons from "./components/EventButtons";
 import VerticalSplitIcon from "@mui/icons-material/VerticalSplit";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import ReorderIcon from "@mui/icons-material/Reorder";
-import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import AddIcon from "@mui/icons-material/Add";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   calculateDifficulty,
+  calculateND,
   isCodeInRoutine,
   isDisabledElement,
+  RoutineElement,
 } from "./Routine";
 
 const url = "http://localhost:8000/api/elements";
@@ -29,7 +31,7 @@ const App: React.FC = () => {
   const [selectGroup, setSelectGroup] = useState(ElementGroup.EG1);
   const [groupElements, setGroupElements] = useState({} as GroupElements);
   const [routineOpen, setRoutineOpen] = useState(1); // 0: 難度表 1: 半分 2:演技構成
-  const [routine, setRoutine] = useState([] as Element[]);
+  const [routine, setRoutine] = useState([] as RoutineElement[]);
   const [disabledElements, setDisabledElements] = useState([] as Element[]);
 
   useEffect(() => {
@@ -119,7 +121,11 @@ const App: React.FC = () => {
         </div>
       </div>
       <div className="main">
-        <div className={`elements ${routineOpen === 1 && "elements--side"}`}>
+        <div
+          className={`elements ${routineOpen === 0 ? "elements--full" : ""} ${
+            routineOpen === 1 ? "elements--side" : ""
+          }  ${routineOpen === 2 ? "elements--disabled" : ""}`}
+        >
           <div className="elements__header">
             <GroupTabs
               selectEvent={selectEvent}
@@ -145,6 +151,9 @@ const App: React.FC = () => {
                               key={`${rowKey}-${difficultyKey}`}
                               onClick={() => {
                                 if (isDisabledElement(routine, element)) {
+                                  setRoutine(
+                                    routine.filter((e) => e !== element)
+                                  );
                                   return;
                                 }
                                 setRoutine([...routine, element]);
@@ -160,9 +169,7 @@ const App: React.FC = () => {
                                   </span>
                                 )}
                               </div>
-                              <div>
-                                {element.code}.{element.name}
-                              </div>
+                              <div>{element.name}</div>
                             </div>
                           ) : (
                             <div
@@ -184,35 +191,77 @@ const App: React.FC = () => {
             </div>
           )}
         </div>
-        {routineOpen === 1 && (
-          <div className="routine">
-            <div className="routine__header">
-              演技構成: <span>{calculateDifficulty(routine)}</span>
-            </div>
-            {routine.length ? (
-              <div className="routine__elements">
-                {routine.map((element, index) => (
-                  <div className="routine__element" key={element.name}>
-                    <AddBoxOutlinedIcon />
-                    <span>{index + 1}</span>
-                    <span>{element.code}</span>
-                    <span className="routine__element--name">
-                      {element.alias && <>{element.alias}</>}
-                      {element.name}
-                    </span>
+        <div
+          className={`routine ${routineOpen === 0 && "routine--disabled"} ${
+            routineOpen === 1 && "routine--side"
+          } ${routineOpen === 2 && "routine--full"}`}
+        >
+          <div className="routine__header">
+            演技構成: {calculateDifficulty(routine)} (ND:{calculateND(routine)})
+          </div>
+          {routine.length ? (
+            <div className="routine__elements">
+              {routine.map((element, index) => (
+                <div className="routine__element" key={element.name}>
+                  <span className="routine__item">{index + 1}</span>
+                  <span
+                    className={`routine__item routine__icon ${
+                      element.connection ? "routine__icon--active" : ""
+                    }`}
+                    onClick={() => {
+                      const newRoutine = routine.map((e, i) => {
+                        if (i === index) {
+                          return { ...e, connection: !e.connection };
+                        }
+                        return e;
+                      });
+                      setRoutine(newRoutine);
+                    }}
+                  >
+                    {element.connection ? (
+                      <AddBoxIcon
+                        sx={{
+                          fontSize: "1.5rem",
+                        }}
+                      />
+                    ) : (
+                      <AddIcon
+                        sx={{
+                          fontSize: "1rem",
+                        }}
+                      />
+                    )}
+                  </span>
+
+                  <span className="routine__element--name">
+                    {element.alias ? element.alias : element.name}
+                  </span>
+                  <span className="routine__item">
+                    {element_groups[element.element_group - 1]}
+                  </span>
+                  <span className="routine__item">
+                    {difficulties[element.difficulty - 1]}
+                  </span>
+                  <span className="routine__item">
+                    {/* 組み合わせ加点 */}
+                  </span>
+                  <span className="routine__item routine__icon">
                     <CloseIcon
+                      sx={{
+                        fontSize: "1rem",
+                      }}
                       onClick={() =>
                         setRoutine(routine.filter((e) => e !== element))
                       }
                     />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p>演技構成はありません</p>
-            )}
-          </div>
-        )}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>演技構成はありません</p>
+          )}
+        </div>
       </div>
     </div>
   );
