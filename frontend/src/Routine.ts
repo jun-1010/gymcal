@@ -8,11 +8,16 @@ export interface RoutineElement extends Element {
 }
 
 export const calculateDifficulty = (routine: RoutineElement[]): string => {
-  let difficulty = 0;
+  let totalDScore = 0;
+  // 難度点
   routine.forEach((element) => {
-    difficulty += element.difficulty / 10;
+    totalDScore += element.difficulty / 10;
   });
-  return (Math.floor(difficulty * 10) / 10).toFixed(1); // 小数点第２位以下を切り捨て
+  // グループ得点
+  routine.forEach((element) => {
+    totalDScore += element.element_group_score!;
+  })
+  return (Math.floor(totalDScore * 10) / 10).toFixed(1); // 小数点第２位以下を切り捨て
 };
 
 export const calculateND = (routine: RoutineElement[]): string => {
@@ -20,7 +25,7 @@ export const calculateND = (routine: RoutineElement[]): string => {
 
   // 構成要求
 
-  return "0.3";
+  return "";
 };
 
 // 引数で受け取ったelement.codeがroutineに含まれているか

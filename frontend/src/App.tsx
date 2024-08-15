@@ -195,7 +195,7 @@ const App: React.FC = () => {
             <div className="routine__elements">
               <div className="routine__element">
                 <span className="routine__item">No.</span>
-                <span className="routine__item"></span>
+                <span></span>
                 <span className="routine__element--name">名前</span>
                 <span className="routine__item">EG</span>
                 <span className="routine__item">難度</span>
@@ -246,7 +246,7 @@ const App: React.FC = () => {
                   <span className="routine__item">
                     {difficulties[element.difficulty - 1]}
                   </span>
-                  <span className="routine__item">{/* 組み合わせ加点 */}0.2</span>
+                  <span className="routine__item">{/* 組み合わせ加点 */}</span>
                   <span className="routine__item routine__icon">
                     <CloseIcon
                       sx={{
