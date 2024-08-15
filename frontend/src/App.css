@@ -15,11 +15,25 @@
   /* タップ時ハイライトを消す */
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
+  &::-webkit-scrollbar {
+    background-color: var(--light-gray);
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--gray);
+    border-radius: 0.5rem;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: var(--dark-gray);
+  }
 }
 
 html {
   /* 1rem */
-  font-size: 16px;
+  font-size: 15px;
   color: var(--black);
   background-color: var(--light-gray);
   height: 100dvh;
@@ -39,6 +53,17 @@ html {
       color: var(--black);
     }
   }
+  .header__routine {
+    cursor: pointer;
+    /* transition: transform 0.5s; */
+  }
+}
+
+.main {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 1.5rem;
+  height: calc(85dvh);
 }
 
 /********************************************
@@ -73,11 +98,16 @@ html {
 .group-tabs {
   background-color: var(--white);
   display: flex;
-  gap: 1rem;
-  /* border-bottom: 0.2rem solid var(--gray); */
+  gap: 0.5rem;
+  overflow-x: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
   .group-tabs__item {
     cursor: pointer;
     padding: 0.5rem;
+    /* background-color: var(--light-gray); */
+    white-space: nowrap;
   }
   .group-tabs__item:hover:not(.group-tabs__item--active) {
     color: var(--dark-gray);
@@ -93,8 +123,7 @@ html {
 難度表
 ********************************************/
 .elements {
-  margin: 0 1.5rem;
-  padding: 1.5rem;
+  padding: 1rem 1.5rem;
   background-color: var(--white);
   border-radius: 1rem;
   box-shadow: 0 0.2rem 0.5rem 0.1rem var(--gray);
@@ -104,43 +133,30 @@ html {
     top: 0;
   }
   .elements__group {
-    padding: 2rem 0;
-    max-height: calc(85dvh - var(--header-height) - var(--group-tabs-height));
+    padding: 1.5rem 0;
+    height: calc(100% - var(--group-tabs-height));
     overflow: scroll;
-
-    &::-webkit-scrollbar {
-      background-color: var(--light-gray);
-      width: 0.5rem;
-      height: 0.5rem;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background-color: var(--gray);
-      border-radius: 0.5rem;
-    }
-
-    &::-webkit-scrollbar-thumb:hover {
-      background-color: var(--dark-gray);
-    }
 
     .elements__row {
       display: flex;
       flex-wrap: nowrap;
 
       .elements__tile {
-        min-width: 15rem;
+        min-width: 13rem;
         min-height: 5rem;
         padding: 1rem;
         margin: 0.2rem;
         border-radius: 0.5rem;
         background-color: var(--white);
         box-shadow: 0 0 0.2rem 0.05rem var(--gray);
+
         .elements__label-box {
           display: flex;
           justify-content: left;
           align-items: center;
           gap: 0.2rem;
           margin-bottom: 0.5rem;
+
           .elements__difficulty {
             background-color: var(--gray);
             padding: 0.2rem;
@@ -151,19 +167,115 @@ html {
             align-items: center;
             border-radius: 1rem;
           }
+
           .elements__alias {
             font-weight: bold;
             padding: 0.2rem;
           }
         }
+        .elements__name {
+          font-size: 0.9rem;
+        }
       }
 
       .elements__tile--active {
         &:hover {
-          /* background-color: var(--light-gray);
-          cursor: pointer; */
+          cursor: pointer;
+          background-color: var(--light-gray);
+        }
+      }
+
+      .elements__tile--disabled {
+        opacity: 0.4;
+        &:hover {
+          cursor: pointer;
+          background-color: var(--light-gray);
         }
       }
     }
   }
+}
+
+.elements--full {
+  width: 100%;
+}
+.elements--side {
+  width: calc(50%);
+}
+
+.elements--disabled {
+  display: none;
+}
+
+/********************************************
+演技構成表
+********************************************/
+.routine {
+  background-color: aliceblue;
+  padding: 1.5rem;
+  background-color: var(--white);
+  border-radius: 1rem;
+  box-shadow: 0 0.2rem 0.5rem 0.1rem var(--gray);
+
+  .routine__header {
+    height: var(--group-tabs-height);
+    position: sticky;
+    top: 0;
+  }
+
+  .routine__elements {
+    height: calc(85dvh - var(--header-height) - var(--group-tabs-height));
+    /* overflow: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+    } */
+
+    .routine__element {
+      padding: 0.2rem;
+      display: grid;
+      /* No. Connection, Name, EG, 難度, CV, 削除 */
+      grid-template-columns: 1fr 1fr 12fr 3rem 1.5fr 1fr 1fr;
+      column-gap: 0.5rem;
+
+      .routine__element--name {
+        overflow-x: scroll;
+        white-space: nowrap;
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
+      }
+
+      .routine__item {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+      }
+
+      .routine__icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0.2;
+        &:hover {
+          cursor: pointer;
+          opacity: 1;
+        }
+      }
+
+      .routine__icon--active {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.routine--full {
+  width: 100%;
+}
+.routine--disabled {
+  display: none;
+}
+.routine--side {
+  width: calc(50% - 1rem);
 }

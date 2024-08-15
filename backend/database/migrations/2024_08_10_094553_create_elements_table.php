@@ -9,6 +9,7 @@ return new class extends Migration {
     {
         Schema::create('elements', function (Blueprint $table) {
             $table->unsignedInteger('id');
+            $table->unsignedInteger('code');
             $table->unsignedTinyInteger('event');
             $table->unsignedTinyInteger('element_group');
             $table->string('name');
@@ -18,7 +19,7 @@ return new class extends Migration {
             $table->timestamps();
 
             // 複合主キーを設定
-            $table->primary(['id', 'event', 'element_group']);
+            $table->primary(['id']);
         });
     }
 
