@@ -1,6 +1,8 @@
 import { Element } from "./Element";
 import { ElementGroup, Events } from "./Type";
 
+const ELEMENT_COUNT_DEDUCTIONS = [10, 7, 6, 5, 4, 3, 0];
+
 // Elementにconnectionを追加
 export interface RoutineElement extends Element {
   connection?: boolean;
@@ -16,16 +18,18 @@ export const calculateDifficulty = (routine: RoutineElement[]): string => {
   // グループ得点
   routine.forEach((element) => {
     totalDScore += element.element_group_score!;
-  })
+  });
   return (Math.floor(totalDScore * 10) / 10).toFixed(1); // 小数点第２位以下を切り捨て
 };
 
 export const calculateND = (routine: RoutineElement[]): string => {
-  // 技数減点
-
+  const totalNDScore =
+    routine.length < ELEMENT_COUNT_DEDUCTIONS.length
+      ? ELEMENT_COUNT_DEDUCTIONS[routine.length]
+      : 0;
   // 構成要求
 
-  return "";
+  return totalNDScore.toFixed(1);
 };
 
 // 引数で受け取ったelement.codeがroutineに含まれているか
