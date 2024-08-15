@@ -149,10 +149,6 @@ html {
         border-radius: 0.5rem;
         background-color: var(--white);
         box-shadow: 0 0 0.2rem 0.05rem var(--gray);
-        &:hover {
-          cursor: pointer;
-          background-color: var(--light-gray);
-        }
 
         .elements__label-box {
           display: flex;
@@ -183,10 +179,18 @@ html {
       }
 
       .elements__tile--active {
+        &:hover {
+          cursor: pointer;
+          background-color: var(--light-gray);
+        }
       }
 
       .elements__tile--disabled {
         opacity: 0.4;
+        &:hover {
+          cursor: pointer;
+          background-color: var(--light-gray);
+        }
       }
     }
   }
@@ -252,12 +256,12 @@ html {
         opacity: 0.5;
         &:hover {
           cursor: pointer;
-          opacity: 1.0;
+          opacity: 1;
         }
       }
 
       .routine__icon--active {
-        opacity: 1.0;
+        opacity: 1;
       }
     }
   }

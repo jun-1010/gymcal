@@ -16,13 +16,12 @@ export const calculateDifficulty = (routine: RoutineElement[]): string => {
 };
 
 export const calculateND = (routine: RoutineElement[]): string => {
-  
   // 技数減点
 
   // 構成要求
 
   return "0.3";
-}
+};
 
 // 引数で受け取ったelement.codeがroutineに含まれているか
 export const isCodeInRoutine = (routine: Element[], code: string): boolean => {
@@ -30,12 +29,12 @@ export const isCodeInRoutine = (routine: Element[], code: string): boolean => {
 };
 
 // EG技数制限(鉄棒手放し技のみ条件付きで5技)
-export const isGroupLimited = (
-  routine: Element[],
-  targetElement: Element
-): boolean => {
+export const isGroupLimited = (routine: Element[], targetElement: Element): boolean => {
   let limit = 4;
-  if (targetElement.event === Events.鉄棒 && targetElement.element_group === ElementGroup.EG2) {
+  if (
+    targetElement.event === Events.鉄棒 &&
+    targetElement.element_group === ElementGroup.EG2
+  ) {
     limit = 5;
   }
   let count = 0;

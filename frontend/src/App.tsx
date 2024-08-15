@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Element,
-  categorizeElements,
-  getGroupElements,
-  GroupElements,
-} from "./Element";
+import { Element, categorizeElements, getGroupElements, GroupElements } from "./Element";
 import "./App.css";
 import GroupTabs from "./components/GroupTabs";
 import { Events, ElementGroup, difficulties, element_groups } from "./Type";
@@ -112,10 +107,7 @@ const App: React.FC = () => {
         <h1 className="header__title">
           <a href="/">GymCal</a>
         </h1>
-        <EventButtons
-          selectEvent={selectEvent}
-          setSelectEvent={setSelectEvent}
-        />
+        <EventButtons selectEvent={selectEvent} setSelectEvent={setSelectEvent} />
         <div
           onClick={() => {
             // 0→1→2→0と変化させる
