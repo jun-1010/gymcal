@@ -21,6 +21,7 @@ import {
   isCodeInRoutine,
   isDisabledElement,
   RoutineElement,
+  updateRoutineWithElementGroupScore,
 } from "./Routine";
 
 const url = "http://localhost:8000/api/elements";
@@ -70,6 +71,11 @@ const App: React.FC = () => {
   useEffect(() => {
     setSelectGroup(ElementGroup.EG1); // EG1を選択する
   }, [selectEvent]);
+
+  // 演技構成が変更された場合
+  useEffect(() => {
+    updateRoutineWithElementGroupScore(selectEvent, routine, setRoutine);
+  }, [routine]);
 
   const getIcon = () => {
     if (routineOpen === 0) {
@@ -135,54 +141,48 @@ const App: React.FC = () => {
           </div>
           {Object.keys(groupElements).length ? (
             <div className="elements__group">
-              {Object.entries(groupElements as Object).map(
-                ([rowKey, rowElements]) => (
-                  <div className="elements__row" key={rowKey}>
-                    {Object.entries(rowElements as Object).map(
-                      ([difficultyKey, element]) => (
-                        <>
-                          {element.name ? (
-                            <div
-                              className={`elements__tile ${
-                                isDisabledElement(routine, element)
-                                  ? "elements__tile--disabled"
-                                  : "elements__tile--active"
-                              }`}
-                              key={`${rowKey}-${difficultyKey}`}
-                              onClick={() => {
-                                if (isDisabledElement(routine, element)) {
-                                  setRoutine(
-                                    routine.filter((e) => e !== element)
-                                  );
-                                  return;
-                                }
-                                setRoutine([...routine, element]);
-                              }}
-                            >
-                              <div className="elements__label-box">
-                                <span className="elements__difficulty">
-                                  {difficultyKey}
-                                </span>
-                                {element.alias && (
-                                  <span className="elements__alias">
-                                    {element.alias}
-                                  </span>
-                                )}
-                              </div>
-                              <div>{element.name}</div>
+              {Object.entries(groupElements as Object).map(([rowKey, rowElements]) => (
+                <div className="elements__row" key={rowKey}>
+                  {Object.entries(rowElements as Object).map(
+                    ([difficultyKey, element]) => (
+                      <React.Fragment key={`${rowKey}-${difficultyKey}`}>
+                        {element.name ? (
+                          <div
+                            className={`elements__tile ${
+                              isDisabledElement(routine, element)
+                                ? "elements__tile--disabled"
+                                : "elements__tile--active"
+                            }`}
+                            key={`${rowKey}-${difficultyKey}`}
+                            onClick={() => {
+                              if (isDisabledElement(routine, element)) {
+                                setRoutine(routine.filter((e) => e.id !== element.id));
+                                return;
+                              }
+                              setRoutine([...routine, element]);
+                            }}
+                          >
+                            <div className="elements__label-box">
+                              <span className="elements__difficulty">
+                                {difficultyKey}
+                              </span>
+                              {element.alias && (
+                                <span className="elements__alias">{element.alias}</span>
+                              )}
                             </div>
-                          ) : (
-                            <div
-                              className="elements__tile"
-                              key={`${rowKey}-${difficultyKey}`}
-                            ></div>
-                          )}
-                        </>
-                      )
-                    )}
-                  </div>
-                )
-              )}
+                            <div>{element.name}</div>
+                          </div>
+                        ) : (
+                          <div
+                            className="elements__tile"
+                            key={`${rowKey}-${difficultyKey}`}
+                          ></div>
+                        )}
+                      </React.Fragment>
+                    )
+                  )}
+                </div>
+              ))}
             </div>
           ) : (
             <div>
@@ -201,6 +201,14 @@ const App: React.FC = () => {
           </div>
           {routine.length ? (
             <div className="routine__elements">
+              <div className="routine__element">
+                <span className="routine__item">No.</span>
+                <span className="routine__item"></span>
+                <span className="routine__element--name">名前</span>
+                <span className="routine__item">EG</span>
+                <span className="routine__item">難度</span>
+                <span className="routine__item">CV</span>
+              </div>
               {routine.map((element, index) => (
                 <div className="routine__element" key={element.name}>
                   <span className="routine__item">{index + 1}</span>
@@ -237,22 +245,22 @@ const App: React.FC = () => {
                     {element.alias ? element.alias : element.name}
                   </span>
                   <span className="routine__item">
-                    {element_groups[element.element_group - 1]}
+                    {element.element_group_score! > 0
+                      ? `${element_groups[element.element_group - 1]}(${
+                          element.element_group_score
+                        })`
+                      : `${element_groups[element.element_group - 1]}`}
                   </span>
                   <span className="routine__item">
                     {difficulties[element.difficulty - 1]}
                   </span>
-                  <span className="routine__item">
-                    {/* 組み合わせ加点 */}
-                  </span>
+                  <span className="routine__item">{/* 組み合わせ加点 */}0.2</span>
                   <span className="routine__item routine__icon">
                     <CloseIcon
                       sx={{
                         fontSize: "1rem",
                       }}
-                      onClick={() =>
-                        setRoutine(routine.filter((e) => e !== element))
-                      }
+                      onClick={() => setRoutine(routine.filter((e) => e !== element))}
                     />
                   </span>
                 </div>

@@ -229,7 +229,9 @@ html {
     .routine__element {
       padding: 0.2rem;
       display: grid;
-      grid-template-columns: 1fr 1fr 13fr 1fr 1fr 1fr 1fr;
+      /* No. Connection, Name, EG, 難度, CV, 削除 */
+      grid-template-columns: 1fr 1fr 12fr 3rem 1.5fr 1fr 1fr;
+      column-gap: 0.5rem;
 
       .routine__element--name {
         overflow-x: scroll;
@@ -242,7 +244,7 @@ html {
 
       .routine__item {
         display: flex;
-        justify-content: center;
+        justify-content: left;
         align-items: center;
       }
 
