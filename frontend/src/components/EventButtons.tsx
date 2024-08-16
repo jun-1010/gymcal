@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Events, getEventKey, getGroupName, GroupNames } from "../Type";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 
 type EventTabProps = {
   selectEvent: number;
@@ -9,7 +8,7 @@ type EventTabProps = {
   isMobile: boolean;
 };
 
-const EventTabs = ({ selectEvent, setSelectEvent, isMobile }: EventTabProps) => {
+const EventButtons = ({ selectEvent, setSelectEvent, isMobile }: EventTabProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -46,7 +45,7 @@ const EventTabs = ({ selectEvent, setSelectEvent, isMobile }: EventTabProps) => 
                 isOpen ? "event-dropdown__icon--open" : ""
               }`}
             >
-              <KeyboardArrowUpIcon />
+              <KeyboardArrowDownIcon />
             </span>
           </div>
           {isOpen && (
@@ -93,4 +92,4 @@ const EventTabs = ({ selectEvent, setSelectEvent, isMobile }: EventTabProps) => 
   );
 };
 
-export default EventTabs;
+export default EventButtons;
