@@ -301,27 +301,22 @@ html {
     &::-webkit-scrollbar {
       display: none;
     } */
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 
     .routine__element {
       padding: 0.2rem;
       display: grid;
       /* No. Connection, Name, EG, 難度, CV, 削除 */
-      grid-template-columns: 1fr 1fr 11fr 3rem 1.5fr 1fr 1fr;
-      column-gap: 0.5rem;
-
-      .routine__element--name {
-        overflow-x: scroll;
-        white-space: nowrap;
-
-        &::-webkit-scrollbar {
-          display: none;
-        }
-      }
+      grid-template-columns: 1rem 1rem 1fr 3rem 2rem 2rem 1rem;
+      column-gap: 0.3rem;
 
       .routine__item {
         display: flex;
         justify-content: left;
         align-items: center;
+        line-height: 1.4rem;
       }
 
       .routine__icon {
