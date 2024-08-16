@@ -1,3 +1,7 @@
+/**********************************
+SP mode(初期スタイル)
+**********************************/
+
 /* 変数 */
 :root {
   --black: #333;
@@ -6,6 +10,7 @@
   --light-gray: #f6f6f6;
   --white: #fff;
   --header-height: 5dvh;
+  --header-margin-top-bottom-pc: 1.5rem;
   --group-tabs-height: 2rem;
 }
 
@@ -40,56 +45,125 @@ html {
 }
 
 .header {
-  margin: 1.5rem 3rem;
+  margin: 0.5rem 1rem;
   height: var(--header-height);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  .header__title {
-    font-size: 1.4rem;
-    font-weight: bold;
-    a {
-      text-decoration: none;
-      color: var(--black);
+
+  .header__left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .header__title {
+      font-size: 1.4rem;
+      font-weight: bold;
+      a {
+        text-decoration: none;
+        color: var(--black);
+      }
     }
   }
-  .header__routine {
-    cursor: pointer;
-    /* transition: transform 0.5s; */
+
+  .header__right {
+    margin-top: 0.2rem;
+    .header__icons {
+      display: flex;
+      justify-content: right;
+      align-items: center;
+      cursor: pointer;
+      gap: 0.3rem;
+
+      .header__icon {
+        /* opacity: 0.5; */
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      .header__icon--active {
+        opacity: 1;
+      }
+    }
   }
 }
 
 .main {
   display: flex;
   justify-content: space-between;
-  margin: 0 1.5rem;
-  height: calc(85dvh);
+  margin: 0 0.5rem;
+  height: calc(100dvh - var(--header-height) - 1rem);
 }
 
 /********************************************
 種目ボタン
 ********************************************/
-.event-buttons {
-  margin: 1rem auto;
-  display: flex;
+.event-dropdown {
+  position: relative;
   width: fit-content;
-  background-color: var(--gray);
+  width: 7rem;
+}
+
+.event-dropdown__selected {
+  padding: 0.2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.1rem;
   border-radius: 1rem;
-  .event-buttons__item {
-    cursor: pointer;
-    padding: 0.5rem;
-    width: 6rem;
+  background-color: var(--black);
+  cursor: pointer;
+  color: var(--white);
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  .event-dropdown__text {
+    width: 4rem;
     text-align: center;
-    &:hover:not(.event-buttons__item--active) {
-      color: var(--dark-gray);
-    }
   }
-  .event-buttons__item--active {
-    border-radius: 1.5rem;
-    transition: color 0.5s, background-color 0.5s;
-    color: var(--white);
-    background-color: var(--black);
+
+  .event-dropdown__icon {
+    opacity: 0.8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease; /* スムーズな回転 */
   }
+
+  .event-dropdown__icon--open {
+    transform: rotate(180deg);
+  }
+}
+
+.event-dropdown__menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background-color: var(--light-gray);
+  border-radius: 1rem;
+  box-shadow: 0 0 0.2rem 0.05rem var(--gray);
+  z-index: 1000;
+}
+
+.event-dropdown__item {
+  padding: 0.5rem;
+  cursor: pointer;
+  text-align: center;
+  font-size: 1rem;
+  color: var(--black);
+}
+
+.event-dropdown__item:hover {
+  color: var(--dark-gray);
+}
+
+.event-dropdown__item--active {
+  background-color: var(--black);
+  color: var(--white);
 }
 
 /********************************************
@@ -106,7 +180,6 @@ html {
   .group-tabs__item {
     cursor: pointer;
     padding: 0.5rem;
-    /* background-color: var(--light-gray); */
     white-space: nowrap;
   }
   .group-tabs__item:hover:not(.group-tabs__item--active) {
@@ -123,7 +196,7 @@ html {
 難度表
 ********************************************/
 .elements {
-  padding: 1rem 1.5rem;
+  padding: 0.5rem 1rem;
   background-color: var(--white);
   border-radius: 1rem;
   box-shadow: 0 0.2rem 0.5rem 0.1rem var(--gray);
@@ -211,8 +284,7 @@ html {
 演技構成表
 ********************************************/
 .routine {
-  background-color: aliceblue;
-  padding: 1.5rem;
+  padding: 1rem 0.5rem 1rem 1rem;
   background-color: var(--white);
   border-radius: 1rem;
   box-shadow: 0 0.2rem 0.5rem 0.1rem var(--gray);
@@ -234,7 +306,7 @@ html {
       padding: 0.2rem;
       display: grid;
       /* No. Connection, Name, EG, 難度, CV, 削除 */
-      grid-template-columns: 1fr 1fr 12fr 3rem 1.5fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr 11fr 3rem 1.5fr 1fr 1fr;
       column-gap: 0.5rem;
 
       .routine__element--name {
@@ -278,4 +350,62 @@ html {
 }
 .routine--side {
   width: calc(50% - 1rem);
+}
+
+/**********************************
+PC mode
+**********************************/
+@media (min-width: 700px) {
+  .header {
+    margin: var(--header-margin-top-bottom-pc) 3rem;
+    .header__title {
+      font-size: 1.4rem;
+    }
+  }
+
+  .main {
+    margin: 0 1.5rem;
+    height: calc(
+      100dvh - var(--header-height) - var(--header-margin-top-bottom-pc) - 3rem
+    );
+  }
+  /********************************************
+  種目ボタン
+  ********************************************/
+  .event-buttons {
+    display: flex;
+    background-color: var(--gray);
+    border-radius: 1rem;
+
+    .event-buttons__item {
+      cursor: pointer;
+      padding: 0.4rem;
+      /* width: 4.5rem; */
+      width: 8.5vw;
+      text-align: center;
+
+      &:hover:not(.event-buttons__item--active) {
+        color: var(--dark-gray);
+      }
+    }
+
+    .event-buttons__item--active {
+      border-radius: 1.5rem;
+      transition: color 0.5s, background-color 0.5s;
+      color: var(--white);
+      background-color: var(--black);
+    }
+  }
+  /********************************************
+  難度表
+  ********************************************/
+  .elements {
+    padding: 1rem 1.5rem;
+  }
+  /********************************************
+  演技構成表
+  ********************************************/
+  .routine {
+    padding: 1.5rem;
+  }
 }
