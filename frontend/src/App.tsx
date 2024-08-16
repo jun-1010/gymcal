@@ -4,9 +4,7 @@ import "./App.css";
 import GroupTabs from "./components/GroupTabs";
 import { Events, ElementGroup, difficulties, element_groups } from "./Type";
 import EventButtons from "./components/EventButtons";
-import VerticalSplitIcon from "@mui/icons-material/VerticalSplit";
-import ViewModuleIcon from "@mui/icons-material/ViewModule";
-import ReorderIcon from "@mui/icons-material/Reorder";
+
 import AddIcon from "@mui/icons-material/Add";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import CloseIcon from "@mui/icons-material/Close";
@@ -18,6 +16,8 @@ import {
   RoutineElement,
   updateRoutineWithElementGroupScore,
 } from "./Routine";
+import useMedia from "use-media";
+import HeaderIcons from "./components/HeaderIcons";
 
 const url = "http://localhost:8000/api/elements";
 
@@ -26,9 +26,9 @@ const App: React.FC = () => {
   const [selectEvent, setSelectEvent] = useState(Events.床);
   const [selectGroup, setSelectGroup] = useState(ElementGroup.EG1);
   const [groupElements, setGroupElements] = useState({} as GroupElements);
-  const [routineOpen, setRoutineOpen] = useState(1); // 0: 難度表 1: 半分 2:演技構成
+  const [routineOpen, setRoutineOpen] = useState(0); // 0: 難度表 1: 半分 2:演技構成
   const [routine, setRoutine] = useState([] as RoutineElement[]);
-  const [disabledElements, setDisabledElements] = useState([] as Element[]);
+  const isMobile = useMedia({ maxWidth: "calc(700px - 1px)" });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -72,51 +72,52 @@ const App: React.FC = () => {
     updateRoutineWithElementGroupScore(selectEvent, routine, setRoutine);
   }, [routine]);
 
-  const getIcon = () => {
-    if (routineOpen === 0) {
-      return (
-        <ViewModuleIcon
-          sx={{
-            fontSize: "2.5rem",
-          }}
-        />
-      );
-    } else if (routineOpen === 1) {
-      return (
-        <VerticalSplitIcon
-          sx={{
-            transform: "rotate(180deg)",
-            fontSize: "2.5rem",
-          }}
-        />
-      );
-    } else if (routineOpen === 2) {
-      return (
-        <ReorderIcon
-          sx={{
-            fontSize: "2.5rem",
-          }}
-        />
-      );
-    }
-  };
-
   return (
     <div className="App">
       <div className="header">
-        <h1 className="header__title">
-          <a href="/">GymCal</a>
-        </h1>
-        <EventButtons selectEvent={selectEvent} setSelectEvent={setSelectEvent} />
-        <div
-          onClick={() => {
-            // 0→1→2→0と変化させる
-            setRoutineOpen((routineOpen + 1) % 3);
-          }}
-          className="header__routine"
-        >
-          {getIcon()}
-        </div>
+        {isMobile ? (
+          <>
+            <div className="header__left">
+              <h1 className="header__title">
+                <a href="/">GymCal</a>
+              </h1>
+              <EventButtons
+                selectEvent={selectEvent}
+                setSelectEvent={setSelectEvent}
+                isMobile={isMobile}
+              />
+            </div>
+            <div className="header__right">
+              <HeaderIcons
+                routineOpen={routineOpen}
+                setRoutineOpen={setRoutineOpen}
+                isMobile={isMobile}
+                badgeContent={routine.length}
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="header__left">
+              <h1 className="header__title">
+                <a href="/">GymCal</a>
+              </h1>
+            </div>
+            <EventButtons
+              selectEvent={selectEvent}
+              setSelectEvent={setSelectEvent}
+              isMobile={isMobile}
+            />
+            <div className="header__right">
+              <HeaderIcons
+                routineOpen={routineOpen}
+                setRoutineOpen={setRoutineOpen}
+                isMobile={isMobile}
+                badgeContent={routine.length}
+              />
+            </div>
+          </>
+        )}
       </div>
       <div className="main">
         <div
@@ -184,19 +185,19 @@ const App: React.FC = () => {
           )}
         </div>
         <div
-          className={`routine ${routineOpen === 0 && "routine--disabled"} ${
-            routineOpen === 1 && "routine--side"
-          } ${routineOpen === 2 && "routine--full"}`}
+          className={`routine ${routineOpen === 0 ? "routine--disabled" : ""} ${
+            routineOpen === 1 ? "routine--side" : ""
+          } ${routineOpen === 2 ? "routine--full" : ""}`}
         >
           <div className="routine__header">
-            演技構成: {calculateDifficulty(routine)} (ND:{calculateND(routine)})
+            Dスコア: {calculateDifficulty(routine)} (ND:{calculateND(routine)})
           </div>
           {routine.length ? (
             <div className="routine__elements">
               <div className="routine__element">
                 <span className="routine__item">No.</span>
                 <span></span>
-                <span className="routine__element--name">名前</span>
+                <span className="routine__item">名前</span>
                 <span className="routine__item">EG</span>
                 <span className="routine__item">難度</span>
                 <span className="routine__item">CV</span>
