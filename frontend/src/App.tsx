@@ -229,7 +229,7 @@ const App: React.FC = () => {
                       )}
                     </span>
 
-                    <span className="routine__element--name">
+                    <span className="routine__item">
                       {element.alias ? element.alias : element.name}
                     </span>
                     <span className="routine__item">
