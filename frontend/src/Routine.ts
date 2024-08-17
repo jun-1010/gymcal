@@ -75,7 +75,7 @@ export const isDisabledElement = (
 };
 
 // グループ得点
-export const updateRoutineWithElementGroupScore = (
+export const updateElementGroupScoreInRoutine = (
   selectEvent: number,
   routine: RoutineElement[],
   setRoutine: (routine: RoutineElement[]) => void
@@ -170,15 +170,13 @@ export const updateRoutineWithElementGroupScore = (
 };
 
 // 各グループ得点の合計を計算
-export const calculateTotalElementGroupScore = (
-  routine: RoutineElement[]
-) => {
+export const calculateTotalElementGroupScore = (routine: RoutineElement[]) => {
   let total = 0;
   routine.forEach((element) => {
     total += element.element_group_score!;
   });
   return total;
-}
+};
 
 // 難度点の合計を計算
 export const calculateTotalDifficulty = (routine: RoutineElement[]) => {
@@ -187,5 +185,4 @@ export const calculateTotalDifficulty = (routine: RoutineElement[]) => {
     total += element.difficulty / 10;
   });
   return (Math.floor(total * 10) / 10).toFixed(1); // 小数点第２位以下を切り捨て
-
-}
+};

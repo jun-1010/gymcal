@@ -16,7 +16,7 @@ import {
   isCodeInRoutine,
   isDisabledElement,
   RoutineElement,
-  updateRoutineWithElementGroupScore,
+  updateElementGroupScoreInRoutine,
 } from "./Routine";
 import useMedia from "use-media";
 import HeaderIcons from "./components/HeaderIcons";
@@ -72,7 +72,7 @@ const App: React.FC = () => {
 
   // 演技構成が変更された場合
   useEffect(() => {
-    updateRoutineWithElementGroupScore(selectEvent, routine, setRoutine);
+    updateElementGroupScoreInRoutine(selectEvent, routine, setRoutine);
   }, [routine]);
 
   return (
@@ -160,7 +160,9 @@ const App: React.FC = () => {
                           >
                             <div className="elements__label-box">
                               <span className="elements__difficulty">
-                                {selectEvent === Events.跳馬 ? element.difficulty : difficulties[element.difficulty-1]}
+                                {selectEvent === Events.跳馬
+                                  ? element.difficulty
+                                  : difficulties[element.difficulty - 1]}
                               </span>
                               {element.alias && (
                                 <span className="elements__alias">{element.alias}</span>
