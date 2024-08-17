@@ -16,7 +16,9 @@ return new class extends Migration {
             $table->string('alias')->nullable();
             $table->unsignedTinyInteger('difficulty');
             $table->unsignedTinyInteger('row_number');
-            $table->timestamps();
+            $table->unsignedTinyInteger('column_number');
+            $table->unsignedTinyInteger('start_direction');
+            $table->unsignedTinyInteger('end_direction');
 
             // 複合主キーを設定
             $table->primary(['id']);

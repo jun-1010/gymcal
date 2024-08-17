@@ -18,5 +18,8 @@ class Element extends Model
         'alias',
         'difficulty',
         'row_number',
+        'column_number',
+        'start_direction',
+        'end_direction',
     ];
 }

@@ -220,6 +220,7 @@ html {
 
       .elements__tile {
         min-width: 13rem;
+        max-width: 13rem;
         min-height: 5rem;
         padding: 1rem;
         margin: 0.2rem;

@@ -140,8 +140,8 @@ const App: React.FC = () => {
               {Object.entries(groupElements as Object).map(([rowKey, rowElements]) => (
                 <div className="elements__row" key={rowKey}>
                   {Object.entries(rowElements as Object).map(
-                    ([difficultyKey, element]) => (
-                      <React.Fragment key={`${rowKey}-${difficultyKey}`}>
+                    ([column_number, element]) => (
+                      <React.Fragment key={`${rowKey}-${column_number}`}>
                         {element.name ? (
                           <div
                             className={`elements__tile ${
@@ -149,7 +149,7 @@ const App: React.FC = () => {
                                 ? "elements__tile--disabled"
                                 : "elements__tile--active"
                             }`}
-                            key={`${rowKey}-${difficultyKey}`}
+                            key={`${rowKey}-${column_number}`}
                             onClick={() => {
                               if (isDisabledElement(routine, element)) {
                                 setRoutine(routine.filter((e) => e.id !== element.id));
@@ -160,7 +160,7 @@ const App: React.FC = () => {
                           >
                             <div className="elements__label-box">
                               <span className="elements__difficulty">
-                                {difficultyKey}
+                                {selectEvent === Events.跳馬 ? element.difficulty : difficulties[element.difficulty-1]}
                               </span>
                               {element.alias && (
                                 <span className="elements__alias">{element.alias}</span>
@@ -171,7 +171,7 @@ const App: React.FC = () => {
                         ) : (
                           <div
                             className="elements__tile"
-                            key={`${rowKey}-${difficultyKey}`}
+                            key={`${rowKey}-${column_number}`}
                           ></div>
                         )}
                       </React.Fragment>
