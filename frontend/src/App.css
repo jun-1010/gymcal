@@ -298,6 +298,7 @@ html {
     height: var(--group-tabs-height);
     position: sticky;
     top: 0;
+    font-weight: bold;
   }
 
   .routine__elements {

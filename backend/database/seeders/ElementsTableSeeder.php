@@ -31,6 +31,7 @@ class ElementsTableSeeder extends Seeder
                 'column_number' => $row[8],
                 'start_direction' => $row[9],
                 'end_direction' => $row[10],
+                'element_type' => $row[11],
             ]);
         }
     }

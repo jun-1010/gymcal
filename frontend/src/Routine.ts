@@ -1,36 +1,14 @@
 import { Element } from "./Element";
-import { ElementGroup, Events } from "./Type";
+import { ElementGroup, ElementType, Events } from "./Type";
 
 const ELEMENT_COUNT_DEDUCTIONS = [10, 7, 6, 5, 4, 3, 0];
 
 // Elementにconnectionを追加
 export interface RoutineElement extends Element {
-  connection?: boolean;
-  element_group_score?: number;
+  is_connected: boolean | null;
+  connection_value: number | null;
+  element_group_score: number | null;
 }
-
-export const calculateDifficulty = (routine: RoutineElement[]): string => {
-  let totalDScore = 0;
-  // 難度点
-  routine.forEach((element) => {
-    totalDScore += element.difficulty / 10;
-  });
-  // グループ得点
-  routine.forEach((element) => {
-    totalDScore += element.element_group_score!;
-  });
-  return (Math.floor(totalDScore * 10) / 10).toFixed(1); // 小数点第２位以下を切り捨て
-};
-
-export const calculateND = (routine: RoutineElement[]): string => {
-  const totalNDScore =
-    routine.length < ELEMENT_COUNT_DEDUCTIONS.length
-      ? ELEMENT_COUNT_DEDUCTIONS[routine.length]
-      : 0;
-  // 構成要求
-
-  return totalNDScore.toFixed(1);
-};
 
 // 引数で受け取ったelement.codeがroutineに含まれているか
 export const isCodeInRoutine = (routine: Element[], code: string): boolean => {
@@ -74,13 +52,17 @@ export const isDisabledElement = (
   return false;
 };
 
+/***************************************************************
+ * ユーザーアクションに応じてroutineを更新する関数
+ * ************************************************************/
+
 // グループ得点
 export const updateElementGroupScoreInRoutine = (
   selectEvent: number,
   routine: RoutineElement[],
   setRoutine: (routine: RoutineElement[]) => void
 ) => {
-  // 全てのelementのelement_group_scoreをdifficultyに応じて追加(0.3or0.5)
+  // 以降の計算のために全elementのelement_group_scoreを追加(0.3or0.5)
   const newRoutineWithAllScore = routine.map((element) => {
     let element_group_score = 0;
     // 全ての種目のグループIは難度に関わらず0.5点が与えられる
@@ -169,11 +151,145 @@ export const updateElementGroupScoreInRoutine = (
   }
 };
 
+export const isConnectable = (
+  selectEvent: number,
+  routine: RoutineElement[],
+  element: RoutineElement,
+  index: number
+): boolean => {
+  // 1技目は組み合わせ不可
+  if (index === 0) {
+    return false;
+  }
+
+  const previousElement = routine[index - 1];
+
+  // 【床】
+  if (selectEvent === Events.床) {
+    // 技の接続局面が両足着地でない場合を無効化(start/end_directionがnull)
+    if (previousElement.end_direction === null || element.start_direction === null) {
+      return false;
+    }
+
+    // 技の終わりと技の始まりが合わない組み合わせを無効化(この処理で切り返しも無効にできる)
+    if (previousElement.end_direction !== element.start_direction) {
+      return false;
+    }
+
+    // EG1に対する組み合わせを不可に
+    if (
+      previousElement.element_group === ElementGroup.EG1 || // 前の技がEG1
+      element.element_group === ElementGroup.EG1 // 後の技がEG1
+    ) {
+      return false;
+    }
+
+    // 組み合わせは可能
+    return true;
+  } else {
+    // TODO: 床以外
+    return true;
+  }
+};
+
+// 組み合わせ
+export const updateConnectionInRoutine = (
+  selectEvent: number,
+  routine: RoutineElement[],
+  setRoutine: (routine: RoutineElement[]) => void
+) => {
+  // 組み合わせ対象が適切か確認(並べ替えされた場合を想定 ← [+]押下時はhandleConnectionClick()で対応済み)
+  let newRoutine: RoutineElement[] = routine.map((element, index) => {
+    // 組み合わせが有効 && 組み合わせが適切 → 有効化
+    if (element.is_connected && isConnectable(selectEvent, routine, element, index)) {
+      return { ...element, is_connected: true };
+    } else {
+      // 組み合わせが無効 || 組み合わせが不適切 → 無効化
+      return { ...element, is_connected: false };
+    }
+  });
+
+  // 組み合わせ加点を計算
+  newRoutine = routine.map((element, index) => {
+    if (element.is_connected) {
+      const previousElement = routine[index - 1];
+      // 【床】
+      if (selectEvent === Events.床) {
+        // ひねりを伴う1回宙同士の組み合わせ → null
+        if (
+          previousElement.element_type === ElementType.ひねりを伴う1回宙 &&
+          element.element_type === ElementType.ひねりを伴う1回宙
+        ) {
+          return { ...element, connection_value: null };
+        }
+
+        // D以上 + BorC → 0.1
+        if (
+          (previousElement.difficulty >= 4 && element.difficulty === 2) ||
+          (previousElement.difficulty >= 4 && element.difficulty === 3)
+        ) {
+          return { ...element, connection_value: 0.1 };
+        }
+        // BorC + D以上 → 0.1
+        if (
+          (previousElement.difficulty === 2 && element.difficulty >= 4) ||
+          (previousElement.difficulty === 3 && element.difficulty >= 4)
+        ) {
+          return { ...element, connection_value: 0.1 };
+        }
+        // D以上 + D以上 → 0.2
+        if (previousElement.difficulty >= 4 && element.difficulty >= 4) {
+          return { ...element, connection_value: 0.2 };
+        }
+      }
+
+      return element; // TODO: 他の種目は別途追加する
+    } else {
+      // 組み合わせ非対象の場合は connection_value を 更新しない
+      return element;
+    }
+  });
+
+  // 変更がある場合のみ setRoutine を呼び出す(useEffectの無限ループ対策)
+  if (JSON.stringify(newRoutine) !== JSON.stringify(routine)) {
+    setRoutine(newRoutine);
+  }
+};
+
+/***************************************************************
+ * 完成済routineから値を取得する関数
+ * ************************************************************/
+
+// 合計Dスコアを計算
+export const calculateTotalScore = (routine: RoutineElement[]): number => {
+  let totalDScore = 0;
+  // 難度点
+  totalDScore += calculateTotalDifficulty(routine);
+  // グループ得点
+  totalDScore += calculateTotalElementGroupScore(routine);
+  // 組み合わせ加点
+  totalDScore += calculateTotalConnectionValue(routine);
+  return totalDScore;
+};
+
+export const calculateND = (routine: RoutineElement[]): string => {
+  const totalNDScore =
+    routine.length < ELEMENT_COUNT_DEDUCTIONS.length
+      ? ELEMENT_COUNT_DEDUCTIONS[routine.length]
+      : 0;
+  // 構成要求
+
+  return totalNDScore.toFixed(1);
+};
+
 // 各グループ得点の合計を計算
 export const calculateTotalElementGroupScore = (routine: RoutineElement[]) => {
   let total = 0;
   routine.forEach((element) => {
-    if (element.element_group_score === undefined) {
+    if (
+      element.element_group_score === undefined ||
+      element.element_group_score === null
+    ) {
       // routineのレンダリングタイミングによってundefinedのままの場合を想定
       return;
     }
@@ -188,5 +304,18 @@ export const calculateTotalDifficulty = (routine: RoutineElement[]) => {
   routine.forEach((element) => {
     total += element.difficulty / 10;
   });
-  return (Math.floor(total * 10) / 10).toFixed(1); // 小数点第２位以下を切り捨て
+  return total; // 小数点第２位以下を切り捨て
+};
+
+// CVの合計を計算
+export const calculateTotalConnectionValue = (routine: RoutineElement[]) => {
+  let total = 0;
+  routine.forEach((element) => {
+    if (element.connection_value === undefined || element.connection_value === null) {
+      // routineのレンダリングタイミングによってundefinedのままの場合を想定
+      return;
+    }
+    total += element.connection_value;
+  });
+  return total;
 };

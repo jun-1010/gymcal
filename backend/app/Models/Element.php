@@ -21,5 +21,6 @@ class Element extends Model
         'column_number',
         'start_direction',
         'end_direction',
+        'element_type',
     ];
 }

@@ -12,6 +12,7 @@ export interface Element {
   column_number: number;
   start_direction: number | null;
   end_direction: number | null;
+  element_type: number | null;
 }
 
 export interface GroupElements {

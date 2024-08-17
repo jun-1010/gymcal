@@ -57,3 +57,8 @@ export const getGroupName = (
 ): string => {
   return `${getGroupKey(selectGroup)}:${GroupNames[selectEvent][selectGroup]}`;
 };
+
+export enum ElementType {
+  ひねりを伴う1回宙 = 1,
+  ビッグタンブリング = 2,
+}
