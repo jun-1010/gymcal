@@ -56,15 +56,12 @@ export const categorizeElements = (
     }
   });
 
-  console.log(maxColumnNumbers);
-
   const categorizedElements: CategorizedElements = {};
 
   elements.forEach((element) => {
     const eventKey = getEventKey(element.event);
     const groupKey = getGroupKey(element.element_group);
     const rowKey = `row${element.row_number}`;
-    const difficultyKey = difficulties[element.difficulty - 1] || ""; // difficultyが1から始まるため、インデックスは difficulty - 1
 
     // 種目ごとに初期化
     if (!categorizedElements[eventKey]) {
