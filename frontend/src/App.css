@@ -10,7 +10,7 @@ SP mode(初期スタイル)
   --light-gray: #f6f6f6;
   --white: #fff;
 
-  --light-orange: #ffe2d2;
+  --light-orange: #fa9e85;
   --orange: #ff3300;
 
   --header-height: 5dvh;
@@ -236,7 +236,6 @@ html {
 
           .elements__difficulty {
             background-color: var(--gray);
-            background-color: var(--light-orange);
             padding: 0.2rem;
             width: 1.5rem;
             height: 1.5rem;
