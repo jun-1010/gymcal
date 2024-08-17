@@ -6,16 +6,18 @@ export interface Element {
   event: number;
   element_group: number;
   name: string;
-  alias?: string;
+  alias: string | null;
   difficulty: number;
   row_number: number;
-  created_at: string | null;
-  updated_at: string | null;
+  column_number: number;
+  start_direction: number | null;
+  end_direction: number | null;
+  element_type: number | null;
 }
 
 export interface GroupElements {
   [rowKey: string]: {
-    [difficultyKey: string]: {} | Element | {};
+    [columnNumber: number]: Element | {};
   };
 }
 
@@ -25,23 +27,47 @@ export interface CategorizedElements {
   };
 }
 
-export const categorizeElements = (
-  elements: Element[]
-): CategorizedElements => {
+interface MaxColumnNumbers {
+  [eventKey: string]: {
+    [groupKey: string]: number;
+  };
+}
+
+export const categorizeElements = (elements: Element[]): CategorizedElements => {
+  // 最も右にある要素のrow_numberを各グループごとに取得する
+  let maxColumnNumbers: MaxColumnNumbers = {};
+  elements.forEach((element) => {
+    const eventKey = getEventKey(element.event);
+    const groupKey = getGroupKey(element.element_group);
+
+    // 種目ごとに初期化
+    if (!maxColumnNumbers[eventKey]) {
+      maxColumnNumbers[eventKey] = {};
+    }
+
+    // グループごとに初期化
+    if (!maxColumnNumbers[eventKey][groupKey]) {
+      maxColumnNumbers[eventKey][groupKey] = 0;
+    }
+
+    if (element.column_number > maxColumnNumbers[eventKey][groupKey]) {
+      maxColumnNumbers[eventKey][groupKey] = element.column_number;
+    }
+  });
+
   const categorizedElements: CategorizedElements = {};
 
   elements.forEach((element) => {
     const eventKey = getEventKey(element.event);
     const groupKey = getGroupKey(element.element_group);
     const rowKey = `row${element.row_number}`;
-    const difficultyKey = difficulties[element.difficulty - 1] || ""; // difficultyが1から始まるため、インデックスは difficulty - 1
 
-    // イベントごとに初期化
+    // 種目ごとに初期化
     if (!categorizedElements[eventKey]) {
       categorizedElements[eventKey] = {};
     }
 
-    // エレメントグループごとに初期化
+    // グループごとに初期化
     if (!categorizedElements[eventKey][groupKey]) {
       categorizedElements[eventKey][groupKey] = {};
     }
@@ -49,14 +75,15 @@ export const categorizeElements = (
     // 行ごとに初期化
     if (!categorizedElements[eventKey][groupKey][rowKey]) {
       categorizedElements[eventKey][groupKey][rowKey] = {};
-      // 全難易度分の要素を初期化
-      difficulties.forEach((difficulty) => {
-        categorizedElements[eventKey][groupKey][rowKey][difficulty] = {};
-      });
+
+      // 最大列数分の要素を初期化
+      for (let i = 0; i < maxColumnNumbers[eventKey][groupKey]; i++) {
+        categorizedElements[eventKey][groupKey][rowKey][i + 1] = {};
+      }
     }
 
     // 要素を追加
-    categorizedElements[eventKey][groupKey][rowKey][difficultyKey] = element;
+    categorizedElements[eventKey][groupKey][rowKey][element.column_number] = element;
   });
 
   return categorizedElements;
@@ -70,10 +97,7 @@ export const getGroupElements = (
   const eventKey = getEventKey(selectEvent);
   const groupKey = getGroupKey(selectGroup);
   // 存在チェック
-  if (
-    !categorizedElements[eventKey] ||
-    !categorizedElements[eventKey][groupKey]
-  ) {
+  if (!categorizedElements[eventKey] || !categorizedElements[eventKey][groupKey]) {
     return {} as GroupElements;
   }
 

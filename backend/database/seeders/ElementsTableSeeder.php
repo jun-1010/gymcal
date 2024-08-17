@@ -28,6 +28,10 @@ class ElementsTableSeeder extends Seeder
                 'alias' => $row[5],
                 'difficulty' => $row[6],
                 'row_number' => $row[7],
+                'column_number' => $row[8],
+                'start_direction' => $row[9],
+                'end_direction' => $row[10],
+                'element_type' => $row[11],
             ]);
         }
     }
