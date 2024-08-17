@@ -310,6 +310,11 @@ html {
     flex-direction: column;
     gap: 0.5rem;
 
+    .routine__element--header {
+      font-weight: bold;
+      border-bottom: 0.1rem solid var(--dark-gray);
+    }
+
     .routine__element {
       padding: 0.2rem;
       display: grid;
@@ -338,6 +343,11 @@ html {
       .routine__icon--active {
         opacity: 1;
       }
+    }
+
+    .routine__element--footer {
+      font-weight: bold;
+      border-top: 0.1rem solid var(--dark-gray);
     }
   }
 }

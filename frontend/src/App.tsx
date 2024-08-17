@@ -11,6 +11,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import {
   calculateDifficulty,
   calculateND,
+  calculateTotalDifficulty,
+  calculateTotalElementGroupScore,
   isCodeInRoutine,
   isDisabledElement,
   RoutineElement,
@@ -189,7 +191,7 @@ const App: React.FC = () => {
             </div>
             {routine.length ? (
               <div className="routine__elements">
-                <div className="routine__element">
+                <div className="routine__element routine__element--header">
                   <span className="routine__item">No.</span>
                   <span></span>
                   <span className="routine__item">名前</span>
@@ -253,6 +255,18 @@ const App: React.FC = () => {
                     </span>
                   </div>
                 ))}
+                <div className="routine__element routine__element--footer">
+                  <span className="routine__item"></span>
+                  <span></span>
+                  <span className="routine__item"></span>
+                  <span className="routine__item">
+                    {calculateTotalElementGroupScore(routine)}
+                  </span>
+                  <span className="routine__item">
+                    {calculateTotalDifficulty(routine)}
+                  </span>
+                  <span className="routine__item"></span>
+                </div>
               </div>
             ) : (
               <p>演技構成はありません</p>
