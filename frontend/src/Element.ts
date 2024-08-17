@@ -16,7 +16,7 @@ export interface Element {
 
 export interface GroupElements {
   [rowKey: string]: {
-    [difficultyKey: string]: {} | Element | {};
+    [columnNumber: number]: Element | {};
   };
 }
 
@@ -24,7 +24,7 @@ export interface CategorizedElements {
   [eventKey: string]: {
     [groupKey: string]: GroupElements;
   };
-} 
+}
 
 interface MaxColumnNumbers {
   [eventKey: string]: {
@@ -32,9 +32,7 @@ interface MaxColumnNumbers {
   };
 }
 
-export const categorizeElements = (
-  elements: Element[]
-): CategorizedElements => {
+export const categorizeElements = (elements: Element[]): CategorizedElements => {
   // 最も右にある要素のrow_numberを各グループごとに取得する
   let maxColumnNumbers: MaxColumnNumbers = {};
   elements.forEach((element) => {
@@ -79,10 +77,8 @@ export const categorizeElements = (
 
       // 最大列数分の要素を初期化
       for (let i = 0; i < maxColumnNumbers[eventKey][groupKey]; i++) {
-        categorizedElements[eventKey][groupKey][rowKey][i+1] = {};
+        categorizedElements[eventKey][groupKey][rowKey][i + 1] = {};
       }
-
-      
     }
 
     // 要素を追加
@@ -100,10 +96,7 @@ export const getGroupElements = (
   const eventKey = getEventKey(selectEvent);
   const groupKey = getGroupKey(selectGroup);
   // 存在チェック
-  if (
-    !categorizedElements[eventKey] ||
-    !categorizedElements[eventKey][groupKey]
-  ) {
+  if (!categorizedElements[eventKey] || !categorizedElements[eventKey][groupKey]) {
     return {} as GroupElements;
   }
 
