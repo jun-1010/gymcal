@@ -173,7 +173,11 @@ export const updateElementGroupScoreInRoutine = (
 export const calculateTotalElementGroupScore = (routine: RoutineElement[]) => {
   let total = 0;
   routine.forEach((element) => {
-    total += element.element_group_score!;
+    if (element.element_group_score === undefined) {
+      // routineのレンダリングタイミングによってundefinedのままの場合を想定
+      return;
+    }
+    total += element.element_group_score;
   });
   return total;
 };
