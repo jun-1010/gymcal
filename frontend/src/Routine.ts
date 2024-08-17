@@ -1,5 +1,5 @@
 import { Element } from "./Element";
-import { ElementGroup, ElementType, Events } from "./Type";
+import { ElementGroup, ElementStatus, ElementType, Events } from "./Type";
 
 const ELEMENT_COUNT_DEDUCTIONS = [10, 7, 6, 5, 4, 3, 0];
 
@@ -10,46 +10,37 @@ export interface RoutineElement extends Element {
   element_group_score: number | null;
 }
 
-// 引数で受け取ったelement.codeがroutineに含まれているか
-export const isCodeInRoutine = (routine: Element[], code: string): boolean => {
-  return routine.some((element) => element.code === code);
-};
+// 表示Elementの状態を取得
+export const getElementStatus = (routine: Element[], targetElement: Element): number => {
+  // EG技数制限(鉄棒手放し技のみ条件付きで5技)
+  const isGroupLimited = (routine: Element[], targetElement: Element): boolean => {
+    let limit = 4;
+    // if (
+    //   targetElement.event === Events.鉄棒 &&
+    //   targetElement.element_group === ElementGroup.EG2
+    // ) {
+    //   limit = 5;
+    // }
+    let count = 0;
+    routine.forEach((element) => {
+      if (element.element_group === targetElement.element_group) {
+        count++;
+      }
+    });
+    return count == limit;
+  };
 
-// EG技数制限(鉄棒手放し技のみ条件付きで5技)
-export const isGroupLimited = (routine: Element[], targetElement: Element): boolean => {
-  let limit = 4;
-  if (
-    targetElement.event === Events.鉄棒 &&
-    targetElement.element_group === ElementGroup.EG2
-  ) {
-    limit = 5;
+  if (routine.some((element) => element.id === targetElement.id)) {
+    return ElementStatus.選択済み;
+  } else if (routine.some((element) => element.code === targetElement.code)) {
+    return ElementStatus.同一枠選択済み;
+  } else if (isGroupLimited(routine, targetElement)) {
+    return ElementStatus.技数制限_グループ;
+  } else if (routine.length >= 8) {
+    return ElementStatus.技数制限_全体;
+  } else {
+    return ElementStatus.選択可能;
   }
-  let count = 0;
-  routine.forEach((element) => {
-    if (element.element_group === targetElement.element_group) {
-      count++;
-    }
-  });
-  return count == limit;
-};
-
-export const isDisabledElement = (
-  routine: Element[],
-  targetElement: Element
-): boolean => {
-  // routineに含まれている場合
-  if (isCodeInRoutine(routine, targetElement.code)) {
-    return true;
-  }
-  // 該当グループの技数制限(鉄棒手放し技のみ条件付きで5技)
-  if (isGroupLimited(routine, targetElement)) {
-    return true;
-  }
-  // 8技制限
-  if (routine.length >= 8) {
-    return true;
-  }
-  return false;
 };
 
 /***************************************************************

@@ -2,7 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Element, categorizeElements, getGroupElements, GroupElements } from "./Element";
 import "./App.css";
 import GroupTabs from "./components/GroupTabs";
-import { Events, ElementGroup, difficulties, element_groups } from "./Type";
+import {
+  Events,
+  ElementGroup,
+  difficulties,
+  element_groups,
+  statusClassMap,
+  ElementStatus,
+} from "./Type";
 import EventButtons from "./components/EventButtons";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -14,9 +21,8 @@ import {
   calculateTotalConnectionValue,
   calculateTotalDifficulty,
   calculateTotalElementGroupScore,
-  isCodeInRoutine,
   isConnectable,
-  isDisabledElement,
+  getElementStatus,
   RoutineElement,
   updateConnectionInRoutine,
   updateElementGroupScoreInRoutine,
@@ -80,6 +86,57 @@ const App: React.FC = () => {
     // 組み合わせ加点を更新する
     updateConnectionInRoutine(selectEvent, routine, setRoutine);
   }, [routine]);
+
+  // 技選択時のhandle関数
+  const handleElementClick = (element: Element) => {
+    if (getElementStatus(routine, element) === ElementStatus.選択済み) {
+      setRoutine(routine.filter((e) => e.id !== element.id));
+      return;
+    }
+    if (getElementStatus(routine, element) === ElementStatus.選択可能) {
+      const newRoutineElement: RoutineElement = {
+        ...element,
+        is_connected: false,
+        element_group_score: 0,
+        connection_value: null,
+      };
+      setRoutine([...routine, newRoutineElement]);
+    }
+  };
+
+  // ElementStatusを表示する関数
+  const renderElementStatusMessage = (element: Element) => {
+    const statusMessage = () => {
+      const status = getElementStatus(routine, element);
+      // 選択可能 → 何も表示しない
+      if (status === ElementStatus.選択可能) {
+        return null;
+      }
+      // 選択済み → 選択済み(技番号)
+      if (status === ElementStatus.選択済み) {
+        const index = routine.findIndex((e) => e.id === element.id);
+        return `選択済み(${index + 1}技目)`;
+      }
+      // 同一枠選択済み → 同一枠選択済み(技番号)
+      if (status === ElementStatus.同一枠選択済み) {
+        const code = routine.find((e) => e.code === element.code)?.code;
+        return `同一枠(${code})`;
+      }
+      // 技数制限_グループ → 技数制限_グループ
+      if (status === ElementStatus.技数制限_グループ) {
+        return "技数制限(グループ)";
+      }
+      // 技数制限_全体 → 技数制限_全体
+      if (status === ElementStatus.技数制限_全体) {
+        return "技数制限(全体)";
+      }
+    };
+
+    if (statusMessage() === null) {
+      return null;
+    }
+    return <div className="elements__status">{statusMessage()}</div>;
+  };
 
   // そもそも組み合わせさせないための処理
   const handleConnectionClick = (element: RoutineElement, index: number) => {
@@ -172,35 +229,25 @@ const App: React.FC = () => {
                         {element.name ? (
                           <div
                             className={`elements__tile ${
-                              isDisabledElement(routine, element)
-                                ? "elements__tile--disabled"
-                                : "elements__tile--active"
+                              statusClassMap[getElementStatus(routine, element)]
                             }`}
                             key={`${rowKey}-${column_number}`}
                             onClick={() => {
-                              if (isDisabledElement(routine, element)) {
-                                setRoutine(routine.filter((e) => e.id !== element.id));
-                                return;
-                              }
-                              const newRoutineElement: RoutineElement = {
-                                ...element,
-                                is_connected: false,
-                                element_group_score: 0,
-                              };
-                              setRoutine([...routine, newRoutineElement]);
+                              handleElementClick(element);
                             }}
                           >
-                            <div className="elements__label-box">
+                            <div className="elements__labels">
                               <span className="elements__difficulty">
                                 {selectEvent === Events.跳馬
                                   ? element.difficulty
                                   : difficulties[element.difficulty - 1]}
                               </span>
-                              {element.alias && (
-                                <span className="elements__alias">{element.alias}</span>
-                              )}
+                              {renderElementStatusMessage(element)}
                             </div>
-                            <div>{element.name}</div>
+                            {element.alias && (
+                              <span className="elements__alias">{element.alias}</span>
+                            )}
+                            <div>{element.code}.{element.name}</div>
                           </div>
                         ) : (
                           <div
@@ -257,9 +304,8 @@ const App: React.FC = () => {
                         />
                       )}
                     </span>
-
                     <span className="routine__item">
-                      {element.alias ? element.alias : element.name}
+                      {element.code}.{element.alias ? element.alias : element.name}
                     </span>
                     <span className="routine__item">
                       {element.element_group_score! > 0
