@@ -28,6 +28,7 @@ const HeaderIcons = ({
       top: 3,
       border: `2px solid ${theme.palette.background.paper}`,
       padding: "0 4px",
+      color: "white",
     },
   }));
 
@@ -38,7 +39,7 @@ const HeaderIcons = ({
         onClick={() => setRoutineOpen(0)}
       >
         <StyledBadge color="primary">
-          <ViewModuleIcon sx={{...iconStyle, opacity: routineOpen === 0 ? "1" : "0.5"}} />
+          <ViewModuleIcon sx={{ ...iconStyle }} />
         </StyledBadge>
       </div>
       {!isMobile ? (
@@ -47,7 +48,12 @@ const HeaderIcons = ({
           className={`header__icon ${routineOpen === 1 ? "header__icon--active" : ""}`}
         >
           <StyledBadge badgeContent={badgeContent} color="primary">
-            <VerticalSplitIcon sx={{ ...iconStyle, rotate: "180deg", opacity: routineOpen === 1 ? "1" : "0.5" }} />
+            <VerticalSplitIcon
+              sx={{
+                ...iconStyle,
+                rotate: "180deg",
+              }}
+            />
           </StyledBadge>
         </div>
       ) : (
@@ -58,7 +64,7 @@ const HeaderIcons = ({
         onClick={() => setRoutineOpen(2)}
       >
         <StyledBadge badgeContent={badgeContent} color="primary">
-          <ReorderIcon sx={{...iconStyle, opacity: routineOpen === 2 ? "1" : "0.5"}} />
+          <ReorderIcon sx={{ ...iconStyle }} />
         </StyledBadge>
       </div>
     </div>

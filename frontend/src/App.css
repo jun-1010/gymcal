@@ -9,6 +9,10 @@ SP mode(初期スタイル)
   --gray: #ddd;
   --light-gray: #f6f6f6;
   --white: #fff;
+
+  --light-orange: #ffe2d2;
+  --orange: #ff3300;
+
   --header-height: 5dvh;
   --header-margin-top-bottom-pc: 1.5rem;
   --group-tabs-height: 2rem;
@@ -76,7 +80,7 @@ html {
       gap: 0.3rem;
 
       .header__icon {
-        /* opacity: 0.5; */
+        opacity: 0.5;
         &:hover {
           opacity: 1;
         }
@@ -93,7 +97,7 @@ html {
   display: flex;
   justify-content: space-between;
   margin: 0 0.5rem;
-  height: calc(100dvh - var(--header-height) - 1rem);
+  height: calc(100dvh - var(--header-height) - 2rem);
 }
 
 /********************************************
@@ -232,6 +236,7 @@ html {
 
           .elements__difficulty {
             background-color: var(--gray);
+            background-color: var(--light-orange);
             padding: 0.2rem;
             width: 1.5rem;
             height: 1.5rem;
