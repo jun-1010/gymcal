@@ -122,10 +122,6 @@ html {
   color: var(--white);
   user-select: none;
 
-  &:hover {
-    opacity: 0.8;
-  }
-
   .event-dropdown__text {
     width: 4rem;
     text-align: center;
@@ -161,10 +157,6 @@ html {
   text-align: center;
   font-size: 1rem;
   color: var(--black);
-}
-
-.event-dropdown__item:hover {
-  color: var(--dark-gray);
 }
 
 .event-dropdown__item--active {
@@ -463,5 +455,31 @@ PC mode
   ********************************************/
   .routine {
     padding: 1.5rem;
+  }
+}
+
+/**********************************
+hover none mode
+(スマホやタブレットでhoverエフェクトが残る症状に対応するため)
+**********************************/
+@media (hover: none) {
+  .elements {
+    .elements__group {
+      .elements__row {
+        .elements__tile--active {
+          &:hover {
+            background-color: var(--white);
+          }
+        }
+
+        /* 選択済状態 */
+        .elements__tile--selected {
+          &:hover {
+            cursor: pointer;
+            opacity: 1;
+          }
+        }
+      }
+    }
   }
 }
