@@ -2,6 +2,8 @@ export const difficulties = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
 export const element_groups = ["I", "II", "III", "IV", "V"];
 
+export const ELEMENT_COUNT_DEDUCTIONS = [10, 7, 6, 5, 4, 3, 0, 0, 0];
+
 export enum Events {
   床 = 1,
   あん馬 = 2,
@@ -22,18 +24,18 @@ export enum ElementGroup {
   EG4 = 4,
 }
 
-export const getEventKey = (eventKey: number): string => {
+export const getEventKey = (event: number): string => {
   for (const key in Events) {
-    if (Events[key as keyof typeof Events] === eventKey) {
+    if (Events[key as keyof typeof Events] === event) {
       return key;
     }
   }
   return "Undefined";
 };
 
-export const getGroupKey = (groupKey: number): string => {
+export const getGroupKey = (group: number): string => {
   for (const key in ElementGroup) {
-    if (ElementGroup[key as keyof typeof ElementGroup] === groupKey) {
+    if (ElementGroup[key as keyof typeof ElementGroup] === group) {
       return key;
     }
   }
@@ -59,6 +61,7 @@ export enum ElementType {
   ビッグタンブリング = 2,
 }
 
+// TODO: Rulesに統合
 export enum ElementStatus {
   選択可能 = 1,
   選択済み = 2,
@@ -73,4 +76,25 @@ export const statusClassMap: { [key: number]: string } = {
   3: "elements__tile--same-slot-selected",
   4: "elements__tile--group-limit",
   5: "elements__tile--total-limit",
+};
+
+export enum Rules {
+  技数減点 = 1,
+  同一技制限 = 2,
+  同一枠制限 = 3,
+  グループ技数制限 = 4,
+  全体技数制限 = 5,
+  グループ得点 = 6,
+  難度点 = 7,
+  組み合わせ加点 = 8,
+  Dスコア = 9,
+}
+
+export const RuleKey = (ruleKey: number): string => {
+  for (const key in Rules) {
+    if (Rules[key as keyof typeof Rules] === ruleKey) {
+      return key;
+    }
+  }
+  return "Undefined";
 };

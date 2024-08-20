@@ -23,6 +23,7 @@ const EventButtons = ({ selectEvent, setSelectEvent, isMobile }: EventTabProps) 
     }
   };
 
+  // メニューの外側をクリックしたらメニューを閉じる
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
