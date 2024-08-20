@@ -1,7 +1,11 @@
 import { Element } from "./Element";
-import { ElementGroup, ElementStatus, ElementType, Events } from "./Type";
-
-const ELEMENT_COUNT_DEDUCTIONS = [10, 7, 6, 5, 4, 3, 0];
+import {
+  ELEMENT_COUNT_DEDUCTIONS,
+  ElementGroup,
+  ElementStatus,
+  ElementType,
+  Events,
+} from "./Type";
 
 // Elementにconnectionを追加
 export interface RoutineElement extends Element {
@@ -10,26 +14,26 @@ export interface RoutineElement extends Element {
   element_group_score: number | null;
 }
 
+// EG技数制限(鉄棒手放し技のみ条件付きで5技)
+export const isGroupLimited = (routine: Element[], targetElement: Element): boolean => {
+  let limit = 4;
+  // if (
+  //   targetElement.event === Events.鉄棒 &&
+  //   targetElement.element_group === ElementGroup.EG2
+  // ) {
+  //   limit = 5;
+  // }
+  let count = 0;
+  routine.forEach((element) => {
+    if (element.element_group === targetElement.element_group) {
+      count++;
+    }
+  });
+  return count == limit;
+};
+
 // 表示Elementの状態を取得
 export const getElementStatus = (routine: Element[], targetElement: Element): number => {
-  // EG技数制限(鉄棒手放し技のみ条件付きで5技)
-  const isGroupLimited = (routine: Element[], targetElement: Element): boolean => {
-    let limit = 4;
-    // if (
-    //   targetElement.event === Events.鉄棒 &&
-    //   targetElement.element_group === ElementGroup.EG2
-    // ) {
-    //   limit = 5;
-    // }
-    let count = 0;
-    routine.forEach((element) => {
-      if (element.element_group === targetElement.element_group) {
-        count++;
-      }
-    });
-    return count == limit;
-  };
-
   if (routine.some((element) => element.id === targetElement.id)) {
     return ElementStatus.選択済み;
   } else if (routine.some((element) => element.code === targetElement.code)) {
@@ -263,14 +267,14 @@ export const calculateTotalScore = (routine: RoutineElement[]): number => {
   return totalDScore;
 };
 
-export const calculateND = (routine: RoutineElement[]): string => {
+export const calculateND = (routine: RoutineElement[]): number => {
   const totalNDScore =
     routine.length < ELEMENT_COUNT_DEDUCTIONS.length
       ? ELEMENT_COUNT_DEDUCTIONS[routine.length]
       : 0;
   // 構成要求
 
-  return totalNDScore.toFixed(1);
+  return totalNDScore;
 };
 
 // 各グループ得点の合計を計算
