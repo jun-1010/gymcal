@@ -58,7 +58,7 @@ export const getGroupName = (selectEvent: number, selectGroup: number): string =
 
 export enum ElementType {
   ひねりを伴う1回宙 = 1,
-  ビッグタンブリング = 2,
+  ダブル系 = 2,
 }
 
 // TODO: Rulesに統合
@@ -79,15 +79,17 @@ export const statusClassMap: { [key: number]: string } = {
 };
 
 export enum Rules {
-  技数減点 = 1,
-  同一技制限 = 2,
-  同一枠制限 = 3,
-  グループ技数制限 = 4,
-  全体技数制限 = 5,
-  グループ得点 = 6,
-  難度点 = 7,
-  組み合わせ加点 = 8,
-  Dスコア = 9,
+  Dスコア = 1,
+  グループ得点 = 2,
+  難度点 = 3,
+  組み合わせ加点 = 4,
+  ニュートラルディダクション = 5,
+  技数減点 = 6,
+  ダブル系不足 = 7,
+  同一技制限 = 8,
+  同一枠制限 = 9,
+  グループ技数制限 = 10,
+  全体技数制限 = 11,
 }
 
 export const RuleKey = (ruleKey: number): string => {

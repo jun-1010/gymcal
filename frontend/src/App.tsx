@@ -17,7 +17,7 @@ import AddBoxIcon from "@mui/icons-material/AddBox";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   calculateTotalScore,
-  calculateND,
+  calculateElementCountDeduction,
   calculateTotalConnectionValue,
   calculateTotalDifficulty,
   calculateTotalElementGroupScore,
@@ -26,6 +26,8 @@ import {
   RoutineElement,
   updateConnectionInRoutine,
   updateElementGroupScoreInRoutine,
+  calculateNeutralDeduction,
+  calculateMultipleSaltoShortage,
 } from "./Routine";
 import useMedia from "use-media";
 import HeaderIcons from "./components/HeaderIcons";
@@ -342,16 +344,6 @@ const App: React.FC = () => {
               )}
               <div className="routine__summaries">
                 <div className="routine__summary">
-                  {/* 技数減点 */}
-                  {calculateND(routine) > 0 ? (
-                    <p className="common__label common__label--active routine__summary-label">
-                      ND:{calculateND(routine).toFixed(1)}
-                    </p>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-                <div className="routine__summary">
                   {/* 合計Dスコア */}
                   {calculateTotalScore(routine) > 0 ? (
                     <p className="common__label common__label--active routine__summary-label">
@@ -380,6 +372,32 @@ const App: React.FC = () => {
                   {calculateTotalConnectionValue(routine) > 0 ? (
                     <p className="common__label routine__summary-label">
                       CV: {calculateTotalConnectionValue(routine).toFixed(1)}
+                    </p>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+                <div className="routine__summary">
+                  {/* ニュートラルディダクション */}
+                  {calculateNeutralDeduction(routine) > 0 ? (
+                    <p className="common__label common__label--active routine__summary-label">
+                      ND:{calculateNeutralDeduction(routine).toFixed(1)}
+                    </p>
+                  ) : (
+                    <></>
+                  )}
+                  {/* 技数減点 */}
+                  {calculateElementCountDeduction(routine) > 0 ? (
+                    <p className="common__label routine__summary-label">
+                      技数減点: {calculateElementCountDeduction(routine).toFixed(1)}
+                    </p>
+                  ) : (
+                    <></>
+                  )}
+                  {/* ダブル系不足 */}
+                  {calculateMultipleSaltoShortage(routine) > 0 ? (
+                    <p className="common__label routine__summary-label">
+                      ダブル系不足: {calculateMultipleSaltoShortage(routine).toFixed(1)}
                     </p>
                   ) : (
                     <></>
