@@ -11,6 +11,7 @@ class Element extends Model
 
     protected $fillable = [
         'id',
+        'code',
         'event',
         'element_group',
         'name',

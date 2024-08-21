@@ -2,6 +2,7 @@ import { difficulties, getEventKey, getGroupKey } from "./Type";
 
 export interface Element {
   id: string;
+  code: string;
   event: number;
   element_group: number;
   name: string;
@@ -68,8 +69,6 @@ export const getGroupElements = (
 ): GroupElements => {
   const eventKey = getEventKey(selectEvent);
   const groupKey = getGroupKey(selectGroup);
-  console.log("getGroupElements: ", eventKey, groupKey);
-  console.log(categorizedElements);
   // 存在チェック
   if (
     !categorizedElements[eventKey] ||
