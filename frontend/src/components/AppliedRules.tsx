@@ -6,7 +6,9 @@ import {
   GroupElements,
 } from "../Element";
 import {
-  calculateND,
+  calculateElementCountDeduction,
+  calculateMultipleSaltoShortage,
+  calculateNeutralDeduction,
   calculateTotalConnectionValue,
   calculateTotalDifficulty,
   calculateTotalElementGroupScore,
@@ -71,54 +73,7 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
   const limitedGroups = getLimitedGroups(routine);
   return (
     <div className="rules">
-      <details className="rules__details">
-        <summary>
-          <span className="rules__summary-title">
-            {RuleKey(Rules.技数減点)}
-            <span
-              className={`common__label ${
-                calculateND(routine) > 0 ? "common__label--active" : ""
-              }`}
-            >
-              ND:{calculateND(routine).toFixed(1)}
-            </span>
-          </span>
-        </summary>
-        <div className="rules__description">
-          <p>少ない技数の演技には減点が発生します(ND)。</p>
-          <table className="rules__table-table">
-            <tbody>
-              <tr className="rules__table-row">
-                <td className="rules__table-cell rules__table-cell--3rem">技数</td>
-                {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
-                  <td
-                    key={index}
-                    className={`rules__table-cell ${
-                      routine.length === index ? "rules__table-cell--active" : ""
-                    }`}
-                  >
-                    {index}
-                  </td>
-                ))}
-              </tr>
-              <tr className="rules__table-row">
-                <td className="rules__table-cell rules__table-cell--3rem">減点</td>
-                {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
-                  <td
-                    key={index}
-                    className={`rules__table-cell ${
-                      routine.length === index ? "rules__table-cell--active" : ""
-                    }`}
-                  >
-                    {deduction}
-                  </td>
-                ))}
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </details>
-
+      {/* Dスコア */}
       <details className="rules__details">
         <summary>
           <span className="rules__summary-title">
@@ -141,6 +96,7 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
         </div>
       </details>
 
+      {/* グループ得点 */}
       <details className="rules__details">
         <summary>
           <span className="rules__summary-title">
@@ -185,6 +141,7 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
         </div>
       </details>
 
+      {/* 難度点 */}
       <details className="rules__details">
         <summary>
           <span className="rules__summary-title">
@@ -204,6 +161,7 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
         </div>
       </details>
 
+      {/* 組み合わせ加点 */}
       <details className="rules__details">
         <summary>
           <span className="rules__summary-title">
@@ -246,6 +204,96 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
         </div>
       </details>
 
+      {/* ニュートラルディダクション */}
+      <details className="rules__details">
+        <summary>
+          <span className="rules__summary-title">
+            {RuleKey(Rules.ニュートラルディダクション)}
+            {calculateNeutralDeduction(routine) > 0 ? (
+              <p className="common__label common__label--active routine__summary-label">
+                ND:{calculateNeutralDeduction(routine).toFixed(1)}
+              </p>
+            ) : (
+              <></>
+            )}
+          </span>
+        </summary>
+        <div className="rules__description">
+          <p>以下の要求を満たさない場合、減点が付与されます。</p>
+          <p>・6技以上による構成（技数減点）</p>
+          <p>・終末技が2回もしくは3回宙返り技（ダブル系不足）</p>
+        </div>
+      </details>
+
+      {/* 技数減点 */}
+      <details className="rules__details">
+        <summary>
+          <span className="rules__summary-title">
+            {RuleKey(Rules.技数減点)}
+            {calculateElementCountDeduction(routine) > 0 ? (
+              <p className="common__label routine__summary-label">
+                技数減点:{calculateElementCountDeduction(routine).toFixed(1)}
+              </p>
+            ) : (
+              <></>
+            )}
+          </span>
+        </summary>
+        <div className="rules__description">
+          <p>少ない技数の演技には減点が発生します(ND)。</p>
+          <table className="rules__table-table">
+            <tbody>
+              <tr className="rules__table-row">
+                <td className="rules__table-cell rules__table-cell--3rem">技数</td>
+                {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
+                  <td
+                    key={index}
+                    className={`rules__table-cell ${
+                      routine.length === index ? "rules__table-cell--active" : ""
+                    }`}
+                  >
+                    {index}
+                  </td>
+                ))}
+              </tr>
+              <tr className="rules__table-row">
+                <td className="rules__table-cell rules__table-cell--3rem">減点</td>
+                {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
+                  <td
+                    key={index}
+                    className={`rules__table-cell ${
+                      routine.length === index ? "rules__table-cell--active" : ""
+                    }`}
+                  >
+                    {deduction}
+                  </td>
+                ))}
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+
+      {/* ダブル系 */}
+      <details className="rules__details">
+        <summary>
+          <span className="rules__summary-title">
+            {RuleKey(Rules.ダブル系不足)}
+            {calculateMultipleSaltoShortage(routine) > 0 ? (
+              <p className="common__label routine__summary-label">
+                ダブル系不足:{calculateMultipleSaltoShortage(routine).toFixed(1)}
+              </p>
+            ) : (
+              <></>
+            )}
+          </span>
+        </summary>
+        <div className="rules__description">
+          <p>終末技が2回もしくは3回宙返り技でない場合、減点が付与されます（仮）。</p>
+        </div>
+      </details>
+
+      {/* 同一枠制限 */}
       <details className="rules__details">
         <summary>
           <span className="rules__summary-title">
@@ -278,6 +326,7 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
         </div>
       </details>
 
+      {/* グループ技数制限 */}
       <details className="rules__details">
         <summary>
           <span className="rules__summary-title">
@@ -305,6 +354,7 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
         </div>
       </details>
 
+      {/* 全体技数制限 */}
       <details className="rules__details">
         <summary>
           <span className="rules__summary-title">

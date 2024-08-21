@@ -464,7 +464,11 @@ html {
         opacity: 0;
         margin: 0;
         padding: 0 1rem 0.5rem 1rem;
-        line-height: 1.5rem;
+        line-height: 1.2rem;
+
+        p {
+          margin-bottom: 0.5rem;
+        }
 
         .rules__table-table {
           margin: 0.5em 0;

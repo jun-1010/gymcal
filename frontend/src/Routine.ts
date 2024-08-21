@@ -195,7 +195,7 @@ export const updateConnectionInRoutine = (
 ) => {
   // 組み合わせ対象が適切か確認(並べ替えされた場合を想定 ← [+]押下時はhandleConnectionClick()で対応済み)
   let newRoutine: RoutineElement[] = routine.map((element, index) => {
-    // 組み合わせが有効 && 組み合わせが適切 → 有効化
+    // 組み合わせが有効 && 組み合わせが適切(1技目チェック等) → 有効化
     if (element.is_connected && isConnectable(selectEvent, routine, element, index)) {
       return { ...element, is_connected: true };
     } else {
@@ -205,7 +205,7 @@ export const updateConnectionInRoutine = (
   });
 
   // 組み合わせ加点を計算
-  newRoutine = routine.map((element, index) => {
+  newRoutine = newRoutine.map((element, index) => {
     if (element.is_connected) {
       const previousElement = routine[index - 1];
       // 【床】
@@ -267,14 +267,36 @@ export const calculateTotalScore = (routine: RoutineElement[]): number => {
   return totalDScore;
 };
 
-export const calculateND = (routine: RoutineElement[]): number => {
-  const totalNDScore =
+// ニュートラルディダクションを計算
+export const calculateNeutralDeduction = (routine: RoutineElement[]): number => {
+  return (
+    calculateElementCountDeduction(routine) + calculateMultipleSaltoShortage(routine)
+  );
+};
+
+// 技数減点を計算
+export const calculateElementCountDeduction = (routine: RoutineElement[]): number => {
+  const elementCountDeduction =
     routine.length < ELEMENT_COUNT_DEDUCTIONS.length
       ? ELEMENT_COUNT_DEDUCTIONS[routine.length]
       : 0;
-  // 構成要求
 
-  return totalNDScore;
+  return elementCountDeduction;
+};
+
+// ダブル系の有無によるNDを計算
+export const calculateMultipleSaltoShortage = (routine: RoutineElement[]): number => {
+  if (routine.length === 0) {
+    return 0;
+  }
+
+  const lastElement = routine[routine.length - 1] as RoutineElement;
+  // routineの最後のelementのelement_typeが2でないならば0.3を返す
+  if (lastElement.element_type !== 2) {
+    return 0.3;
+  }
+
+  return 0;
 };
 
 // 各グループ得点の合計を計算
