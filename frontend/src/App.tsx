@@ -197,7 +197,7 @@ const App: React.FC = () => {
           } ${routineOpen === 2 && "routine--full"}`}
         >
           <div className="routine__header">
-            演技構成: {calculateDifficulty(routine)} (ND:{calculateND(routine)})
+            演技構成 (β版)
           </div>
           {routine.length ? (
             <div className="routine__elements">
