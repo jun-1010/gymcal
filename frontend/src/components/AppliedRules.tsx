@@ -14,12 +14,7 @@ import {
   isGroupLimited,
   RoutineElement,
 } from "../Routine";
-import {
-  ELEMENT_COUNT_DEDUCTIONS,
-  RuleKey,
-  Rules,
-  getGroupKey,
-} from "../Type";
+import { ELEMENT_COUNT_DEDUCTIONS, RuleKey, Rules, getGroupKey } from "../Type";
 
 // 同一枠の技を持つ技のコードを取得
 const getSameSlotCodes = (
@@ -76,13 +71,7 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
   const limitedGroups = getLimitedGroups(routine);
   return (
     <div className="rules">
-      <details
-        className={`rules__details ${
-          true // 常に表示
-            ? "rules__details--active"
-            : ""
-        }`}
-      >
+      <details className="rules__details">
         <summary>
           <span className="rules__summary-title">
             {RuleKey(Rules.技数減点)}
@@ -130,13 +119,7 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
         </div>
       </details>
 
-      <details
-        className={`rules__details ${
-          true // 常に表示
-            ? "rules__details--active"
-            : ""
-        }`}
-      >
+      <details className="rules__details">
         <summary>
           <span className="rules__summary-title">
             {RuleKey(Rules.Dスコア)}
@@ -158,13 +141,7 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
         </div>
       </details>
 
-      <details
-        className={`rules__details ${
-          true // 常に表示
-            ? "rules__details--active"
-            : ""
-        }`}
-      >
+      <details className="rules__details">
         <summary>
           <span className="rules__summary-title">
             {RuleKey(Rules.グループ得点)}
@@ -208,13 +185,7 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
         </div>
       </details>
 
-      <details
-        className={`rules__details ${
-          true // 常に表示
-            ? "rules__details--active"
-            : ""
-        }`}
-      >
+      <details className="rules__details">
         <summary>
           <span className="rules__summary-title">
             {RuleKey(Rules.難度点)}
@@ -233,13 +204,7 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
         </div>
       </details>
 
-      <details
-        className={`rules__details ${
-          true // 常に表示
-            ? "rules__details--active"
-            : ""
-        }`}
-      >
+      <details className="rules__details">
         <summary>
           <span className="rules__summary-title">
             {RuleKey(Rules.組み合わせ加点)}
@@ -281,13 +246,7 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
         </div>
       </details>
 
-      <details
-        className={`rules__details ${
-          true // 常に表示
-            ? "rules__details--active"
-            : ""
-        }`}
-      >
+      <details className="rules__details">
         <summary>
           <span className="rules__summary-title">
             {RuleKey(Rules.同一枠制限)}
@@ -319,13 +278,7 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
         </div>
       </details>
 
-      <details
-        className={`rules__details ${
-          true // 常に表示
-            ? "rules__details--active"
-            : ""
-        }`}
-      >
+      <details className="rules__details">
         <summary>
           <span className="rules__summary-title">
             {RuleKey(Rules.グループ技数制限)}
@@ -352,13 +305,7 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
         </div>
       </details>
 
-      <details
-        className={`rules__details ${
-          true // 常に表示
-            ? "rules__details--active"
-            : ""
-        }`}
-      >
+      <details className="rules__details">
         <summary>
           <span className="rules__summary-title">
             {RuleKey(Rules.全体技数制限)}
