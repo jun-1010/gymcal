@@ -302,6 +302,11 @@ html {
       .elements__tile--total-limit {
         opacity: 0.6;
       }
+
+      /* 床_力技制限 */
+      .elements__tile--floor-strength-limit {
+        opacity: 0.6;
+      }
     }
   }
 }

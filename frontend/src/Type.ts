@@ -59,6 +59,7 @@ export const getGroupName = (selectEvent: number, selectGroup: number): string =
 export enum ElementType {
   ひねりを伴う1回宙 = 1,
   ダブル系 = 2,
+  床_力技 = 3,
 }
 
 // TODO: Rulesに統合
@@ -68,6 +69,7 @@ export enum ElementStatus {
   同一枠選択済み = 3,
   技数制限_グループ = 4,
   技数制限_全体 = 5,
+  床_力技制限 = 6,
 }
 
 export const statusClassMap: { [key: number]: string } = {
@@ -76,6 +78,7 @@ export const statusClassMap: { [key: number]: string } = {
   3: "elements__tile--same-slot-selected",
   4: "elements__tile--group-limit",
   5: "elements__tile--total-limit",
+  6: "elements__tile--floor-strength-limit",
 };
 
 export enum Rules {
@@ -90,6 +93,7 @@ export enum Rules {
   同一枠制限 = 9,
   グループ技数制限 = 10,
   全体技数制限 = 11,
+  床_力技制限 = 12,
 }
 
 export const RuleKey = (ruleKey: number): string => {
