@@ -37,6 +37,8 @@ import {
 import useMedia from "use-media";
 import HeaderIcons from "./components/HeaderIcons";
 import { AppliedRules } from "./components/AppliedRules";
+import Header from "./components/organism/Header";
+
 
 const url = "http://localhost:8000/api/elements";
 
@@ -175,51 +177,14 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
-      <div className="header">
-        {isMobile ? (
-          <>
-            <div className="header__left">
-              <h1 className="header__title">
-                <a href="/">GymCal</a>
-              </h1>
-              <EventButtons
-                selectEvent={selectEvent}
-                setSelectEvent={setSelectEvent}
-                isMobile={isMobile}
-              />
-            </div>
-            <div className="header__right">
-              <HeaderIcons
-                routineOpen={routineOpen}
-                setRoutineOpen={setRoutineOpen}
-                isMobile={isMobile}
-                badgeContent={routine.length}
-              />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="header__left">
-              <h1 className="header__title">
-                <a href="/">GymCal</a>
-              </h1>
-            </div>
-            <EventButtons
-              selectEvent={selectEvent}
-              setSelectEvent={setSelectEvent}
-              isMobile={isMobile}
-            />
-            <div className="header__right">
-              <HeaderIcons
-                routineOpen={routineOpen}
-                setRoutineOpen={setRoutineOpen}
-                isMobile={isMobile}
-                badgeContent={routine.length}
-              />
-            </div>
-          </>
-        )}
-      </div>
+      <Header
+        selectEvent={selectEvent}
+        setSelectEvent={setSelectEvent}
+        routineOpen={routineOpen}
+        setRoutineOpen={setRoutineOpen}
+        isMobile={isMobile}
+        routine={routine}
+      />
       {Object.keys(groupElements).length ? (
         <div className="main">
           {/* 難度表(Routineコンポーネント)
