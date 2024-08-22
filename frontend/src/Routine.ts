@@ -43,18 +43,31 @@ export const isFloorStrengthLimit = (
   );
 };
 
+// 床の旋回技制限判定
+export const isFloorCircleLimit = (
+  routine: Element[],
+  targetElement: Element
+): boolean => {
+  return (
+    targetElement.element_type === ElementType.床_旋回 &&
+    routine.some((element) => element.element_type === ElementType.床_旋回)
+  );
+};
+
 // 表示Elementの状態を取得
 export const getElementStatus = (routine: Element[], targetElement: Element): number => {
   if (routine.some((element) => element.id === targetElement.id)) {
     return ElementStatus.選択済み;
   } else if (routine.some((element) => element.code === targetElement.code)) {
     return ElementStatus.同一枠選択済み;
+  } else if (isFloorStrengthLimit(routine, targetElement)) {
+    return ElementStatus.床_力技制限;
+  } else if (isFloorCircleLimit(routine, targetElement)) {
+    return ElementStatus.床_旋回制限;
   } else if (isGroupLimited(routine, targetElement)) {
     return ElementStatus.技数制限_グループ;
   } else if (routine.length >= 8) {
     return ElementStatus.技数制限_全体;
-  } else if (isFloorStrengthLimit(routine, targetElement)) {
-    return ElementStatus.床_力技制限;
   } else {
     return ElementStatus.選択可能;
   }

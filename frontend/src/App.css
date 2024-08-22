@@ -307,6 +307,11 @@ html {
       .elements__tile--floor-strength-limit {
         opacity: 0.6;
       }
+
+      /* 床_旋回制限 */
+      .elements__tile--floor-circle-limit {
+        opacity: 0.6;
+      }
     }
   }
 }
