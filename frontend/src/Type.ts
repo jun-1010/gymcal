@@ -60,6 +60,7 @@ export enum ElementType {
   ひねりを伴う1回宙 = 1,
   ダブル系 = 2,
   床_力技 = 3,
+  床_旋回 = 4,
 }
 
 // TODO: Rulesに統合
@@ -70,6 +71,7 @@ export enum ElementStatus {
   技数制限_グループ = 4,
   技数制限_全体 = 5,
   床_力技制限 = 6,
+  床_旋回制限 = 7,
 }
 
 export const statusClassMap: { [key: number]: string } = {
@@ -79,6 +81,7 @@ export const statusClassMap: { [key: number]: string } = {
   4: "elements__tile--group-limit",
   5: "elements__tile--total-limit",
   6: "elements__tile--floor-strength-limit",
+  7: "elements__tile--floor-circle-limit",
 };
 
 export enum Rules {

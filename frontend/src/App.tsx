@@ -141,6 +141,10 @@ const App: React.FC = () => {
     if (status === ElementStatus.床_力技制限) {
       return <div className="common__label">力技制限</div>;
     }
+    // 床_旋回制限
+    if (status === ElementStatus.床_旋回制限) {
+      return <div className="common__label">旋回制限</div>;
+    }
   };
 
   // そもそも組み合わせさせないための処理

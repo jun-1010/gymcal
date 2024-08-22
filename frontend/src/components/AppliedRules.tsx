@@ -13,6 +13,7 @@ import {
   calculateTotalDifficulty,
   calculateTotalElementGroupScore,
   calculateTotalScore,
+  isFloorCircleLimit,
   isFloorStrengthLimit,
   isGroupLimited,
   RoutineElement,
@@ -72,9 +73,10 @@ interface AppliedRulesProps {
 export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps) => {
   const sameSlotCodes = getSameSlotCodes(routine, categorizedElements);
   const limitedGroups = getLimitedGroups(routine);
-  // isFloorStrengthLimitがtrueなelementのcodeを取得
   const floorStrengthLimitCode =
     routine.find((element) => isFloorStrengthLimit(routine, element))?.code || "";
+  const floorCircleLimitCode =
+    routine.find((element) => isFloorCircleLimit(routine, element))?.code || "";
 
   return (
     <div className="rules">
@@ -383,7 +385,9 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
           <span className="rules__summary-title">
             力技制限
             {floorStrengthLimitCode ? (
-              <p className="common__label routine__summary-label">{floorStrengthLimitCode}</p>
+              <p className="common__label routine__summary-label">
+                {floorStrengthLimitCode}
+              </p>
             ) : null}
           </span>
         </summary>
@@ -392,6 +396,24 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
           <p>力技は以下を除いたI1~I48です。</p>
           <p>・I19 倒立(2秒)</p>
           <p>・I31 倒立ひねりor倒立1回ひねり</p>
+          {/* TODO: getElementNameByCodeをElement.tsに作成 & selectEvent/selectGroupをContextAPIに保持（リファクタリング） */}
+        </div>
+      </details>
+
+      {/* 床_旋回制限 */}
+      <details className="rules__details">
+        <summary>
+          <span className="rules__summary-title">
+            旋回制限
+            {floorCircleLimitCode ? (
+              <p className="common__label routine__summary-label">
+                {floorCircleLimitCode}
+              </p>
+            ) : null}
+          </span>
+        </summary>
+        <div className="rules__description">
+          <p>旋回技(I79~I105)は1演技に1つまで使用できます。</p>
           {/* TODO: getElementNameByCodeをElement.tsに作成 & selectEvent/selectGroupをContextAPIに保持（リファクタリング） */}
         </div>
       </details>
