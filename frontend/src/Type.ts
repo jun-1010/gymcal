@@ -1,3 +1,5 @@
+import { getElementStatus, RoutineElement } from "./Routine";
+
 export const difficulties = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
 export const element_groups = ["I", "II", "III", "IV", "V"];
@@ -63,7 +65,7 @@ export enum ElementType {
   床_旋回 = 4,
 }
 
-// TODO: Rulesに統合
+// element__tileの状態表示に使用
 export enum ElementStatus {
   選択可能 = 1,
   選択済み = 2,
@@ -74,14 +76,17 @@ export enum ElementStatus {
   床_旋回制限 = 7,
 }
 
-export const statusClassMap: { [key: number]: string } = {
-  1: "elements__tile--active",
-  2: "elements__tile--selected",
-  3: "elements__tile--same-slot-selected",
-  4: "elements__tile--group-limit",
-  5: "elements__tile--total-limit",
-  6: "elements__tile--floor-strength-limit",
-  7: "elements__tile--floor-circle-limit",
+// active, selected, disabledの3つで十分
+export const statusClass = (status: number) => {
+  if (status === 1) {
+    return "elements__tile--active";
+  } else if (status === 2) {
+    return "elements__tile--selected";
+  } else if (3 <= status) {
+    return "elements__tile--disabled";
+  } else {
+    return "";
+  }
 };
 
 export enum Rules {

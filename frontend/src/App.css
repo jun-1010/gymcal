@@ -278,7 +278,7 @@ html {
         }
       }
 
-      /* 選択済状態 */
+      /* 選択済状態(解除可能) */
       .elements__tile--selected {
         background-color: var(--light-orange);
 
@@ -288,28 +288,8 @@ html {
         }
       }
 
-      /* 同一枠選択済状態 */
-      .elements__tile--same-slot-selected {
-        opacity: 0.6;
-      }
-
-      /* 技数制限_グループ状態 */
-      .elements__tile--group-limit {
-        opacity: 0.6;
-      }
-
-      /* 技数制限_全体状態 */
-      .elements__tile--total-limit {
-        opacity: 0.6;
-      }
-
-      /* 床_力技制限 */
-      .elements__tile--floor-strength-limit {
-        opacity: 0.6;
-      }
-
-      /* 床_旋回制限 */
-      .elements__tile--floor-circle-limit {
+      /* 制限状態（未選択・解除不可） */
+      .elements__tile--disabled {
         opacity: 0.6;
       }
     }

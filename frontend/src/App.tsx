@@ -7,8 +7,8 @@ import {
   ElementGroup,
   difficulties,
   element_groups,
-  statusClassMap,
   ElementStatus,
+  statusClass,
 } from "./Type";
 import EventButtons from "./components/EventButtons";
 
@@ -238,7 +238,7 @@ const App: React.FC = () => {
                         {element.name ? (
                           <div
                             className={`elements__tile ${
-                              statusClassMap[getElementStatus(routine, element)]
+                              statusClass(getElementStatus(routine, element))
                             }`}
                             key={`${rowKey}-${column_number}`}
                             onClick={() => {
