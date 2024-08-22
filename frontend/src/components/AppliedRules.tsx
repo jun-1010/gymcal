@@ -13,6 +13,7 @@ import {
   calculateTotalDifficulty,
   calculateTotalElementGroupScore,
   calculateTotalScore,
+  isFloorStrengthLimit,
   isGroupLimited,
   RoutineElement,
 } from "../Routine";
@@ -71,6 +72,10 @@ interface AppliedRulesProps {
 export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps) => {
   const sameSlotCodes = getSameSlotCodes(routine, categorizedElements);
   const limitedGroups = getLimitedGroups(routine);
+  // isFloorStrengthLimitがtrueなelementのcodeを取得
+  const floorStrengthLimitCode =
+    routine.find((element) => isFloorStrengthLimit(routine, element))?.code || "";
+
   return (
     <div className="rules">
       {/* Dスコア */}
@@ -369,6 +374,25 @@ export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps
             1演技は最大<span style={{ fontWeight: "bold" }}>8つの技</span>で構成できます。
           </p>
           <p>8つ以上の技を実施してもDスコアには加算されません。</p>
+        </div>
+      </details>
+
+      {/* 床_力技制限 */}
+      <details className="rules__details">
+        <summary>
+          <span className="rules__summary-title">
+            力技制限
+            {floorStrengthLimitCode ? (
+              <p className="common__label routine__summary-label">{floorStrengthLimitCode}</p>
+            ) : null}
+          </span>
+        </summary>
+        <div className="rules__description">
+          <p>力技は1演技に1つまで使用できます。</p>
+          <p>力技は以下を除いたI1~I48です。</p>
+          <p>・I19 倒立(2秒)</p>
+          <p>・I31 倒立ひねりor倒立1回ひねり</p>
+          {/* TODO: getElementNameByCodeをElement.tsに作成 & selectEvent/selectGroupをContextAPIに保持（リファクタリング） */}
         </div>
       </details>
     </div>

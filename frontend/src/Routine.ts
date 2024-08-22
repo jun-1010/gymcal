@@ -32,6 +32,17 @@ export const isGroupLimited = (routine: Element[], targetElement: Element): bool
   return count == limit;
 };
 
+// 床の力技制限判定
+export const isFloorStrengthLimit = (
+  routine: Element[],
+  targetElement: Element
+): boolean => {
+  return (
+    targetElement.element_type === ElementType.床_力技 &&
+    routine.some((element) => element.element_type === ElementType.床_力技)
+  );
+};
+
 // 表示Elementの状態を取得
 export const getElementStatus = (routine: Element[], targetElement: Element): number => {
   if (routine.some((element) => element.id === targetElement.id)) {
@@ -42,6 +53,8 @@ export const getElementStatus = (routine: Element[], targetElement: Element): nu
     return ElementStatus.技数制限_グループ;
   } else if (routine.length >= 8) {
     return ElementStatus.技数制限_全体;
+  } else if (isFloorStrengthLimit(routine, targetElement)) {
+    return ElementStatus.床_力技制限;
   } else {
     return ElementStatus.選択可能;
   }
