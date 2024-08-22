@@ -6,16 +6,13 @@ import {
   GroupElements,
 } from "./utilities/ElementUtil";
 import "./App.css";
-import GroupTabs from "./components/GroupTabs";
 import {
   Events,
   ElementGroup,
   difficulties,
   element_groups,
   ElementStatus,
-  statusClass,
 } from "./utilities/Type";
-import EventButtons from "./components/EventButtons";
 
 import AddIcon from "@mui/icons-material/Add";
 import AddBoxIcon from "@mui/icons-material/AddBox";
@@ -35,10 +32,9 @@ import {
   calculateMultipleSaltoShortage,
 } from "./utilities/RoutineUtil";
 import useMedia from "use-media";
-import HeaderIcons from "./components/HeaderIcons";
 import { AppliedRules } from "./components/AppliedRules";
 import Header from "./components/organism/Header";
-
+import Elements from "./components/organism/Elements";
 
 const url = "http://localhost:8000/api/elements";
 
@@ -187,85 +183,15 @@ const App: React.FC = () => {
       />
       {Object.keys(groupElements).length ? (
         <div className="main">
-          {/* 難度表(Routineコンポーネント)
-          props:
-          {
-            selectEvent: number,
-            selectGroup: number,
-            setSelectGroup: (selectGroup: number) => void
-            groupElements: GroupElements,
-            routine: RoutineElement[],
-            setRoutine: (routine: RoutineElement[]) => void
-          }
-          コンポーネント内関数:
-          {
-            handleElementClick: (element: RoutineElement) => void,
-            renderElementStatusLabel: (element: RoutineElement) => JSX.Element
-          }  
-          */}
-          <div
-            className={`elements ${routineOpen === 0 ? "elements--full" : ""} ${
-              routineOpen === 1 ? "elements--side" : ""
-            }  ${routineOpen === 2 ? "elements--disabled" : ""}`}
-          >
-            <div className="elements__header">
-              <GroupTabs
-                selectEvent={selectEvent}
-                selectGroup={selectGroup}
-                setSelectGroup={setSelectGroup}
-              />
-            </div>
-            <div className="elements__group">
-              {Object.entries(groupElements as Object).map(([rowKey, rowElements]) => (
-                <div className="elements__row" key={rowKey}>
-                  {Object.entries(rowElements as Object).map(
-                    ([column_number, element]) => (
-                      <React.Fragment key={`${rowKey}-${column_number}`}>
-                        {element.name ? (
-                          <div
-                            className={`elements__tile ${statusClass(
-                              getElementStatus(routine, element)
-                            )}`}
-                            key={`${rowKey}-${column_number}`}
-                            onClick={() => {
-                              handleElementClick(element);
-                            }}
-                          >
-                            <div className="elements__labels">
-                              <span
-                                className={`common__label ${
-                                  getElementStatus(routine, element) ===
-                                  ElementStatus.選択済み
-                                    ? "common__label--active"
-                                    : ""
-                                }`}
-                              >
-                                {selectEvent === Events.跳馬
-                                  ? element.difficulty
-                                  : difficulties[element.difficulty - 1]}
-                              </span>
-                              {renderElementStatusLabel(element)}
-                            </div>
-                            {element.alias && (
-                              <span className="elements__alias">{element.alias}</span>
-                            )}
-                            <div>
-                              {element.code}.{element.name}
-                            </div>
-                          </div>
-                        ) : (
-                          <div
-                            className="elements__tile"
-                            key={`${rowKey}-${column_number}`}
-                          ></div>
-                        )}
-                      </React.Fragment>
-                    )
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
+          <Elements
+            routineOpen={routineOpen}
+            selectEvent={selectEvent}
+            selectGroup={selectGroup}
+            setSelectGroup={setSelectGroup}
+            groupElements={groupElements}
+            routine={routine}
+            setRoutine={setRoutine}
+          />
           {/* 演技構成表 */}
           <div
             className={`routine ${routineOpen === 0 ? "routine--disabled" : ""} ${
