@@ -1,10 +1,4 @@
-import { Rule } from "@mui/icons-material";
-import {
-  CategorizedElements,
-  categorizeElements,
-  getGroupElements,
-  GroupElements,
-} from "../Element";
+import { CategorizedElements, getGroupElements } from "../utilities/ElementUtil";
 import {
   calculateElementCountDeduction,
   calculateMultipleSaltoShortage,
@@ -17,8 +11,8 @@ import {
   isFloorStrengthLimit,
   isGroupLimited,
   RoutineElement,
-} from "../Routine";
-import { ELEMENT_COUNT_DEDUCTIONS, RuleKey, Rules, getGroupKey } from "../Type";
+} from "../utilities/RoutineUtil";
+import { ELEMENT_COUNT_DEDUCTIONS, RuleKey, Rules, getGroupKey } from "../utilities/Type";
 
 // 同一枠の技を持つ技のコードを取得
 const getSameSlotCodes = (

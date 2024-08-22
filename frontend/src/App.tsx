@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Element, categorizeElements, getGroupElements, GroupElements } from "./Element";
+import {
+  Element,
+  categorizeElements,
+  getGroupElements,
+  GroupElements,
+} from "./utilities/ElementUtil";
 import "./App.css";
 import GroupTabs from "./components/GroupTabs";
 import {
@@ -9,7 +14,7 @@ import {
   element_groups,
   ElementStatus,
   statusClass,
-} from "./Type";
+} from "./utilities/Type";
 import EventButtons from "./components/EventButtons";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -28,7 +33,7 @@ import {
   updateElementGroupScoreInRoutine,
   calculateNeutralDeduction,
   calculateMultipleSaltoShortage,
-} from "./Routine";
+} from "./utilities/RoutineUtil";
 import useMedia from "use-media";
 import HeaderIcons from "./components/HeaderIcons";
 import { AppliedRules } from "./components/AppliedRules";
@@ -217,6 +222,22 @@ const App: React.FC = () => {
       </div>
       {Object.keys(groupElements).length ? (
         <div className="main">
+          {/* 難度表(Routineコンポーネント)
+          props:
+          {
+            selectEvent: number,
+            selectGroup: number,
+            setSelectGroup: (selectGroup: number) => void
+            groupElements: GroupElements,
+            routine: RoutineElement[],
+            setRoutine: (routine: RoutineElement[]) => void
+          }
+          コンポーネント内関数:
+          {
+            handleElementClick: (element: RoutineElement) => void,
+            renderElementStatusLabel: (element: RoutineElement) => JSX.Element
+          }  
+          */}
           <div
             className={`elements ${routineOpen === 0 ? "elements--full" : ""} ${
               routineOpen === 1 ? "elements--side" : ""
@@ -237,9 +258,9 @@ const App: React.FC = () => {
                       <React.Fragment key={`${rowKey}-${column_number}`}>
                         {element.name ? (
                           <div
-                            className={`elements__tile ${
-                              statusClass(getElementStatus(routine, element))
-                            }`}
+                            className={`elements__tile ${statusClass(
+                              getElementStatus(routine, element)
+                            )}`}
                             key={`${rowKey}-${column_number}`}
                             onClick={() => {
                               handleElementClick(element);
@@ -280,6 +301,7 @@ const App: React.FC = () => {
               ))}
             </div>
           </div>
+          {/* 演技構成表 */}
           <div
             className={`routine ${routineOpen === 0 ? "routine--disabled" : ""} ${
               routineOpen === 1 ? "routine--side" : ""

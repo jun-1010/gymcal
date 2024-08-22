@@ -1,5 +1,3 @@
-import { getElementStatus, RoutineElement } from "./Routine";
-
 export const difficulties = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
 export const element_groups = ["I", "II", "III", "IV", "V"];

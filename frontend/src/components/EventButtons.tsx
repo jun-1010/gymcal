@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Events, getEventKey, getGroupName, GroupNames } from "../Type";
+import { Events, getEventKey, getGroupName, GroupNames } from "../utilities/Type";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 type EventTabProps = {
