@@ -19,8 +19,8 @@ import {
   updateRoutineWithElementGroupScore,
 } from "./Routine";
 
-// const url = "http://54.250.128.188:8000/api/elements";
-const url = "http://localhost:8000/api/elements";
+const url = "http://54.250.128.188:8000/api/elements";
+// const url = "http://localhost:8000/api/elements";
 
 const App: React.FC = () => {
   const [categorizedElements, setCategorizedElements] = useState({});
