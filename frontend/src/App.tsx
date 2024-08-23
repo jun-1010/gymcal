@@ -110,6 +110,7 @@ const App: React.FC = () => {
             routine={routine}
             setRoutine={setRoutine}
             routineOpen={routineOpen}
+            setRoutineOpen={setRoutineOpen}
             categorizedElements={categorizedElements}
           />
         </div>

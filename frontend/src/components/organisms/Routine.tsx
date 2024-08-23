@@ -9,6 +9,7 @@ interface RoutineProps {
   routine: RoutineElement[];
   setRoutine: React.Dispatch<React.SetStateAction<RoutineElement[]>>;
   routineOpen: number;
+  setRoutineOpen: React.Dispatch<React.SetStateAction<number>>;
   categorizedElements: CategorizedElements;
 }
 
@@ -17,6 +18,7 @@ const Routine = ({
   routine,
   setRoutine,
   routineOpen,
+  setRoutineOpen,
   categorizedElements,
 }: RoutineProps) => {
   return (
@@ -25,7 +27,7 @@ const Routine = ({
         routineOpen === 1 ? "routine--side" : ""
       } ${routineOpen === 2 ? "routine--full" : ""}`}
     >
-      <RoutineTable selectEvent={selectEvent} routine={routine} setRoutine={setRoutine} />
+      <RoutineTable selectEvent={selectEvent} routine={routine} setRoutine={setRoutine}  setRoutineOpen={setRoutineOpen}/>
       <RoutineRules routine={routine} categorizedElements={categorizedElements} />
     </div>
   );

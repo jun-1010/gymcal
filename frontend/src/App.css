@@ -58,9 +58,9 @@ html {
 共通
 **********************************/
 .common__label {
-  font-weight: bold;
+  font-weight: 550;
   font-size: 0.8rem;
-  padding: 0 0.4rem;
+  padding: 0 0.5rem;
   height: 1.5rem;
   display: flex;
   justify-content: center;
@@ -312,7 +312,7 @@ html {
 演技構成表
 ********************************************/
 .routine {
-  padding: 1rem 0.5rem 1rem 1rem;
+  padding: 1rem 0.8rem 1rem 1rem;
   background-color: var(--white);
   border-radius: 1rem;
   box-shadow: 0 0.2rem 0.5rem 0.1rem var(--gray);
@@ -335,16 +335,15 @@ html {
   .routine__table {
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 1rem;
+    margin-bottom: 3rem;
 
     .routine__elements {
-      /* overflow: scroll;
-    &::-webkit-scrollbar {
-      display: none;
-    } */
       display: flex;
       flex-direction: column;
       gap: 0.2rem;
+      background-color: var(--light-orange);
+      padding: 1rem 0.2rem 1rem 0.5rem;
 
       .routine__element--header {
         font-weight: bold;
@@ -390,14 +389,46 @@ html {
       }
     }
 
+    .routine__empty-box {
+      background-color: var(--light-orange);
+      padding: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      .routine__empty-message-box {
+        text-align: center;
+
+        .routine__empty-message--bold {
+          font-weight: bold;
+        }
+
+        .routine__empty-message--small {
+          font-size: 0.9rem;
+        }
+      }
+
+      .routine__empty-button {
+        font-weight: bold;
+        border-radius: 0.5rem;
+        padding: 0.6rem 1rem;
+        border: 0.1rem solid var(--dark-orange);
+        color: var(--dark-orange);
+        &:hover {
+          cursor: pointer;
+          background-color: var(--orange);
+          transition: all 0.3s;
+          user-select: none;
+        }
+      }
+    }
+
     .routine__summaries {
-      padding: 0.5rem 1.5rem 1.5rem 0;
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
 
       .routine__summary {
-        font-weight: bold;
         display: flex;
         flex-direction: row;
         justify-content: flex-end;

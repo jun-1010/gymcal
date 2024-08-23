@@ -16,9 +16,10 @@ interface RoutineTableProps {
   selectEvent: Events;
   routine: RoutineElement[];
   setRoutine: (routine: RoutineElement[]) => void;
+  setRoutineOpen: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const RoutineTable = ({ selectEvent, routine, setRoutine }: RoutineTableProps) => {
+const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen }: RoutineTableProps) => {
   return (
     <>
       <div className="routine__title">演技構成表</div>
@@ -45,9 +46,18 @@ const RoutineTable = ({ selectEvent, routine, setRoutine }: RoutineTableProps) =
             ))}
           </div>
         ) : (
-          <div>
-            <p>演技構成はありません</p>
-            <p>技を選択してください</p>
+          <div className="routine__empty-box">
+            <div className="routine__empty-message-box">
+              <p className="routine__empty-message--bold">まだ技を選択していません。</p>
+              <p className="routine__empty-message--small">
+                難度表から技を選択しましょう！
+              </p>
+            </div>
+            <div className="routine__empty-button" onClick={
+              () => {
+                setRoutineOpen(0);
+              }
+            }>難度表を見る</div>
           </div>
         )}
         <div className="routine__summaries">
