@@ -9,6 +9,7 @@ import {
   RoutineElement,
 } from "../../utilities/RoutineUtil";
 import { Events } from "../../utilities/Type";
+import RoutineSummaryLabel from "../atoms/RoutineSummaryLabel";
 import RoutineTableElement from "../atoms/RoutineTableElement";
 
 interface RoutineTableProps {
@@ -51,63 +52,49 @@ const RoutineTable = ({ selectEvent, routine, setRoutine }: RoutineTableProps) =
         <div className="routine__summaries">
           <div className="routine__summary">
             {/* 合計Dスコア */}
-            {calculateTotalScore(routine) > 0 ? (
-              <p className="common__label common__label--active routine__summary-label">
-                Dスコア: {calculateTotalScore(routine).toFixed(1)}
-              </p>
-            ) : (
-              <></>
-            )}
+            <RoutineSummaryLabel
+              score={calculateTotalScore(routine)}
+              isActive={true}
+              label="Dスコア"
+            />
             {/* グループ得点 */}
-            {calculateTotalElementGroupScore(routine) > 0 ? (
-              <p className="common__label routine__summary-label">
-                EG: {calculateTotalElementGroupScore(routine).toFixed(1)}
-              </p>
-            ) : (
-              <></>
-            )}
+            <RoutineSummaryLabel
+              score={calculateTotalElementGroupScore(routine)}
+              isActive={false}
+              label="EG"
+            />
             {/* 難度点 */}
-            {calculateTotalDifficulty(routine) > 0 ? (
-              <p className="common__label routine__summary-label">
-                難度: {calculateTotalDifficulty(routine).toFixed(1)}
-              </p>
-            ) : (
-              <></>
-            )}
+            <RoutineSummaryLabel
+              score={calculateTotalDifficulty(routine)}
+              isActive={false}
+              label="難度"
+            />
             {/* 組み合わせ加点 */}
-            {calculateTotalConnectionValue(routine) > 0 ? (
-              <p className="common__label routine__summary-label">
-                CV: {calculateTotalConnectionValue(routine).toFixed(1)}
-              </p>
-            ) : (
-              <></>
-            )}
+            <RoutineSummaryLabel
+              score={calculateTotalConnectionValue(routine)}
+              isActive={false}
+              label="CV"
+            />
           </div>
           <div className="routine__summary">
             {/* ニュートラルディダクション */}
-            {calculateNeutralDeduction(routine) > 0 ? (
-              <p className="common__label common__label--active routine__summary-label">
-                ND:{calculateNeutralDeduction(routine).toFixed(1)}
-              </p>
-            ) : (
-              <></>
-            )}
+            <RoutineSummaryLabel
+              score={calculateNeutralDeduction(routine)}
+              isActive={true}
+              label="ND"
+            />
             {/* 技数減点 */}
-            {calculateElementCountDeduction(routine) > 0 ? (
-              <p className="common__label routine__summary-label">
-                技数減点: {calculateElementCountDeduction(routine).toFixed(1)}
-              </p>
-            ) : (
-              <></>
-            )}
+            <RoutineSummaryLabel
+              score={calculateElementCountDeduction(routine)}
+              isActive={false}
+              label="技数減点"
+            />
             {/* ダブル系不足 */}
-            {calculateMultipleSaltoShortage(routine) > 0 ? (
-              <p className="common__label routine__summary-label">
-                ダブル系不足: {calculateMultipleSaltoShortage(routine).toFixed(1)}
-              </p>
-            ) : (
-              <></>
-            )}
+            <RoutineSummaryLabel
+              score={calculateMultipleSaltoShortage(routine)}
+              isActive={false}
+              label="ダブル系不足"
+            />
           </div>
         </div>
       </div>
