@@ -9,6 +9,7 @@ import { Events, ElementGroup } from "./utilities/Type";
 
 import {
   RoutineElement,
+  Routines,
   updateConnectionInRoutine,
   updateElementGroupScoreInRoutine,
 } from "./utilities/RoutineUtil";
@@ -25,7 +26,7 @@ const App: React.FC = () => {
   const [selectGroup, setSelectGroup] = useState(ElementGroup.EG1);
   const [groupElements, setGroupElements] = useState({} as GroupElements);
   const [routineOpen, setRoutineOpen] = useState(0); // 0: 難度表 1: 半分 2:演技構成
-  const [routines, setRoutines] = useState({} as RoutineElement[][]);
+  const [routines, setRoutines] = useState({} as Routines);
   const [routine, setRoutine] = useState([] as RoutineElement[]);
   const isMobile = useMedia({ maxWidth: "850px" });
 
@@ -77,10 +78,11 @@ const App: React.FC = () => {
     // 組み合わせ加点を更新する
     updateConnectionInRoutine(selectEvent, routine, setRoutine);
     // routinesを更新する
-    setRoutines({
+    const newRoutines = {
       ...routines,
       [selectEvent]: routine,
-    });
+    };
+    setRoutines(newRoutines);
   }, [routine]);
 
   // 画面幅変更時（PC→SP）にside modeの場合は演技構成表を開く

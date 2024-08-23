@@ -9,7 +9,7 @@ import {
 
 // 6種目分のroutine
 export interface Routines {
-  [eventKey: string]: Element[];
+  [eventKey: string]: RoutineElement[];
 }
 
 // Elementにconnectionを追加
