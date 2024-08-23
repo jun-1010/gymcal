@@ -149,10 +149,6 @@ html {
         border-radius: 0.5rem;
         background-color: var(--white);
         box-shadow: 0 0 0.2rem 0.05rem var(--gray);
-        &:hover {
-          cursor: pointer;
-          background-color: var(--light-gray);
-        }
 
         .elements__label-box {
           display: flex;
@@ -183,10 +179,18 @@ html {
       }
 
       .elements__tile--active {
+        &:hover {
+          cursor: pointer;
+          background-color: var(--light-gray);
+        }
       }
 
       .elements__tile--disabled {
         opacity: 0.4;
+        &:hover {
+          cursor: pointer;
+          background-color: var(--light-gray);
+        }
       }
     }
   }
@@ -229,7 +233,9 @@ html {
     .routine__element {
       padding: 0.2rem;
       display: grid;
-      grid-template-columns: 1fr 1fr 13fr 1fr 1fr 1fr 1fr;
+      /* No. Connection, Name, EG, 難度, CV, 削除 */
+      grid-template-columns: 1fr 1fr 12fr 3rem 1.5fr 1fr 1fr;
+      column-gap: 0.5rem;
 
       .routine__element--name {
         overflow-x: scroll;
@@ -242,20 +248,23 @@ html {
 
       .routine__item {
         display: flex;
-        justify-content: center;
+        justify-content: left;
         align-items: center;
       }
 
       .routine__icon {
-        opacity: 0.5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0.2;
         &:hover {
           cursor: pointer;
-          opacity: 1.0;
+          opacity: 1;
         }
       }
 
       .routine__icon--active {
-        opacity: 1.0;
+        opacity: 1;
       }
     }
   }
