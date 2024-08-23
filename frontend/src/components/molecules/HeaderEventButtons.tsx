@@ -1,14 +1,18 @@
 import { useEffect, useRef, useState } from "react";
-import { Events, getEventKey, getGroupName, GroupNames } from "../Type";
+import { Events, getEventKey } from "../../utilities/Type";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
-type EventTabProps = {
+type HeaderEventButtonsProps = {
   selectEvent: number;
   setSelectEvent: React.Dispatch<React.SetStateAction<number>>;
   isMobile: boolean;
 };
 
-const EventButtons = ({ selectEvent, setSelectEvent, isMobile }: EventTabProps) => {
+const HeaderEventButtons = ({
+  selectEvent,
+  setSelectEvent,
+  isMobile,
+}: HeaderEventButtonsProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -93,4 +97,4 @@ const EventButtons = ({ selectEvent, setSelectEvent, isMobile }: EventTabProps) 
   );
 };
 
-export default EventButtons;
+export default HeaderEventButtons;

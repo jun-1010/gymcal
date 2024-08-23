@@ -1,4 +1,4 @@
-import { Element } from "./Element";
+import { Element } from "./ElementUtil";
 import {
   ELEMENT_COUNT_DEDUCTIONS,
   ElementGroup,
@@ -55,7 +55,10 @@ export const isFloorCircleLimit = (
 };
 
 // 表示Elementの状態を取得
-export const getElementStatus = (routine: Element[], targetElement: Element): number => {
+export const getElementStatus = (
+  routine: RoutineElement[],
+  targetElement: Element
+): number => {
   if (routine.some((element) => element.id === targetElement.id)) {
     return ElementStatus.選択済み;
   } else if (routine.some((element) => element.code === targetElement.code)) {
