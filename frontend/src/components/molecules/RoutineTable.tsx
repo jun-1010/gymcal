@@ -30,7 +30,7 @@ const RoutineTable = ({ selectEvent, routine, setRoutine }: RoutineTableProps) =
               <span></span>
               <span className="routine__item">名前</span>
               <span className="routine__item">EG</span>
-              <span className="routine__item">難度</span>
+              <span className="routine__item routine__item--center">難度</span>
               <span className="routine__item">CV</span>
             </div>
             {routine.map((element, index) => (

@@ -1,7 +1,4 @@
-import {
-  isConnectable,
-  RoutineElement,
-} from "../../utilities/RoutineUtil";
+import { isConnectable, RoutineElement } from "../../utilities/RoutineUtil";
 import AddIcon from "@mui/icons-material/Add";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import CloseIcon from "@mui/icons-material/Close";
@@ -74,7 +71,9 @@ const RoutineTableElement = ({
           ? `(${element.element_group_score?.toFixed(1)})`
           : ``}
       </span>
-      <span className="routine__item">{difficulties[element.difficulty - 1]}</span>
+      <span className="routine__item routine__item--center">
+        {difficulties[element.difficulty - 1]}
+      </span>
       <span className="routine__item">{element.connection_value}</span>
       <span className="routine__item routine__icon">
         <CloseIcon

@@ -16,7 +16,7 @@ SP mode(初期スタイル)
 
   --header-height: 5dvh;
   --header-margin-top-bottom-pc: 1.5rem;
-  --group-tabs-height: 2rem;
+  --group-tabs-height: 2.5rem;
 }
 
 * {
@@ -208,6 +208,7 @@ html {
     padding: 0.5rem;
     white-space: nowrap;
     user-select: none;
+    font-size: 1.1rem;
   }
   .group-tabs__item:hover:not(.group-tabs__item--active) {
     color: var(--dark-gray);
@@ -328,6 +329,7 @@ html {
     display: flex;
     flex-direction: row;
     gap: 0.5rem;
+    font-size: 1.1rem;
   }
 
   .routine__table {
@@ -360,6 +362,10 @@ html {
           justify-content: left;
           align-items: center;
           line-height: 1.4rem;
+        }
+
+        .routine__item--center {
+          justify-content: center;
         }
 
         .routine__icon {
@@ -407,10 +413,22 @@ html {
   }
 
   /* 演技構成表下のルール */
-  .rules {
+  .routine__rules {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 2.5rem; /* セクション間隔 */
+
+    .rules__section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .rules__section-header {
+      .rules__section-title {
+        font-weight: bold;
+      }
+    }
     .rules__details {
       border-radius: 0.5rem;
       box-shadow: 0 0 0.2rem 0.1rem var(--gray);
