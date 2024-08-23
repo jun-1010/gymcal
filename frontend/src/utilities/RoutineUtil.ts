@@ -7,6 +7,11 @@ import {
   Events,
 } from "./Type";
 
+// 6種目分のroutine
+export interface Routines {
+  [eventKey: string]: Element[];
+}
+
 // Elementにconnectionを追加
 export interface RoutineElement extends Element {
   is_connected: boolean | null;

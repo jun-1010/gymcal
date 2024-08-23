@@ -25,6 +25,7 @@ const App: React.FC = () => {
   const [selectGroup, setSelectGroup] = useState(ElementGroup.EG1);
   const [groupElements, setGroupElements] = useState({} as GroupElements);
   const [routineOpen, setRoutineOpen] = useState(0); // 0: 難度表 1: 半分 2:演技構成
+  const [routines, setRoutines] = useState({} as RoutineElement[][]);
   const [routine, setRoutine] = useState([] as RoutineElement[]);
   const isMobile = useMedia({ maxWidth: "850px" });
 
@@ -63,8 +64,10 @@ const App: React.FC = () => {
 
   // 種目が変更された場合
   useEffect(() => {
-    setSelectGroup(ElementGroup.EG1); // EG1を選択する
-    setRoutine([]); // 演技構成をリセットする
+    // routines[selectEvent]が存在するならroutineに代入する
+    if (routines[selectEvent]) {
+      setRoutine(routines[selectEvent]);
+    }
   }, [selectEvent]);
 
   // 演技構成が変更された場合
@@ -73,6 +76,11 @@ const App: React.FC = () => {
     updateElementGroupScoreInRoutine(selectEvent, routine, setRoutine);
     // 組み合わせ加点を更新する
     updateConnectionInRoutine(selectEvent, routine, setRoutine);
+    // routinesを更新する
+    setRoutines({
+      ...routines,
+      [selectEvent]: routine,
+    });
   }, [routine]);
 
   // 画面幅変更時（PC→SP）にside modeの場合は演技構成表を開く
