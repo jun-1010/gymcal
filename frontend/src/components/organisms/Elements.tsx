@@ -18,8 +18,14 @@
 import React from "react";
 import { Element, GroupElements } from "../../utilities/ElementUtil";
 import { getElementStatus, RoutineElement } from "../../utilities/RoutineUtil";
-import { difficulties, ElementGroup, ElementStatus, Events, statusClass } from "../../utilities/Type";
-import GroupTabs from "../GroupTabs";
+import {
+  difficulties,
+  ElementGroup,
+  ElementStatus,
+  Events,
+  statusClass,
+} from "../../utilities/Type";
+import GroupButtons from "../molecules/GroupButtons";
 
 interface ElementsProps {
   routineOpen: number;
@@ -40,7 +46,6 @@ const Elements = ({
   routine,
   setRoutine,
 }: ElementsProps) => {
-  
   // 技選択時のhandle関数
   const handleElementClick = (element: Element) => {
     if (getElementStatus(routine, element) === ElementStatus.選択済み) {
@@ -103,13 +108,11 @@ const Elements = ({
         routineOpen === 1 ? "elements--side" : ""
       }  ${routineOpen === 2 ? "elements--disabled" : ""}`}
     >
-      <div className="elements__header">
-        <GroupTabs
-          selectEvent={selectEvent}
-          selectGroup={selectGroup}
-          setSelectGroup={setSelectGroup}
-        />
-      </div>
+      <GroupButtons
+        selectEvent={selectEvent}
+        selectGroup={selectGroup}
+        setSelectGroup={setSelectGroup}
+      />
       <div className="elements__group">
         {Object.entries(groupElements as Object).map(([rowKey, rowElements]) => (
           <div className="elements__row" key={rowKey}>

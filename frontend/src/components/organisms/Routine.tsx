@@ -1,9 +1,19 @@
-import { calculateElementCountDeduction, calculateMultipleSaltoShortage, calculateNeutralDeduction, calculateTotalConnectionValue, calculateTotalDifficulty, calculateTotalElementGroupScore, calculateTotalScore, isConnectable, RoutineElement } from "../../utilities/RoutineUtil";
+import {
+  calculateElementCountDeduction,
+  calculateMultipleSaltoShortage,
+  calculateNeutralDeduction,
+  calculateTotalConnectionValue,
+  calculateTotalDifficulty,
+  calculateTotalElementGroupScore,
+  calculateTotalScore,
+  isConnectable,
+  RoutineElement,
+} from "../../utilities/RoutineUtil";
 import AddIcon from "@mui/icons-material/Add";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import CloseIcon from "@mui/icons-material/Close";
 import { difficulties, element_groups, Events } from "../../utilities/Type";
-import { AppliedRules } from "../AppliedRules";
+import { AppliedRules } from "../molecules/AppliedRules";
 import { CategorizedElements } from "../../utilities/ElementUtil";
 
 interface RoutineProps {
@@ -11,7 +21,7 @@ interface RoutineProps {
   routine: RoutineElement[];
   setRoutine: React.Dispatch<React.SetStateAction<RoutineElement[]>>;
   routineOpen: number;
-  categorizedElements: CategorizedElements
+  categorizedElements: CategorizedElements;
 }
 
 const Routine = ({
@@ -19,7 +29,7 @@ const Routine = ({
   routine,
   setRoutine,
   routineOpen,
-  categorizedElements
+  categorizedElements,
 }: RoutineProps) => {
   // そもそも組み合わせさせないための処理
   const handleConnectionClick = (element: RoutineElement, index: number) => {
@@ -176,7 +186,6 @@ const Routine = ({
           </div>
         </div>
       </div>
-      <div className="routine__title">関連ルール</div>
       <AppliedRules routine={routine} categorizedElements={categorizedElements} />
     </div>
   );

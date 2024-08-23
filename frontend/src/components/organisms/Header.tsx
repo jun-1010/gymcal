@@ -1,7 +1,7 @@
 import { RoutineElement } from "../../utilities/RoutineUtil";
 import { Events } from "../../utilities/Type";
-import EventButtons from "../EventButtons";
-import HeaderIcons from "../HeaderIcons";
+import EventButtons from "../molecules/EventButtons";
+import HeaderIcons from "../molecules/HeaderIcons";
 
 interface HeaderProps {
   selectEvent: Events;

@@ -3,7 +3,6 @@ import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import ReorderIcon from "@mui/icons-material/Reorder";
 import Badge, { BadgeProps } from "@mui/material/Badge";
 import { styled } from "@mui/material/styles";
-import { Opacity } from "@mui/icons-material";
 
 interface HeaderIconsProps {
   routineOpen: number;
