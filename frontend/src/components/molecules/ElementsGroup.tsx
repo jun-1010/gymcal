@@ -26,6 +26,7 @@ const ElementsGroup = ({
               setRoutine={setRoutine}
               routine={routine}
               elementsTileKey={`${rowKey}-${column_number}`}
+              key={`${rowKey}-${column_number}`}
             />
           ))}
         </div>
