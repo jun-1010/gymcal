@@ -50,6 +50,20 @@ const App: React.FC = () => {
     fetchData();
   }, []);
 
+  // 初期読み込み時にlocalStorageからroutinesを取得する
+  useEffect(() => {
+    const storedRoutines = localStorage.getItem("routines");
+    if (storedRoutines) {
+      const parsedRoutines = JSON.parse(storedRoutines);
+      setRoutines(parsedRoutines);
+
+      // 初期化時にroutineも設定する(routinesの初期化を防ぐために必要)
+      if (parsedRoutines[selectEvent]) {
+        setRoutine(parsedRoutines[selectEvent]);
+      }
+    }
+  }, []);
+
   // 種目かグループが変更されたら表示する技テーブルを更新する
   useEffect(() => {
     if (Object.keys(categorizedElements).length === 0) {
@@ -78,12 +92,16 @@ const App: React.FC = () => {
     // 組み合わせ加点を更新する
     updateConnectionInRoutine(selectEvent, routine, setRoutine);
     // routinesを更新する
-    const newRoutines = {
+    setRoutines({
       ...routines,
       [selectEvent]: routine,
-    };
-    setRoutines(newRoutines);
+    });
   }, [routine]);
+
+  // routinesが変更されたときにlocalStorageに保存する
+  useEffect(() => {
+    localStorage.setItem("routines", JSON.stringify(routines));
+  }, [routines]);
 
   // 画面幅変更時（PC→SP）にside modeの場合は演技構成表を開く
   useEffect(() => {
