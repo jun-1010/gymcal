@@ -5,21 +5,17 @@ import {
   GroupElements,
 } from "./utilities/ElementUtil";
 import "./App.css";
-import {
-  Events,
-  ElementGroup,
-} from "./utilities/Type";
+import { Events, ElementGroup } from "./utilities/Type";
 
 import {
-  isConnectable,
   RoutineElement,
   updateConnectionInRoutine,
   updateElementGroupScoreInRoutine,
 } from "./utilities/RoutineUtil";
 import useMedia from "use-media";
-import Header from "./components/organism/Header";
-import Elements from "./components/organism/Elements";
-import Routine from "./components/organism/Routine";
+import Header from "./components/organisms/Header";
+import Elements from "./components/organisms/Elements";
+import Routine from "./components/organisms/Routine";
 
 const url = "http://localhost:8000/api/elements";
 
@@ -91,6 +87,7 @@ const App: React.FC = () => {
       />
       {Object.keys(groupElements).length ? (
         <div className="main">
+          {/* 難度表 */}
           <Elements
             routineOpen={routineOpen}
             selectEvent={selectEvent}
@@ -101,7 +98,7 @@ const App: React.FC = () => {
             setRoutine={setRoutine}
           />
           {/* 演技構成表 */}
-          <Routine 
+          <Routine
             selectEvent={selectEvent}
             routine={routine}
             setRoutine={setRoutine}
