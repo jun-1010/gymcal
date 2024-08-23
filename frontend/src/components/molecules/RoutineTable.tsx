@@ -40,6 +40,7 @@ const RoutineTable = ({ selectEvent, routine, setRoutine }: RoutineTableProps) =
                 index={index}
                 setRoutine={setRoutine}
                 routine={routine}
+                key={element.id}
               />
             ))}
           </div>
