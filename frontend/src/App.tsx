@@ -75,6 +75,13 @@ const App: React.FC = () => {
     updateConnectionInRoutine(selectEvent, routine, setRoutine);
   }, [routine]);
 
+  // 画面幅変更時（PC→SP）にside modeの場合は演技構成表を開く
+  useEffect(() => {
+    if (isMobile && routineOpen === 1) {
+      setRoutineOpen(2);
+    }
+  }, [isMobile]);
+
   return (
     <div className="App">
       <Header
