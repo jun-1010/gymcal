@@ -51,25 +51,21 @@ const RoutineTable = ({ selectEvent, routine, setRoutine }: RoutineTableProps) =
         )}
         <div className="routine__summaries">
           <div className="routine__summary">
-            {/* 合計Dスコア */}
             <RoutineSummaryLabel
               score={calculateTotalScore(routine)}
               isActive={true}
               label="Dスコア"
             />
-            {/* グループ得点 */}
             <RoutineSummaryLabel
               score={calculateTotalElementGroupScore(routine)}
               isActive={false}
               label="EG"
             />
-            {/* 難度点 */}
             <RoutineSummaryLabel
               score={calculateTotalDifficulty(routine)}
               isActive={false}
               label="難度"
             />
-            {/* 組み合わせ加点 */}
             <RoutineSummaryLabel
               score={calculateTotalConnectionValue(routine)}
               isActive={false}
@@ -77,19 +73,16 @@ const RoutineTable = ({ selectEvent, routine, setRoutine }: RoutineTableProps) =
             />
           </div>
           <div className="routine__summary">
-            {/* ニュートラルディダクション */}
             <RoutineSummaryLabel
               score={calculateNeutralDeduction(routine)}
               isActive={true}
               label="ND"
             />
-            {/* 技数減点 */}
             <RoutineSummaryLabel
               score={calculateElementCountDeduction(routine)}
               isActive={false}
               label="技数減点"
             />
-            {/* ダブル系不足 */}
             <RoutineSummaryLabel
               score={calculateMultipleSaltoShortage(routine)}
               isActive={false}
