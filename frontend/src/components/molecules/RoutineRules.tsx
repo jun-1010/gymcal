@@ -64,12 +64,12 @@ const getLimitedGroups = (routine: RoutineElement[]) => {
   return limitedGroups;
 };
 
-interface AppliedRulesProps {
+interface RoutineRulesProps {
   routine: RoutineElement[];
   categorizedElements: CategorizedElements;
 }
 
-export const AppliedRules = ({ routine, categorizedElements }: AppliedRulesProps) => {
+export const RoutineRules = ({ routine, categorizedElements }: RoutineRulesProps) => {
   const sameSlotCodes = getSameSlotCodes(routine, categorizedElements);
   const limitedGroups = getLimitedGroups(routine);
   const floorStrengthLimitCode =

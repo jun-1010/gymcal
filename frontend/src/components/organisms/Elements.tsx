@@ -2,7 +2,7 @@ import React from "react";
 import { GroupElements } from "../../utilities/ElementUtil";
 import { RoutineElement } from "../../utilities/RoutineUtil";
 import { ElementGroup, Events } from "../../utilities/Type";
-import GroupButtons from "../molecules/GroupButtons";
+import ElementsGroupButtons from "../molecules/ElementsGroupButtons";
 import ElementsGroup from "../molecules/ElementsGroup";
 
 interface ElementsProps {
@@ -30,7 +30,7 @@ const Elements = ({
         routineOpen === 1 ? "elements--side" : ""
       }  ${routineOpen === 2 ? "elements--disabled" : ""}`}
     >
-      <GroupButtons
+      <ElementsGroupButtons
         selectEvent={selectEvent}
         selectGroup={selectGroup}
         setSelectGroup={setSelectGroup}

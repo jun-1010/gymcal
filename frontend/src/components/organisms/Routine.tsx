@@ -13,7 +13,7 @@ import AddIcon from "@mui/icons-material/Add";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import CloseIcon from "@mui/icons-material/Close";
 import { difficulties, element_groups, Events } from "../../utilities/Type";
-import { AppliedRules } from "../molecules/AppliedRules";
+import { RoutineRules } from "../molecules/RoutineRules";
 import { CategorizedElements } from "../../utilities/ElementUtil";
 
 interface RoutineProps {
@@ -186,7 +186,7 @@ const Routine = ({
           </div>
         </div>
       </div>
-      <AppliedRules routine={routine} categorizedElements={categorizedElements} />
+      <RoutineRules routine={routine} categorizedElements={categorizedElements} />
     </div>
   );
 };

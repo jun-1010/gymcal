@@ -1,16 +1,16 @@
 import { getGroupName, GroupNames } from "../../utilities/Type";
 
-type GroupButtonsProps = {
+type ElementsGroupButtonsProps = {
   selectEvent: number;
   selectGroup: number;
   setSelectGroup: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const GroupButtons = ({
+const ElementsGroupButtons = ({
   selectEvent,
   selectGroup,
   setSelectGroup,
-}: GroupButtonsProps) => {
+}: ElementsGroupButtonsProps) => {
   return (
     <div className="elements__header">
       <div className="group-tabs">
@@ -31,4 +31,4 @@ const GroupButtons = ({
   );
 };
 
-export default GroupButtons;
+export default ElementsGroupButtons;

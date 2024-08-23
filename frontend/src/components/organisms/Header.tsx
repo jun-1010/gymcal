@@ -1,6 +1,6 @@
 import { RoutineElement } from "../../utilities/RoutineUtil";
 import { Events } from "../../utilities/Type";
-import EventButtons from "../molecules/EventButtons";
+import HeaderEventButtons from "../molecules/HeaderEventButtons";
 import HeaderIcons from "../molecules/HeaderIcons";
 
 interface HeaderProps {
@@ -28,7 +28,7 @@ const Header = ({
             <h1 className="header__title">
               <a href="/">GymCal</a>
             </h1>
-            <EventButtons
+            <HeaderEventButtons
               selectEvent={selectEvent}
               setSelectEvent={setSelectEvent}
               isMobile={isMobile}
@@ -50,7 +50,7 @@ const Header = ({
               <a href="/">GymCal</a>
             </h1>
           </div>
-          <EventButtons
+          <HeaderEventButtons
             selectEvent={selectEvent}
             setSelectEvent={setSelectEvent}
             isMobile={isMobile}
