@@ -115,7 +115,7 @@ const App: React.FC = () => {
           />
         </div>
       ) : (
-        <div>
+        <div className="main__emplty">
           <p>ただいま絶賛開発中です。</p>
           <p>もう少しお待ち下さい🙇</p>
         </div>
