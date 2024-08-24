@@ -28,7 +28,7 @@ const Routine = ({
       } ${routineOpen === 2 ? "routine--full" : ""}`}
     >
       <RoutineTable selectEvent={selectEvent} routine={routine} setRoutine={setRoutine}  setRoutineOpen={setRoutineOpen}/>
-      <RoutineRules routine={routine} categorizedElements={categorizedElements} />
+      <RoutineRules selectEvent={selectEvent} routine={routine} categorizedElements={categorizedElements} />
     </div>
   );
 };
