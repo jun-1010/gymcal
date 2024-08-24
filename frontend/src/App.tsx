@@ -50,8 +50,9 @@ const App: React.FC = () => {
     fetchData();
   }, []);
 
-  // 初期読み込み時にlocalStorageからroutinesを取得する
+  // 初期読み込み時にlocalStorageからデータを取得する
   useEffect(() => {
+    // routinesの取得
     const storedRoutines = localStorage.getItem("routines");
     if (storedRoutines) {
       const parsedRoutines = JSON.parse(storedRoutines);
@@ -62,19 +63,29 @@ const App: React.FC = () => {
         setRoutine(parsedRoutines[selectEvent]);
       }
     }
+
+    // selectEventの取得
+    const storedSelectEvent = localStorage.getItem("selectEvent");
+    if (storedSelectEvent) {
+      setSelectEvent(parseInt(storedSelectEvent));
+    }
+    // selectGroupの取得
+    const storedSelectGroup = localStorage.getItem("selectGroup");
+    if (storedSelectGroup) {
+      setSelectGroup(parseInt(storedSelectGroup));
+    }
   }, []);
 
-  // 種目かグループが変更されたら表示する技テーブルを更新する
+  // 種目かグループが変更された場合
   useEffect(() => {
     if (Object.keys(categorizedElements).length === 0) {
       return;
     }
-    const newGroupElements = getGroupElements(
-      categorizedElements,
-      selectEvent,
-      selectGroup
-    );
-    setGroupElements(newGroupElements);
+    // 表示する技を更新する
+    setGroupElements(getGroupElements(categorizedElements, selectEvent, selectGroup));
+    // localStorageに保存する
+    localStorage.setItem("selectEvent", selectEvent.toString());
+    localStorage.setItem("selectGroup", selectGroup.toString());
   }, [selectEvent, selectGroup]);
 
   // 種目が変更された場合
