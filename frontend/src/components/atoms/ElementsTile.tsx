@@ -76,7 +76,7 @@ const ElementsTile = ({
 
   return (
     <React.Fragment key={elementsTileKey}>
-      {element.name ? (
+      {element.id ? (
         <div
           className={`elements__tile ${statusClass(getElementStatus(routine, element))}`}
           key={elementsTileKey}
@@ -100,7 +100,8 @@ const ElementsTile = ({
           </div>
           {element.alias && <span className="elements__alias">{element.alias}</span>}
           <div>
-            {element.code}.{element.name}
+            {element.name && <>{element.code}.{element.name}</>}
+            {/* {element.code}.{element.name} */}
           </div>
         </div>
       ) : (

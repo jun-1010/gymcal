@@ -41,7 +41,7 @@ const getSameSlotCodes = (
           groupElement.id !== element.id &&
           groupElement.code === element.code
         ) {
-          sameSlotCodes.push(groupElement.code);
+          sameSlotCodes.push(groupElement.code!);
         }
       });
     });

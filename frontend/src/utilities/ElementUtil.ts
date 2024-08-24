@@ -2,7 +2,7 @@ import { difficulties, getEventKey, getGroupKey } from "./Type";
 
 export interface Element {
   id: number;
-  code: string;
+  code: string | null;
   event: number;
   element_group: number;
   name: string;
