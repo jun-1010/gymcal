@@ -37,12 +37,6 @@ const App: React.FC = () => {
         const data = await response.json();
         const newCategorizedElements = categorizeElements(data.elements);
         setCategorizedElements(newCategorizedElements);
-        const newGroupElements = getGroupElements(
-          newCategorizedElements,
-          selectEvent,
-          selectGroup
-        );
-        setGroupElements(newGroupElements);
       } catch (error) {
         console.log(error);
       }
@@ -52,29 +46,36 @@ const App: React.FC = () => {
 
   // 初期読み込み時にlocalStorageからデータを取得する
   useEffect(() => {
-    // routinesの取得
-    const storedRoutines = localStorage.getItem("routines");
-    if (storedRoutines) {
-      const parsedRoutines = JSON.parse(storedRoutines);
-      setRoutines(parsedRoutines);
-
-      // 初期化時にroutineも設定する(routinesの初期化を防ぐために必要)
-      if (parsedRoutines[selectEvent]) {
-        setRoutine(parsedRoutines[selectEvent]);
-      }
-    }
-
-    // selectEventの取得
+    // selectEventとselectGroupの取得
     const storedSelectEvent = localStorage.getItem("selectEvent");
-    if (storedSelectEvent) {
-      setSelectEvent(parseInt(storedSelectEvent));
-    }
-    // selectGroupの取得
     const storedSelectGroup = localStorage.getItem("selectGroup");
-    if (storedSelectGroup) {
-      setSelectGroup(parseInt(storedSelectGroup));
+    // selectEventとselectGroupが存在しない = 初アクセス
+    if (!storedSelectEvent || !storedSelectGroup) {
+      return;
+    }
+    const parsedSelectEvent = parseInt(storedSelectEvent);
+    const parsedSelectGroup = parseInt(storedSelectGroup);
+    setSelectEvent(parsedSelectEvent);
+    setSelectGroup(parsedSelectGroup);
+
+    const storedRoutines = localStorage.getItem("routines");
+    // storedRoutines が存在しない = 初アクセス or 選択せずにリロード
+    if (!storedRoutines) {
+      return;
+    }
+    const parsedRoutines = JSON.parse(storedRoutines);
+    setRoutines(parsedRoutines);
+
+    // 初期化時にroutineも設定する(routinesの初期化を防ぐために必要)
+    if (parsedRoutines[parsedSelectEvent]) {
+      setRoutine(parsedRoutines[parsedSelectEvent]);
     }
   }, []);
+
+  // 初期読み込み時にcategorizedElementsが取得されたらgroupElementsを更新する
+  useEffect(() => {
+    setGroupElements(getGroupElements(categorizedElements, selectEvent, selectGroup));
+  }, [categorizedElements]);
 
   // 種目かグループが変更された場合
   useEffect(() => {
@@ -90,9 +91,16 @@ const App: React.FC = () => {
 
   // 種目が変更された場合
   useEffect(() => {
-    // routines[selectEvent]が存在するならroutineに代入する
+    // routinesが空の場合は何もしない(リロードによるselectEvent変更は処理しない)
+    if (Object.keys(routines).length === 0) {
+      return;
+    }
+
+    // routinesに存在するならroutineに代入する
     if (routines[selectEvent]) {
       setRoutine(routines[selectEvent]);
+    } else {
+      setRoutine([] as RoutineElement[]);
     }
   }, [selectEvent]);
 
