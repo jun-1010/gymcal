@@ -89,7 +89,7 @@ const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen }: Rout
           </div>
           <div className="routine__summary">
             <RoutineSummaryLabel
-              score={calculateNeutralDeduction(routine)}
+              score={calculateNeutralDeduction(selectEvent, routine)}
               isActive={true}
               label="ND"
               show={true}

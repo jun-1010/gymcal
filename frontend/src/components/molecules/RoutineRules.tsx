@@ -255,9 +255,9 @@ export const RoutineRules = ({
             summaryNode={
               <span className="rules__summary-title">
                 {RuleKey(Rules.ニュートラルディダクション)}
-                {calculateNeutralDeduction(routine) > 0 ? (
+                {calculateNeutralDeduction(selectEvent, routine) > 0 ? (
                   <p className="common__label common__label--active routine__summary-label">
-                    ND:{calculateNeutralDeduction(routine).toFixed(1)}
+                    ND:{calculateNeutralDeduction(selectEvent, routine).toFixed(1)}
                   </p>
                 ) : (
                   <></>
