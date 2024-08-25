@@ -9,14 +9,17 @@ import AddIcon from "@mui/icons-material/Add";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import CloseIcon from "@mui/icons-material/Close";
 import {
-  calculateDifficulty,
+  calculateTotalScore,
   calculateND,
+  calculateTotalConnectionValue,
   calculateTotalDifficulty,
   calculateTotalElementGroupScore,
   isCodeInRoutine,
+  isConnectable,
   isDisabledElement,
   RoutineElement,
-  updateRoutineWithElementGroupScore,
+  updateConnectionInRoutine,
+  updateElementGroupScoreInRoutine,
 } from "./Routine";
 import useMedia from "use-media";
 import HeaderIcons from "./components/HeaderIcons";
@@ -73,8 +76,32 @@ const App: React.FC = () => {
 
   // 演技構成が変更された場合
   useEffect(() => {
-    updateRoutineWithElementGroupScore(selectEvent, routine, setRoutine);
+    // グループ得点を更新する
+    updateElementGroupScoreInRoutine(selectEvent, routine, setRoutine);
+    // 組み合わせ加点を更新する
+    updateConnectionInRoutine(selectEvent, routine, setRoutine);
   }, [routine]);
+
+  // そもそも組み合わせさせないための処理
+  const handleConnectionClick = (element: RoutineElement, index: number) => {
+    // 更新用関数
+    const updateRoutine = (targetElement: RoutineElement) => {
+      const newRoutine = routine.map((e, i) => (i === index ? targetElement : e));
+      setRoutine(newRoutine);
+    };
+
+    // 組み合わせ解除は無条件で実行
+    if (element.is_connected) {
+      updateRoutine({ ...element, is_connected: false, connection_value: null });
+      return; // handleConnectionClick()の終了
+    }
+
+    // 組み合わせが適切なら組み合わせを有効化
+    if (isConnectable(selectEvent, routine, element, index)) {
+      updateRoutine({ ...element, is_connected: true });
+      return; // handleConnectionClick()の終了
+    }
+  };
 
   return (
     <div className="App">
@@ -141,8 +168,8 @@ const App: React.FC = () => {
               {Object.entries(groupElements as Object).map(([rowKey, rowElements]) => (
                 <div className="elements__row" key={rowKey}>
                   {Object.entries(rowElements as Object).map(
-                    ([difficultyKey, element]) => (
-                      <React.Fragment key={`${rowKey}-${difficultyKey}`}>
+                    ([column_number, element]) => (
+                      <React.Fragment key={`${rowKey}-${column_number}`}>
                         {element.name ? (
                           <div
                             className={`elements__tile ${
@@ -150,18 +177,25 @@ const App: React.FC = () => {
                                 ? "elements__tile--disabled"
                                 : "elements__tile--active"
                             }`}
-                            key={`${rowKey}-${difficultyKey}`}
+                            key={`${rowKey}-${column_number}`}
                             onClick={() => {
                               if (isDisabledElement(routine, element)) {
                                 setRoutine(routine.filter((e) => e.id !== element.id));
                                 return;
                               }
-                              setRoutine([...routine, element]);
+                              const newRoutineElement: RoutineElement = {
+                                ...element,
+                                is_connected: false,
+                                element_group_score: 0,
+                              };
+                              setRoutine([...routine, newRoutineElement]);
                             }}
                           >
                             <div className="elements__label-box">
                               <span className="elements__difficulty">
-                                {difficultyKey}
+                                {selectEvent === Events.跳馬
+                                  ? element.difficulty
+                                  : difficulties[element.difficulty - 1]}
                               </span>
                               {element.alias && (
                                 <span className="elements__alias">{element.alias}</span>
@@ -172,7 +206,7 @@ const App: React.FC = () => {
                         ) : (
                           <div
                             className="elements__tile"
-                            key={`${rowKey}-${difficultyKey}`}
+                            key={`${rowKey}-${column_number}`}
                           ></div>
                         )}
                       </React.Fragment>
@@ -188,7 +222,8 @@ const App: React.FC = () => {
             } ${routineOpen === 2 ? "routine--full" : ""}`}
           >
             <div className="routine__header">
-              Dスコア: {calculateDifficulty(routine)} (ND:{calculateND(routine)})
+              合計Dスコア: {calculateTotalScore(routine).toFixed(1)} (ND:
+              {calculateND(routine)})
             </div>
             {routine.length ? (
               <div className="routine__elements">
@@ -205,19 +240,11 @@ const App: React.FC = () => {
                     <span className="routine__item">{index + 1}</span>
                     <span
                       className={`routine__item routine__icon ${
-                        element.connection ? "routine__icon--active" : ""
+                        element.is_connected ? "routine__icon--active" : ""
                       }`}
-                      onClick={() => {
-                        const newRoutine = routine.map((e, i) => {
-                          if (i === index) {
-                            return { ...e, connection: !e.connection };
-                          }
-                          return e;
-                        });
-                        setRoutine(newRoutine);
-                      }}
+                      onClick={() => handleConnectionClick(element, index)}
                     >
-                      {element.connection ? (
+                      {element.is_connected ? (
                         <AddBoxIcon
                           sx={{
                             fontSize: "1.5rem",
@@ -245,7 +272,7 @@ const App: React.FC = () => {
                     <span className="routine__item">
                       {difficulties[element.difficulty - 1]}
                     </span>
-                    <span className="routine__item">{/* 組み合わせ加点 */}</span>
+                    <span className="routine__item">{element.connection_value}</span>
                     <span className="routine__item routine__icon">
                       <CloseIcon
                         sx={{
@@ -258,14 +285,24 @@ const App: React.FC = () => {
                 ))}
                 <div className="routine__element routine__element--footer">
                   <span className="routine__item"></span>
-                  <span></span>
+                  <span className="routine__item"></span>
                   <span className="routine__item"></span>
                   <span className="routine__item">
                     {calculateTotalElementGroupScore(routine)}
                   </span>
                   <span className="routine__item">
-                    {calculateTotalDifficulty(routine)}
+                    {calculateTotalDifficulty(routine).toFixed(1)}
                   </span>
+                  <span className="routine__item">
+                    {calculateTotalConnectionValue(routine).toFixed(1)}
+                  </span>
+                </div>
+                <div className="routine__element">
+                  <span className="routine__item"></span>
+                  <span className="routine__item"></span>
+                  <span className="routine__item"></span>
+                  <span className="routine__item"></span>
+                  <span className="routine__item"></span>
                   <span className="routine__item"></span>
                 </div>
               </div>
