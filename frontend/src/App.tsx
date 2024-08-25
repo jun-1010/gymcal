@@ -56,11 +56,13 @@ const App: React.FC = () => {
     const parsedSelectGroup = parseInt(storedSelectGroup);
     const parsedRoutineOpen = parseInt(storedRoutineOpen);
     const parsedRoutines = JSON.parse(storedRoutines) as Routines;
+    // すべての要素が空の配列かどうかをチェック
+    const isEmpty = Object.values(parsedRoutines).every((routine) => Array.isArray(routine) && routine.length === 0);
     if (
       selectEvent === parsedSelectEvent &&
       selectGroup === parsedSelectGroup &&
       routineOpen === parsedRoutineOpen &&
-      JSON.stringify(routines) === JSON.stringify(parsedRoutines)
+      (isEmpty || JSON.stringify(routines) === JSON.stringify(parsedRoutines))
     ) {
       console.log("初回読み込み完了");
       setIsInitialized(true);
