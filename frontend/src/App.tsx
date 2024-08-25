@@ -288,7 +288,7 @@ const App: React.FC = () => {
                   <span className="routine__item"></span>
                   <span className="routine__item"></span>
                   <span className="routine__item">
-                    {calculateTotalElementGroupScore(routine)}
+                    {calculateTotalElementGroupScore(routine).toFixed(1)}
                   </span>
                   <span className="routine__item">
                     {calculateTotalDifficulty(routine).toFixed(1)}
