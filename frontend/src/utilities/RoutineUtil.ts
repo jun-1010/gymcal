@@ -1,11 +1,5 @@
 import { Element } from "./ElementUtil";
-import {
-  ELEMENT_COUNT_DEDUCTIONS,
-  ElementGroup,
-  ElementStatus,
-  ElementType,
-  Events,
-} from "./Type";
+import { ELEMENT_COUNT_DEDUCTIONS, ElementGroup, ElementStatus, ElementType, Events } from "./Type";
 
 // 6種目分のroutine
 export interface Routines {
@@ -47,10 +41,7 @@ export const isGroupLimited = (routine: Element[], targetElement: Element): bool
 };
 
 // 床の力技制限判定
-export const isFloorStrengthLimit = (
-  routine: Element[],
-  targetElement: Element
-): boolean => {
+export const isFloorStrengthLimit = (routine: Element[], targetElement: Element): boolean => {
   return (
     targetElement.element_type === ElementType.床_力技 &&
     routine.some((element) => element.element_type === ElementType.床_力技)
@@ -58,10 +49,7 @@ export const isFloorStrengthLimit = (
 };
 
 // 床の旋回技制限判定
-export const isFloorCircleLimit = (
-  routine: Element[],
-  targetElement: Element
-): boolean => {
+export const isFloorCircleLimit = (routine: Element[], targetElement: Element): boolean => {
   return (
     targetElement.element_type === ElementType.床_旋回 &&
     routine.some((element) => element.element_type === ElementType.床_旋回)
@@ -69,10 +57,7 @@ export const isFloorCircleLimit = (
 };
 
 // 表示Elementの状態を取得
-export const getElementStatus = (
-  routine: RoutineElement[],
-  targetElement: Element
-): number => {
+export const getElementStatus = (routine: RoutineElement[], targetElement: Element): number => {
   if (routine.some((element) => element.id === targetElement.id)) {
     return ElementStatus.選択済み;
   } else if (routine.some((element) => element.code === targetElement.code)) {
@@ -160,9 +145,7 @@ export const updateElementGroupScoreInRoutine = (
 
       if (element.element_group === ElementGroup.EG1) {
         // 終末技グループがEG1(跳躍技以外)の場合
-        const firstEG1Element = newRoutine.find(
-          (element) => element.element_group === ElementGroup.EG1
-        );
+        const firstEG1Element = newRoutine.find((element) => element.element_group === ElementGroup.EG1);
         if (firstEG1Element === element) {
           // 終末技グループがEG1の場合 && 最初のEG1の場合 は 0.5点
           return { ...element, element_group_score: 0.5 };
@@ -311,23 +294,23 @@ export const calculateTotalScore = (routine: RoutineElement[]): number => {
 };
 
 // ニュートラルディダクションを計算
-export const calculateNeutralDeduction = (routine: RoutineElement[]): number => {
-  return (
-    calculateElementCountDeduction(routine) + calculateMultipleSaltoShortage(routine)
-  );
+export const calculateNeutralDeduction = (selectEvent: Events, routine: RoutineElement[]): number => {
+  if (selectEvent === Events.床) {
+    return calculateElementCountDeduction(routine) + calculateMultipleSaltoShortage(routine);
+  }
+
+  return calculateElementCountDeduction(routine);
 };
 
 // 技数減点を計算
 export const calculateElementCountDeduction = (routine: RoutineElement[]): number => {
   const elementCountDeduction =
-    routine.length < ELEMENT_COUNT_DEDUCTIONS.length
-      ? ELEMENT_COUNT_DEDUCTIONS[routine.length]
-      : 0;
+    routine.length < ELEMENT_COUNT_DEDUCTIONS.length ? ELEMENT_COUNT_DEDUCTIONS[routine.length] : 0;
 
   return elementCountDeduction;
 };
 
-// ダブル系の有無によるNDを計算
+// ダブル系の有無によるNDを計算[床]
 export const calculateMultipleSaltoShortage = (routine: RoutineElement[]): number => {
   if (routine.length === 0) {
     return 0;
@@ -346,10 +329,7 @@ export const calculateMultipleSaltoShortage = (routine: RoutineElement[]): numbe
 export const calculateTotalElementGroupScore = (routine: RoutineElement[]) => {
   let total = 0;
   routine.forEach((element) => {
-    if (
-      element.element_group_score === undefined ||
-      element.element_group_score === null
-    ) {
+    if (element.element_group_score === undefined || element.element_group_score === null) {
       // routineのレンダリングタイミングによってundefinedのままの場合を想定
       return;
     }
