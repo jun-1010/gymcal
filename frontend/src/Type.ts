@@ -38,8 +38,7 @@ export const getGroupKey = (groupKey: number): string => {
     }
   }
   return "Undefined";
-  
-}
+};
 
 export const GroupNames: { [key: number]: { [key: number]: string } } = {
   [Events.床]: {
@@ -51,10 +50,7 @@ export const GroupNames: { [key: number]: { [key: number]: string } } = {
   // 他の種目も追加する
 };
 
-export const getGroupName = (
-  selectEvent: number,
-  selectGroup: number
-): string => {
+export const getGroupName = (selectEvent: number, selectGroup: number): string => {
   return `${getGroupKey(selectGroup)}:${GroupNames[selectEvent][selectGroup]}`;
 };
 
@@ -62,3 +58,19 @@ export enum ElementType {
   ひねりを伴う1回宙 = 1,
   ビッグタンブリング = 2,
 }
+
+export enum ElementStatus {
+  選択可能 = 1,
+  選択済み = 2,
+  同一枠選択済み = 3,
+  技数制限_グループ = 4,
+  技数制限_全体 = 5,
+}
+
+export const statusClassMap: { [key: number]: string } = {
+  1: "elements__tile--active",
+  2: "elements__tile--selected",
+  3: "elements__tile--same-slot-selected",
+  4: "elements__tile--group-limit",
+  5: "elements__tile--total-limit",
+};
