@@ -12,6 +12,15 @@ export interface Routines {
   [eventKey: string]: RoutineElement[];
 }
 
+export const initialRoutines: Routines = {
+  [Events.床]: [] as RoutineElement[],
+  [Events.あん馬]: [] as RoutineElement[],
+  [Events.つり輪]: [] as RoutineElement[],
+  [Events.跳馬]: [] as RoutineElement[],
+  [Events.平行棒]: [] as RoutineElement[],
+  [Events.鉄棒]: [] as RoutineElement[],
+};
+
 // Elementにconnectionを追加
 export interface RoutineElement extends Element {
   is_connected: boolean | null;

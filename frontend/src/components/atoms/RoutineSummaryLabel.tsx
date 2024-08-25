@@ -2,12 +2,13 @@ interface RoutineSummaryLabelProps {
   score: number;
   isActive: boolean;
   label: string;
+  show: boolean;
 }
 
-const RoutineSummaryLabel = ({ score, isActive, label }: RoutineSummaryLabelProps) => {
+const RoutineSummaryLabel = ({ score, isActive, label, show }: RoutineSummaryLabelProps) => {
   return (
     <>
-      {score > 0 ? (
+      {show && score > 0 ? (
         <p className={`common__label ${isActive ? "common__label--active" : ""} routine__summary-label`}>
           {label}: {score.toFixed(1)}
         </p>

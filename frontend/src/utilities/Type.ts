@@ -49,6 +49,12 @@ export const GroupNames: { [key: number]: { [key: number]: string } } = {
     [ElementGroup.EG3]: "後方系の跳躍技",
     [ElementGroup.EG4]: "1回以上のひねりを伴う跳躍技",
   },
+  [Events.あん馬]: {
+    [ElementGroup.EG1]: "セア系",
+    [ElementGroup.EG2]: "旋回技（ひねり・転向・倒立）",
+    [ElementGroup.EG3]: "旋回技（移動）",
+    [ElementGroup.EG4]: "終末技",
+  },
   // 他の種目も追加する
 };
 

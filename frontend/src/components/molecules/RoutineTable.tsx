@@ -66,21 +66,25 @@ const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen }: Rout
               score={calculateTotalScore(routine)}
               isActive={true}
               label="Dスコア"
+              show={true}
             />
             <RoutineSummaryLabel
               score={calculateTotalElementGroupScore(routine)}
               isActive={false}
               label="EG"
+              show={true}
             />
             <RoutineSummaryLabel
               score={calculateTotalDifficulty(routine)}
               isActive={false}
               label="難度"
+              show={true}
             />
             <RoutineSummaryLabel
               score={calculateTotalConnectionValue(routine)}
               isActive={false}
               label="CV"
+              show={selectEvent===Events.床 || selectEvent===Events.鉄棒}
             />
           </div>
           <div className="routine__summary">
@@ -88,16 +92,19 @@ const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen }: Rout
               score={calculateNeutralDeduction(routine)}
               isActive={true}
               label="ND"
+              show={true}
             />
             <RoutineSummaryLabel
               score={calculateElementCountDeduction(routine)}
               isActive={false}
               label="技数減点"
+              show={true}
             />
             <RoutineSummaryLabel
               score={calculateMultipleSaltoShortage(routine)}
               isActive={false}
               label="ダブル系不足"
+              show={selectEvent===Events.床}
             />
           </div>
         </div>
