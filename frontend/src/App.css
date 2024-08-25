@@ -14,6 +14,10 @@ SP mode(初期スタイル)
   --orange: #ffb3a0;
   --dark-orange: #ff4000;
 
+  --red: #ef4444;
+  --red-hover-color: #b91c1b;
+  --red-active-color: #c9504c;
+
   --header-height: 5dvh;
   --header-margin-top-bottom-pc: 1.5rem;
   --group-tabs-height: 2.5rem;
@@ -330,14 +334,79 @@ html {
   height: calc(100%);
   overflow-y: scroll;
 
-  .routine__title {
-    font-weight: bold;
+  .routine__title-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     border-bottom: 0.1rem solid var(--dark-gray);
     padding: 0 0 0.5rem 0;
-    display: flex;
-    flex-direction: row;
-    gap: 0.5rem;
-    font-size: 1.1rem;
+
+    .routine__title {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .routine__delete {
+      position: relative;
+      cursor: pointer;
+      .routine__delete-icon {
+        opacity: 0.6;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+
+      .routine__delete-menu {
+        position: absolute;
+        top: 2rem;
+        right: 0;
+        width: max-content;
+        background-color: var(--white);
+        box-shadow: 0 0.15rem 0.5rem 0.01rem var(--dark-gray);
+        border-radius: 0.5rem;
+        padding: 1rem 1.5rem;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        .routine__delete-title {
+          font-weight: bold;
+        }
+
+        .routine__detete-textbox {
+          display: flex;
+          justify-content: center;
+          gap: 1.5rem;
+
+          .routine__delete-button {
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.5rem;
+            border: 0.1rem solid var(--gray);
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 6rem;
+            &:hover {
+              background-color: var(--light-gray);
+            }
+          }
+
+          .routine__delete-button--alert {
+            background-color: var(--red);
+            border: none;
+            color: var(--white);
+            
+            &:hover {
+              background-color: var(--red-hover-color);
+            }
+          }
+        }
+      }
+    }
   }
 
   .routine__table {
@@ -510,7 +579,7 @@ html {
       .rules__description {
         opacity: 0;
         margin: 0;
-        padding: 0 1rem 0.5rem 1rem;
+        padding: 0.5rem 1rem 0.5rem 1rem;
         line-height: 1.2rem;
 
         p {
@@ -518,7 +587,7 @@ html {
         }
 
         .rules__table-table {
-          margin: 0.5em 0;
+          margin: 1em 0;
           font-size: 0.9rem;
           font-weight: bold;
           background-color: var(--light-gray);
@@ -561,7 +630,7 @@ html {
           width: 100%;
           height: 0.1rem;
           background-color: var(--gray);
-          margin: 0.5rem 0;
+          margin: 1rem 0;
         }
       }
     }
@@ -668,6 +737,18 @@ hover none mode
           &:hover {
             cursor: pointer;
             opacity: 1;
+          }
+        }
+      }
+    }
+  }
+  .routine {
+    .routine__title-box {
+      .routine__delete {
+        .routine__delete-icon {
+          opacity: 0.8;
+          &:hover {
+            opacity: 0.8;
           }
         }
       }

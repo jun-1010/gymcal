@@ -12,37 +12,20 @@ import {
   isGroupLimited,
   RoutineElement,
 } from "../../utilities/RoutineUtil";
-import {
-  ELEMENT_COUNT_DEDUCTIONS,
-  Events,
-  RuleKey,
-  Rules,
-  getGroupKey,
-} from "../../utilities/Type";
+import { ELEMENT_COUNT_DEDUCTIONS, Events, RuleKey, Rules, getGroupKey } from "../../utilities/Type";
 import RoutineRule from "../atoms/RoutineRule";
 
 // 同一枠の技を持つ技のコードを取得
-const getSameSlotCodes = (
-  routine: RoutineElement[],
-  categorizedElements: CategorizedElements
-) => {
+const getSameSlotCodes = (routine: RoutineElement[], categorizedElements: CategorizedElements) => {
   // 同一枠制限
   let sameSlotCodes: string[] = [];
 
   routine.forEach((element) => {
-    const groupElements = getGroupElements(
-      categorizedElements,
-      element.event,
-      element.element_group
-    );
+    const groupElements = getGroupElements(categorizedElements, element.event, element.element_group);
 
     Object.values(groupElements).forEach((rowElements) => {
       Object.values(rowElements).forEach((groupElement) => {
-        if (
-          "code" in groupElement &&
-          groupElement.id !== element.id &&
-          groupElement.code === element.code
-        ) {
+        if ("code" in groupElement && groupElement.id !== element.id && groupElement.code === element.code) {
           sameSlotCodes.push(groupElement.code!);
         }
       });
@@ -72,28 +55,22 @@ interface RoutineRulesProps {
   categorizedElements: CategorizedElements;
 }
 
-export const RoutineRules = ({
-  selectEvent,
-  routine,
-  categorizedElements,
-}: RoutineRulesProps) => {
+export const RoutineRules = ({ selectEvent, routine, categorizedElements }: RoutineRulesProps) => {
   const sameSlotCodes = getSameSlotCodes(routine, categorizedElements);
   const limitedGroups = getLimitedGroups(routine);
-  const floorStrengthLimitCode =
-    routine.find((element) => isFloorStrengthLimit(routine, element))?.code || "";
-  const floorCircleLimitCode =
-    routine.find((element) => isFloorCircleLimit(routine, element))?.code || "";
+  const floorStrengthLimitCode = routine.find((element) => isFloorStrengthLimit(routine, element))?.code || "";
+  const floorCircleLimitCode = routine.find((element) => isFloorCircleLimit(routine, element))?.code || "";
 
   return (
     <>
-      <div className="routine__title">関連ルール</div>
+      <div className="routine__title-box">
+        <div className="routine__title">関連ルール</div>
+      </div>
       <div className="routine__rules">
         <div className="rules__section">
           <div className="rules__section-header">
             <p className="rules__section-title">加算ルール</p>
-            <p className="rules__section-description">
-              条件を満たした場合に加算されるルール
-            </p>
+            <p className="rules__section-description">条件を満たした場合に加算されるルール</p>
           </div>
 
           {/* Dスコア */}
@@ -148,9 +125,7 @@ export const RoutineRules = ({
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--3rem">難度</td>
                       <td className={`rules__table-cell rules__table-cell--3rem`}>A~C</td>
-                      <td className={`rules__table-cell rules__table-cell--3rem`}>
-                        D以上
-                      </td>
+                      <td className={`rules__table-cell rules__table-cell--3rem`}>D以上</td>
                     </tr>
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--3rem">加点</td>
@@ -214,15 +189,9 @@ export const RoutineRules = ({
                 <table className="rules__table-table">
                   <tbody>
                     <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--6rem">
-                        組み合わせ
-                      </td>
-                      <td className={`rules__table-cell  rules__table-cell--6rem`}>
-                        D以上+BorC
-                      </td>
-                      <td className={`rules__table-cell  rules__table-cell--6rem`}>
-                        D以上+D以上
-                      </td>
+                      <td className="rules__table-cell rules__table-cell--6rem">組み合わせ</td>
+                      <td className={`rules__table-cell  rules__table-cell--6rem`}>D以上+BorC</td>
+                      <td className={`rules__table-cell  rules__table-cell--6rem`}>D以上+D以上</td>
                     </tr>
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--6rem">加点</td>
@@ -245,9 +214,7 @@ export const RoutineRules = ({
         <div className="rules__section">
           <div className="rules__section-header">
             <p className="rules__section-title">減点ルール</p>
-            <p className="rules__section-description">
-              条件を満たさない場合に減点されるルール
-            </p>
+            <p className="rules__section-description">条件を満たさない場合に減点されるルール</p>
           </div>
 
           {/* ニュートラルディダクション */}
@@ -298,9 +265,7 @@ export const RoutineRules = ({
                       {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
                         <td
                           key={index}
-                          className={`rules__table-cell ${
-                            routine.length === index ? "rules__table-cell--active" : ""
-                          }`}
+                          className={`rules__table-cell ${routine.length === index ? "rules__table-cell--active" : ""}`}
                         >
                           {index}
                         </td>
@@ -311,9 +276,7 @@ export const RoutineRules = ({
                       {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
                         <td
                           key={index}
-                          className={`rules__table-cell ${
-                            routine.length === index ? "rules__table-cell--active" : ""
-                          }`}
+                          className={`rules__table-cell ${routine.length === index ? "rules__table-cell--active" : ""}`}
                         >
                           {deduction}
                         </td>
@@ -342,9 +305,7 @@ export const RoutineRules = ({
             }
             descriptionNode={
               <div className="rules__description">
-                <p>
-                  終末技が2回もしくは3回宙返り技でない場合、減点が付与されます（仮）。
-                </p>
+                <p>終末技が2回もしくは3回宙返り技でない場合、減点が付与されます（仮）。</p>
               </div>
             }
             show={selectEvent === Events.床}
@@ -354,9 +315,7 @@ export const RoutineRules = ({
         <div className="rules__section">
           <div className="rules__section-header">
             <p className="rules__section-title">制限ルール</p>
-            <p className="rules__section-description">
-              条件を満たした技に選択制限がかかるルール
-            </p>
+            <p className="rules__section-description">条件を満たした技に選択制限がかかるルール</p>
           </div>
 
           {/* 同一枠制限 */}
@@ -372,9 +331,7 @@ export const RoutineRules = ({
                         {e}
                       </p>
                     ))}
-                    {sameSlotCodes.length > 4 && (
-                      <p className="common__label routine__summary-label">...</p>
-                    )}
+                    {sameSlotCodes.length > 4 && <p className="common__label routine__summary-label">...</p>}
                   </div>
                 ) : null}
               </span>
@@ -433,9 +390,7 @@ export const RoutineRules = ({
             summaryNode={
               <span className="rules__summary-title">
                 {RuleKey(Rules.全体技数制限)}
-                {routine.length === 8 ? (
-                  <p className="common__label routine__summary-label">✔️</p>
-                ) : null}
+                {routine.length === 8 ? <p className="common__label routine__summary-label">✔️</p> : null}
               </span>
             }
             descriptionNode={
@@ -456,9 +411,7 @@ export const RoutineRules = ({
               <span className="rules__summary-title">
                 力技制限
                 {floorStrengthLimitCode ? (
-                  <p className="common__label routine__summary-label">
-                    {floorStrengthLimitCode}
-                  </p>
+                  <p className="common__label routine__summary-label">{floorStrengthLimitCode}</p>
                 ) : null}
               </span>
             }
@@ -480,9 +433,7 @@ export const RoutineRules = ({
               <span className="rules__summary-title">
                 旋回制限
                 {floorCircleLimitCode ? (
-                  <p className="common__label routine__summary-label">
-                    {floorCircleLimitCode}
-                  </p>
+                  <p className="common__label routine__summary-label">{floorCircleLimitCode}</p>
                 ) : null}
               </span>
             }
