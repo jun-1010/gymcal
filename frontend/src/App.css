@@ -601,9 +601,7 @@ PC mode
 
   .main {
     margin: 0 1.5rem;
-    height: calc(
-      100dvh - var(--header-height) - var(--header-margin-top-bottom-pc) - 3rem
-    );
+    height: calc(100dvh - var(--header-height) - var(--header-margin-top-bottom-pc) - 3rem);
   }
   /********************************************
   種目ボタン
@@ -651,6 +649,11 @@ hover none mode
 (スマホやタブレットでhoverエフェクトが残る症状に対応するため)
 **********************************/
 @media (hover: none) {
+  .group-tabs {
+    .group-tabs__item:hover:not(.group-tabs__item--active) {
+      color: var(--black);
+    }
+  }
   .elements {
     .elements__group {
       .elements__row {
