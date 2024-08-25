@@ -46,23 +46,26 @@ const App: React.FC = () => {
     }
     const storedSelectEvent = localStorage.getItem("selectEvent");
     const storedSelectGroup = localStorage.getItem("selectGroup");
+    const storedRoutineOpen = localStorage.getItem("routineOpen");
     const storedRoutines = localStorage.getItem("routines");
     // localStorageに値がない(= 初アクセス)場合は何もしない
-    if (!storedSelectEvent || !storedSelectGroup || !storedRoutines) {
+    if (!storedSelectEvent || !storedSelectGroup || !storedRoutineOpen || !storedRoutines) {
       return;
     }
     const parsedSelectEvent = parseInt(storedSelectEvent);
     const parsedSelectGroup = parseInt(storedSelectGroup);
+    const parsedRoutineOpen = parseInt(storedRoutineOpen);
     const parsedRoutines = JSON.parse(storedRoutines) as Routines;
     if (
       selectEvent === parsedSelectEvent &&
       selectGroup === parsedSelectGroup &&
+      routineOpen === parsedRoutineOpen &&
       JSON.stringify(routines) === JSON.stringify(parsedRoutines)
     ) {
       console.log("初回読み込み完了");
       setIsInitialized(true);
     }
-  }, [selectEvent, selectGroup, routines]);
+  }, [selectEvent, selectGroup, routineOpen, routines]);
 
   useEffect(() => {
     fetchData();
@@ -79,22 +82,24 @@ const App: React.FC = () => {
     // selectEventとselectGroupの取得
     const storedSelectEvent = localStorage.getItem("selectEvent");
     const storedSelectGroup = localStorage.getItem("selectGroup");
+    const storedRoutineOpen = localStorage.getItem("routineOpen");
+    const storedRoutines = localStorage.getItem("routines");
+
     // selectEventとselectGroupが存在しない = 初アクセス
-    if (!storedSelectEvent || !storedSelectGroup) {
+    if (!storedSelectEvent || !storedSelectGroup || !storedRoutineOpen || !storedRoutines) {
       localStorage.setItem("selectEvent", Events.床.toString());
       localStorage.setItem("selectGroup", ElementGroup.EG1.toString());
+      localStorage.setItem("routineOpen", "0");
+      localStorage.setItem("routines", JSON.stringify(initialRoutines));
       return;
     }
     const parsedSelectEvent = parseInt(storedSelectEvent);
     const parsedSelectGroup = parseInt(storedSelectGroup);
+    const parsedRoutineOpen = parseInt(storedRoutineOpen);
     setSelectEvent(parsedSelectEvent);
     setSelectGroup(parsedSelectGroup);
+    setRoutineOpen(parsedRoutineOpen);
 
-    const storedRoutines = localStorage.getItem("routines");
-    // storedRoutines が存在しない = 初アクセス or 選択せずにリロード
-    if (!storedRoutines) {
-      return;
-    }
     const parsedRoutines = JSON.parse(storedRoutines);
     // すべての要素が空の配列かどうかをチェック
     const isEmpty = Object.values(parsedRoutines).every((routine) => Array.isArray(routine) && routine.length === 0);
@@ -174,6 +179,14 @@ const App: React.FC = () => {
       setRoutineOpen(2);
     }
   }, [isMobile]);
+
+  // 表示モード変更時
+  useEffect(() => {
+    if (!isInitialized) {
+      return;
+    }
+    localStorage.setItem("routineOpen", routineOpen.toString());
+  }, [routineOpen]);
 
   return (
     <div className="App">
