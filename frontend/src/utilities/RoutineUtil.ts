@@ -1,6 +1,6 @@
 import { Element, isElementTypeIncluded } from "./ElementUtil";
 import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "./RoutineFXUtil";
-import { isPHFlairLimit, isPHHandstandLimit, isPHRussianLimit, isPHRussianTravelLimit1, isPHSohnBezugoLimit, isPHSpindleLimit, isPHTravelLimit, isPHTravelSpindleLimit } from "./RoutinePHUtils";
+import { isPHBusnariLimit, isPHFlairLimit, isPHHandstandLimit, isPHRussianLimit, isPHRussianTravelLimit1, isPHSohnBezugoLimit, isPHSpindleLimit, isPHTravelLimit, isPHTravelSpindleLimit } from "./RoutinePHUtils";
 import { ELEMENT_COUNT_DEDUCTIONS, ElementGroup, ElementStatus, ElementType, Events } from "./Type";
 
 // 6種目分のroutine
@@ -63,21 +63,23 @@ export const getElementStatus = (selectEvent: Events, routine: RoutineElement[],
     }
   } else if (selectEvent === Events.あん馬) {
     if (isPHTravelLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_縦向き移動技制限;
+      return ElementStatus.あん馬_縦向き移動技制限; // 2
     } else if (isPHRussianLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_ロシアン転向技制限;
+      return ElementStatus.あん馬_ロシアン転向技制限; // 2 with dismount
     } else if (isPHHandstandLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_倒立技制限;
+      return ElementStatus.あん馬_倒立技制限; // 2 w/o dismount
     } else if (isPHRussianTravelLimit1(routine, targetElement)) {
-      return ElementStatus.あん馬_ロシアン転向移動技制限1;
+      return ElementStatus.あん馬_ロシアン転向移動技制限1; // 2
     } else if (isPHTravelSpindleLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_移動ひねり技制限;
+      return ElementStatus.あん馬_移動ひねり技制限; // 2
     } else if (isPHSpindleLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_ひねり技制限;
+      return ElementStatus.あん馬_ひねり技制限; // 2
     } else if (isPHSohnBezugoLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_ショーンべズゴ系制限;
+      return ElementStatus.あん馬_ショーンべズゴ系制限; // 2
     } else if (isPHFlairLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_開脚旋回技制限;
+      return ElementStatus.あん馬_開脚旋回技制限; // 4 w/o dismount
+    } else if (isPHBusnariLimit(routine, targetElement)) {
+      return ElementStatus.あん馬_ブスナリ系制限; // 1
     }
   }
 

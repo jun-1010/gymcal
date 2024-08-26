@@ -1,6 +1,7 @@
 import { CategorizedElements, getGroupElements } from "../../utilities/ElementUtil";
 import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "../../utilities/RoutineFXUtil";
 import {
+  getPHBusnariLimitCodes,
   getPHFlairLimitCodes,
   getPHHandstandLimitCodes,
   getPHRussianLimitCodes,
@@ -83,6 +84,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
   const phSpindleLimitCodes = selectEvent === Events.あん馬 ? getPHSpindleLimitCodes(routine) : [];
   const phSohnBezugoLimitCodes = selectEvent === Events.あん馬 ? getPHSohnBezugoLimitCodes(routine) : [];
   const phFlairLimitCodes = selectEvent === Events.あん馬 ? getPHFlairLimitCodes(routine) : [];
+  const phBusnariLimitCodes = selectEvent === Events.あん馬 ? getPHBusnariLimitCodes(routine) : [];
 
   return (
     <>
@@ -676,6 +678,30 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionNode={
               <div className="rules__description">
                 <p>開脚旋回で実施される技は終末技は含まずに1演技中4つまで使用できます。</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_ブスナリ系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_ブスナリ系制限)}
+                {phBusnariLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phBusnariLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>ブスナリ系の技は1演技中1つまで使用できます。</p>
               </div>
             }
             show={selectEvent === Events.あん馬}

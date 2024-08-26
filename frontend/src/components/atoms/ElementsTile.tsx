@@ -104,6 +104,10 @@ const ElementsTile = ({
     if (status === ElementStatus.あん馬_開脚旋回技制限) {
       return <div className="common__label">開脚旋回技制限</div>;
     }
+    // あん馬_ブスナリ系技制限
+    if (status === ElementStatus.あん馬_ブスナリ系制限) {
+      return <div className="common__label">ブスナリ系制限</div>;
+    }
   };
 
   return (
