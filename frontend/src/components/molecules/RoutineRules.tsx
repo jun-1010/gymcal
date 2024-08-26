@@ -4,6 +4,7 @@ import {
   getPHHandstandLimitCodes,
   getPHRussianLimitCodes,
   getPHRussianTravelLimit1Codes,
+  getPHSpindleLimitCodes,
   getPHTravelLimitCodes,
   getPHTravelSpindleLimitCodes,
 } from "../../utilities/RoutinePHUtils";
@@ -77,6 +78,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
   const phHandstandLimitCodes = selectEvent === Events.あん馬 ? getPHHandstandLimitCodes(routine) : [];
   const phRussianTranveLimit1Codes = selectEvent === Events.あん馬 ? getPHRussianTravelLimit1Codes(routine) : [];
   const phTranveSpindleLimitCodes = selectEvent === Events.あん馬 ? getPHTravelSpindleLimitCodes(routine) : [];
+  const phSpindleLimitCodes = selectEvent === Events.あん馬 ? getPHSpindleLimitCodes(routine) : [];
 
   return (
     <>
@@ -590,6 +592,37 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <p>・III.22 縦向き1/3前移動直ちに縦向き2/3移動ひねり（ニン・レイエス）</p>
                 <p>・III.23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）</p>
                 <p>・III.29 開脚旋回縦向き3/3移動1回ひねり（2回以内の旋回で）（ウルジカ2/ブルクハルト）</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_ひねり技制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_ひねり技制限)}
+                {phSpindleLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phSpindleLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>以下の1回ひねりを伴う技は1演技中2つまで使用できます。</p>
+                <p>・II-28 一把手を挟んで横向き旋回1回ひねり（2回以内の旋回で） </p>
+                <p>・II-29 横向き旋回1回ひねり移動（2回以内の旋回で）（アイヒホルン） </p>
+                <p>・II-30 両把手を挟んで横向き旋回1回ひねり（2回以内の旋回で）（ケイハ）</p>
+                <p>・II-30 馬端外向き縦向き支持から両把手を越えて縦向き旋回1回ひねり（2回以内の旋回で）（ケイハ5）</p>
+                <p>・II-34 馬端旋回1回ひねり（2回以内の旋回で）（マジャール）</p>
+                <p>・II-35 両把手上横向き旋回1回ひねり（2回以内の旋回で）（ベルキ）</p>
+                <p>・II-36 あん部馬背縦向き旋回1回ひねり（2回以内の旋回で）</p>
               </div>
             }
             show={selectEvent === Events.あん馬}

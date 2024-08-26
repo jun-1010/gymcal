@@ -92,6 +92,10 @@ const ElementsTile = ({
     if (status === ElementStatus.あん馬_移動ひねり技制限) {
       return <div className="common__label">移動ひねり技制限</div>;
     }
+    // あん馬_ひねり技制限
+    if (status === ElementStatus.あん馬_ひねり技制限) {
+      return <div className="common__label">ひねり技制限</div>;
+    }
   };
 
   return (
