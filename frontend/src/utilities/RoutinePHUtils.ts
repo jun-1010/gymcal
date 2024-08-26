@@ -145,3 +145,22 @@ export const getPHSpindleLimitCodes = (routine: RoutineElement[]) =>
     .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_ひねり技))
     .map((element) => element.code!);
 
+// ElementTile用 | ショーンべズゴ判定
+export const isPHSohnBezugoLimit = (routine: Element[], targetElement: Element): boolean => {
+  // 対象がショーンべズゴ系以外ならfalse
+  if (!isElementTypeIncluded(targetElement.element_type, ElementType.あん馬_ショーンべズゴ系)) {
+    return false;
+  }
+  // 2つ選択していたらtrue
+  const count = routine.filter((element) =>
+    isElementTypeIncluded(element.element_type, ElementType.あん馬_ショーンべズゴ系)
+  ).length;
+
+  return count == 2;
+}
+
+// RoutineRules用 | ショーンべズゴ判定
+export const getPHSohnBezugoLimitCodes = (routine: RoutineElement[]) =>
+  routine
+    .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_ショーンべズゴ系))
+    .map((element) => element.code? element.code : element.alias); // codeがない技は独自に追加した技だからaliasはあるはず

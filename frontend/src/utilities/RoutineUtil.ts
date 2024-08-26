@@ -1,6 +1,6 @@
 import { Element, isElementTypeIncluded } from "./ElementUtil";
 import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "./RoutineFXUtil";
-import { isPHHandstandLimit, isPHRussianLimit, isPHRussianTravelLimit1, isPHSpindleLimit, isPHTravelLimit, isPHTravelSpindleLimit } from "./RoutinePHUtils";
+import { isPHHandstandLimit, isPHRussianLimit, isPHRussianTravelLimit1, isPHSohnBezugoLimit, isPHSpindleLimit, isPHTravelLimit, isPHTravelSpindleLimit } from "./RoutinePHUtils";
 import { ELEMENT_COUNT_DEDUCTIONS, ElementGroup, ElementStatus, ElementType, Events } from "./Type";
 
 // 6種目分のroutine
@@ -74,6 +74,8 @@ export const getElementStatus = (selectEvent: Events, routine: RoutineElement[],
       return ElementStatus.あん馬_移動ひねり技制限;
     } else if (isPHSpindleLimit(routine, targetElement)) {
       return ElementStatus.あん馬_ひねり技制限;
+    } else if (isPHSohnBezugoLimit(routine, targetElement)) {
+      return ElementStatus.あん馬_ショーンべズゴ系制限;
     }
   }
 

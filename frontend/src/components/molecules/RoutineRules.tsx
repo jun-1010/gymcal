@@ -4,6 +4,7 @@ import {
   getPHHandstandLimitCodes,
   getPHRussianLimitCodes,
   getPHRussianTravelLimit1Codes,
+  getPHSohnBezugoLimitCodes,
   getPHSpindleLimitCodes,
   getPHTravelLimitCodes,
   getPHTravelSpindleLimitCodes,
@@ -79,6 +80,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
   const phRussianTranveLimit1Codes = selectEvent === Events.あん馬 ? getPHRussianTravelLimit1Codes(routine) : [];
   const phTranveSpindleLimitCodes = selectEvent === Events.あん馬 ? getPHTravelSpindleLimitCodes(routine) : [];
   const phSpindleLimitCodes = selectEvent === Events.あん馬 ? getPHSpindleLimitCodes(routine) : [];
+  const phSohnBezugoLimitCodes = selectEvent === Events.あん馬 ? getPHSohnBezugoLimitCodes(routine) : [];
 
   return (
     <>
@@ -623,6 +625,31 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <p>・II-34 馬端旋回1回ひねり（2回以内の旋回で）（マジャール）</p>
                 <p>・II-35 両把手上横向き旋回1回ひねり（2回以内の旋回で）（ベルキ）</p>
                 <p>・II-36 あん部馬背縦向き旋回1回ひねり（2回以内の旋回で）</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_ショーンべズゴ系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_ショーンべズゴ系制限)}
+                {phSohnBezugoLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phSohnBezugoLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>ショーン系及びベズゴ系の技はフロップやコンバイン、倒立技を含め1演技中2つまで使用できます。</p>
+                <p>それぞれ2回ずつではなくショーン系とべズゴ系合わせて2つまでです。 </p>
               </div>
             }
             show={selectEvent === Events.あん馬}
