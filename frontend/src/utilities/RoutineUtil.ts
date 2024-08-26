@@ -1,4 +1,6 @@
-import { Element } from "./ElementUtil";
+import { Element, isElementTypeIncluded } from "./ElementUtil";
+import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "./RoutineFXUtil";
+import { isPHTravelLimit } from "./RoutinePHUtils";
 import { ELEMENT_COUNT_DEDUCTIONS, ElementGroup, ElementStatus, ElementType, Events } from "./Type";
 
 // 6種目分のroutine
@@ -40,39 +42,32 @@ export const isGroupLimited = (routine: Element[], targetElement: Element): bool
   return count == limit;
 };
 
-// 床の力技制限判定
-export const isFloorStrengthLimit = (routine: Element[], targetElement: Element): boolean => {
-  return (
-    targetElement.element_type === ElementType.床_力技 &&
-    routine.some((element) => element.element_type === ElementType.床_力技)
-  );
-};
-
-// 床の旋回技制限判定
-export const isFloorCircleLimit = (routine: Element[], targetElement: Element): boolean => {
-  return (
-    targetElement.element_type === ElementType.床_旋回 &&
-    routine.some((element) => element.element_type === ElementType.床_旋回)
-  );
-};
-
 // 表示Elementの状態を取得
-export const getElementStatus = (routine: RoutineElement[], targetElement: Element): number => {
+export const getElementStatus = (selectEvent: Events, routine: RoutineElement[], targetElement: Element): number => {
+  // 共通制限ルールを最優先表示
   if (routine.some((element) => element.id === targetElement.id)) {
     return ElementStatus.選択済み;
-  } else if (routine.some((element) => element.code === targetElement.code)) {
+  } else if (routine.some((element) => element.code !== '' && element.code === targetElement.code)) {
     return ElementStatus.同一枠選択済み;
-  } else if (isFloorStrengthLimit(routine, targetElement)) {
-    return ElementStatus.床_力技制限;
-  } else if (isFloorCircleLimit(routine, targetElement)) {
-    return ElementStatus.床_旋回制限;
   } else if (isGroupLimited(routine, targetElement)) {
     return ElementStatus.技数制限_グループ;
   } else if (routine.length >= 8) {
     return ElementStatus.技数制限_全体;
-  } else {
-    return ElementStatus.選択可能;
   }
+  // 種目固有ルールの表示
+  if (selectEvent === Events.床) {
+    if (isFXStrengthLimit(routine, targetElement)) {
+      return ElementStatus.床_力技制限;
+    } else if (isFXCircleLimit(routine, targetElement)) {
+      return ElementStatus.床_旋回制限;
+    }
+  } else if (selectEvent === Events.あん馬) {
+    if (isPHTravelLimit(routine, targetElement)) {
+      return ElementStatus.あん馬_縦向き移動技制限;
+    }
+  }
+
+  return ElementStatus.選択可能;
 };
 
 /***************************************************************
@@ -238,8 +233,8 @@ export const updateConnectionInRoutine = (
       if (selectEvent === Events.床) {
         // ひねりを伴う1回宙同士の組み合わせ → null
         if (
-          previousElement.element_type === ElementType.ひねりを伴う1回宙 &&
-          element.element_type === ElementType.ひねりを伴う1回宙
+          isElementTypeIncluded(previousElement.element_type, ElementType.ひねりを伴う1回宙) &&
+          isElementTypeIncluded(element.element_type, ElementType.ひねりを伴う1回宙)
         ) {
           return { ...element, connection_value: null };
         }
@@ -308,21 +303,6 @@ export const calculateElementCountDeduction = (routine: RoutineElement[]): numbe
     routine.length < ELEMENT_COUNT_DEDUCTIONS.length ? ELEMENT_COUNT_DEDUCTIONS[routine.length] : 0;
 
   return elementCountDeduction;
-};
-
-// ダブル系の有無によるNDを計算[床]
-export const calculateMultipleSaltoShortage = (routine: RoutineElement[]): number => {
-  if (routine.length === 0) {
-    return 0;
-  }
-
-  const lastElement = routine[routine.length - 1] as RoutineElement;
-  // routineの最後のelementのelement_typeが2でないならば0.3を返す
-  if (lastElement.element_type !== 2) {
-    return 0.3;
-  }
-
-  return 0;
 };
 
 // 各グループ得点の合計を計算

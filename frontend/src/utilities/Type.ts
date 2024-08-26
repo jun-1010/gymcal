@@ -67,6 +67,7 @@ export enum ElementType {
   ダブル系 = 2,
   床_力技 = 3,
   床_旋回 = 4,
+  あん馬_縦向き移動技 = 5,
 }
 
 // element__tileの状態表示に使用
@@ -78,6 +79,7 @@ export enum ElementStatus {
   技数制限_全体 = 5,
   床_力技制限 = 6,
   床_旋回制限 = 7,
+  あん馬_縦向き移動技制限 = 8,
 }
 
 // active, selected, disabledの3つで十分
@@ -106,6 +108,8 @@ export enum Rules {
   グループ技数制限 = 10,
   全体技数制限 = 11,
   床_力技制限 = 12,
+  床_旋回制限 = 13,
+  あん馬_縦向き移動技制限 = 14,
 }
 
 export const RuleKey = (ruleKey: number): string => {
@@ -115,4 +119,14 @@ export const RuleKey = (ruleKey: number): string => {
     }
   }
   return "Undefined";
+};
+
+export const RuleName = (rule: number): string => {
+  const ruleKey = RuleKey(rule);
+  const parts = ruleKey.split("_");
+  if (parts.length === 1) {
+    return parts[0];
+  } else {
+    return parts[1];
+  }
 };

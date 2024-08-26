@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
   calculateElementCountDeduction,
-  calculateMultipleSaltoShortage,
   calculateNeutralDeduction,
   calculateTotalConnectionValue,
   calculateTotalDifficulty,
@@ -13,6 +12,7 @@ import { Events } from "../../utilities/Type";
 import RoutineSummaryLabel from "../atoms/RoutineSummaryLabel";
 import RoutineTableElement from "../atoms/RoutineTableElement";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { calculateMultipleSaltoShortage } from "../../utilities/RoutineFXUtil";
 
 interface RoutineTableProps {
   selectEvent: Events;

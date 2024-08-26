@@ -20,11 +20,11 @@ const ElementsTile = ({
 }: ElementsTileProps) => {
   // 技選択時のhandle関数
   const handleElementClick = (element: Element) => {
-    if (getElementStatus(routine, element) === ElementStatus.選択済み) {
+    if (getElementStatus(selectEvent, routine, element) === ElementStatus.選択済み) {
       setRoutine(routine.filter((e) => e.id !== element.id));
       return;
     }
-    if (getElementStatus(routine, element) === ElementStatus.選択可能) {
+    if (getElementStatus(selectEvent, routine, element) === ElementStatus.選択可能) {
       const newRoutineElement: RoutineElement = {
         ...element,
         is_connected: false,
@@ -37,7 +37,7 @@ const ElementsTile = ({
 
   // ElementStatusを表示する関数
   const renderElementStatusLabel = (element: Element) => {
-    const status = getElementStatus(routine, element);
+    const status = getElementStatus(selectEvent, routine, element);
     // 選択可能 → 何も表示しない
     if (status === ElementStatus.選択可能) {
       return null;
@@ -72,13 +72,17 @@ const ElementsTile = ({
     if (status === ElementStatus.床_旋回制限) {
       return <div className="common__label">旋回制限</div>;
     }
+    // あん馬_縦向き移動技制限
+    if (status === ElementStatus.あん馬_縦向き移動技制限) {
+      return <div className="common__label">縦向き移動技制限</div>;
+    }
   };
 
   return (
     <React.Fragment key={elementsTileKey}>
       {element.id ? (
         <div
-          className={`elements__tile ${statusClass(getElementStatus(routine, element))}`}
+          className={`elements__tile ${statusClass(getElementStatus(selectEvent, routine, element))}`}
           key={elementsTileKey}
           onClick={() => {
             handleElementClick(element);
@@ -87,7 +91,7 @@ const ElementsTile = ({
           <div className="elements__labels">
             <span
               className={`common__label ${
-                getElementStatus(routine, element) === ElementStatus.選択済み
+                getElementStatus(selectEvent, routine, element) === ElementStatus.選択済み
                   ? "common__label--active"
                   : ""
               }`}

@@ -1,18 +1,17 @@
 import { CategorizedElements, getGroupElements } from "../../utilities/ElementUtil";
+import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "../../utilities/RoutineFXUtil";
+import { getPHTravelLimitCodes } from "../../utilities/RoutinePHUtils";
 import {
   calculateElementCountDeduction,
-  calculateMultipleSaltoShortage,
   calculateNeutralDeduction,
   calculateTotalConnectionValue,
   calculateTotalDifficulty,
   calculateTotalElementGroupScore,
   calculateTotalScore,
-  isFloorCircleLimit,
-  isFloorStrengthLimit,
   isGroupLimited,
   RoutineElement,
 } from "../../utilities/RoutineUtil";
-import { ELEMENT_COUNT_DEDUCTIONS, Events, RuleKey, Rules, getGroupKey } from "../../utilities/Type";
+import { ELEMENT_COUNT_DEDUCTIONS, Events, RuleKey, RuleName, Rules, getGroupKey } from "../../utilities/Type";
 import RoutineRule from "../atoms/RoutineRule";
 
 // 同一枠の技を持つ技のコードを取得
@@ -25,7 +24,12 @@ const getSameSlotCodes = (routine: RoutineElement[], categorizedElements: Catego
 
     Object.values(groupElements).forEach((rowElements) => {
       Object.values(rowElements).forEach((groupElement) => {
-        if ("code" in groupElement && groupElement.id !== element.id && groupElement.code === element.code) {
+        if (
+          "code" in groupElement &&
+          groupElement.code !== "" &&
+          groupElement.id !== element.id &&
+          groupElement.code === element.code
+        ) {
           sameSlotCodes.push(groupElement.code!);
         }
       });
@@ -58,8 +62,11 @@ interface RoutineRulesProps {
 export const RoutineRules = ({ selectEvent, routine, categorizedElements }: RoutineRulesProps) => {
   const sameSlotCodes = getSameSlotCodes(routine, categorizedElements);
   const limitedGroups = getLimitedGroups(routine);
-  const floorStrengthLimitCode = routine.find((element) => isFloorStrengthLimit(routine, element))?.code || "";
-  const floorCircleLimitCode = routine.find((element) => isFloorCircleLimit(routine, element))?.code || "";
+  const fxStrengthLimitCode =
+    (selectEvent === Events.床 && routine.find((element) => isFXStrengthLimit(routine, element))?.code) || "";
+  const fxCircleLimitCode =
+    (selectEvent === Events.床 && routine.find((element) => isFXCircleLimit(routine, element))?.code) || "";
+  const phTravelLimitCodes = selectEvent === Events.あん馬 ? getPHTravelLimitCodes(routine) : [];
 
   return (
     <>
@@ -409,9 +416,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
           <RoutineRule
             summaryNode={
               <span className="rules__summary-title">
-                力技制限
-                {floorStrengthLimitCode ? (
-                  <p className="common__label routine__summary-label">{floorStrengthLimitCode}</p>
+                {RuleName(Rules.床_力技制限)}
+                {fxStrengthLimitCode ? (
+                  <p className="common__label routine__summary-label">{fxStrengthLimitCode}</p>
                 ) : null}
               </span>
             }
@@ -431,10 +438,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
           <RoutineRule
             summaryNode={
               <span className="rules__summary-title">
-                旋回制限
-                {floorCircleLimitCode ? (
-                  <p className="common__label routine__summary-label">{floorCircleLimitCode}</p>
-                ) : null}
+                {RuleName(Rules.床_旋回制限)}
+                {fxCircleLimitCode ? <p className="common__label routine__summary-label">{fxCircleLimitCode}</p> : null}
               </span>
             }
             descriptionNode={
@@ -443,6 +448,30 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               </div>
             }
             show={selectEvent === Events.床}
+          />
+
+          {/* あん馬_縦向き移動技制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_縦向き移動技制限)}
+                {phTravelLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phTravelLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>縦向き3部分前及び後ろ移動技は1演技中2つまで使用できます。</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
           />
         </div>
       </div>

@@ -63,7 +63,8 @@ const RoutineTableElement = ({
         )}
       </span>
       <span className="routine__item">
-        {element.code}.{element.alias ? element.alias : element.name}
+        {element.code ? `${element.code}.` : ""}
+        {element.alias ? element.alias : element.name}
       </span>
       <span className="routine__item">
         {element_groups[element.element_group - 1]}
@@ -80,7 +81,10 @@ const RoutineTableElement = ({
           sx={{
             fontSize: "1rem",
           }}
-          onClick={() => setRoutine(routine.filter((e) => e !== element))}
+          onClick={() => {
+            console.log(routine.filter((e) => e !== element));
+            setRoutine(routine.filter((e) => e !== element));
+          }}
         />
       </span>
     </div>

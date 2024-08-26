@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->unsignedTinyInteger('column_number');
             $table->unsignedTinyInteger('start_direction');
             $table->unsignedTinyInteger('end_direction');
-            $table->unsignedTinyInteger('element_type');
+            $table->string('element_type');
 
             // 複合主キーを設定
             $table->primary(['id']);
