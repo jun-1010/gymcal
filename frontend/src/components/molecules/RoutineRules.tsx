@@ -1,6 +1,6 @@
 import { CategorizedElements, getGroupElements } from "../../utilities/ElementUtil";
 import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "../../utilities/RoutineFXUtil";
-import { getPHRussianLimitCodes, getPHTravelLimitCodes } from "../../utilities/RoutinePHUtils";
+import { getPHHandstandLimitCodes, getPHRussianLimitCodes, getPHTravelLimitCodes } from "../../utilities/RoutinePHUtils";
 import {
   calculateElementCountDeduction,
   calculateNeutralDeduction,
@@ -68,6 +68,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
     (selectEvent === Events.床 && routine.find((element) => isFXCircleLimit(routine, element))?.code) || "";
   const phTravelLimitCodes = selectEvent === Events.あん馬 ? getPHTravelLimitCodes(routine) : [];
   const phRussianLimitCodes = selectEvent === Events.あん馬 ? getPHRussianLimitCodes(routine) : [];
+  const phHandstandLimitCodes = selectEvent === Events.あん馬 ? getPHHandstandLimitCodes(routine) : [];
 
   return (
     <>
@@ -499,6 +500,30 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <p>・馬端馬背ロシアン1080°転向～ロシアン720°転向下り：不認定+B難度</p>
                 <p>・あん部馬背ロシアン720°転向～あん部馬背ロシアン1080°転向：不認定+E難度</p>
                 <p>・あん部馬背ロシアン360° ～馬端馬背ロシアン1080°転向～ロシアン360°転向下り：C難度+不認定+A難度</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_倒立技制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_倒立技制限)}
+                {phHandstandLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phHandstandLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>倒立する技は終末技を除いて1演技中2つまで使用できます。</p>
               </div>
             }
             show={selectEvent === Events.あん馬}
