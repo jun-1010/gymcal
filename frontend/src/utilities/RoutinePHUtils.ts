@@ -159,8 +159,29 @@ export const isPHSohnBezugoLimit = (routine: Element[], targetElement: Element):
   return count == 2;
 }
 
-// RoutineRules用 | ショーンべズゴ判定
+// RoutineRules用 | 選択済みのショーンべズゴ系コード取得
 export const getPHSohnBezugoLimitCodes = (routine: RoutineElement[]) =>
   routine
     .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_ショーンべズゴ系))
     .map((element) => element.code? element.code : element.alias); // codeがない技は独自に追加した技だからaliasはあるはず
+
+// ElementTile用 | 開脚旋回技判定
+export const isPHFlairLimit = (routine: Element[], targetElement: Element): boolean => {
+  // 対象が開脚旋回技以外ならfalse
+  if (!isElementTypeIncluded(targetElement.element_type, ElementType.あん馬_開脚旋回技)) {
+    return false;
+  }
+  // 4つ選択していたらtrue
+  const count = routine.filter((element) =>
+    isElementTypeIncluded(element.element_type, ElementType.あん馬_開脚旋回技)
+  ).length;
+
+  return count == 4;
+}
+
+// RoutineRules用 | 選択済みの開脚旋回技コード取得
+export const getPHFlairLimitCodes = (routine: RoutineElement[]) =>
+  routine
+    .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_開脚旋回技))
+    .map((element) => (element.code ? element.code : element.alias));
+
