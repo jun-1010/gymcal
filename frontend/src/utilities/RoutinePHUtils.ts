@@ -104,3 +104,23 @@ export const getPHRussianTravelLimit1Codes = (routine: RoutineElement[]) =>
   routine
     .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_ロシアン転向移動技1))
     .map((element) => element.code!);
+
+// ElementTile用 | 移動ひねり技判定
+export const isPHTravelSpindleLimit = (routine: Element[], targetElement: Element): boolean => {
+  // 対象が移動ひねり技以外ならfalse
+  if (!isElementTypeIncluded(targetElement.element_type, ElementType.あん馬_移動ひねり技)) {
+    return false;
+  }
+  // 2つ選択していたらtrue
+  const count = routine.filter((element) =>
+    isElementTypeIncluded(element.element_type, ElementType.あん馬_移動ひねり技)
+  ).length;
+
+  return count == 2;
+}
+
+// RoutineRules用 | 選択済みの移動ひねり技コード取得
+export const getPHTravelSpindleLimitCodes = (routine: RoutineElement[]) =>
+  routine
+    .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_移動ひねり技))
+    .map((element) => element.code!);

@@ -5,6 +5,7 @@ import {
   getPHRussianLimitCodes,
   getPHRussianTravelLimit1Codes,
   getPHTravelLimitCodes,
+  getPHTravelSpindleLimitCodes,
 } from "../../utilities/RoutinePHUtils";
 import {
   calculateElementCountDeduction,
@@ -75,6 +76,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
   const phRussianLimitCodes = selectEvent === Events.あん馬 ? getPHRussianLimitCodes(routine) : [];
   const phHandstandLimitCodes = selectEvent === Events.あん馬 ? getPHHandstandLimitCodes(routine) : [];
   const phRussianTranveLimit1Codes = selectEvent === Events.あん馬 ? getPHRussianTravelLimit1Codes(routine) : [];
+  const phTranveSpindleLimitCodes = selectEvent === Events.あん馬 ? getPHTravelSpindleLimitCodes(routine) : [];
 
   return (
     <>
@@ -560,6 +562,34 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <p>・III.64 下向き720°(以上)転向移動(一把手～馬端)</p>
                 <p>・III.65 ウ・ヴォニアン</p>
                 <p>・III.70 ロス</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_移動ひねり技制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_移動ひねり技制限)}
+                {phTranveSpindleLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phTranveSpindleLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>以下のひねりを伴う3/3移動技は1演技中2つまで使用できます。</p>
+                <p>・III.17 正面横移動ひねり、背面横移動ひねり（馬端～馬端）</p>
+                <p>・III.22 縦向き1/3前移動直ちに縦向き2/3移動ひねり（ニン・レイエス）</p>
+                <p>・III.23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）</p>
+                <p>・III.29 開脚旋回縦向き3/3移動1回ひねり（2回以内の旋回で）（ウルジカ2/ブルクハルト）</p>
               </div>
             }
             show={selectEvent === Events.あん馬}
