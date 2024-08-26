@@ -204,3 +204,23 @@ export const getPHBusnariLimitCodes = (routine: RoutineElement[]) =>
   routine
     .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_ブスナリ系))
     .map((element) => (element.code ? element.code : element.alias));
+
+// ElementTile用 | ロシアン転向移動技判定2
+export const isPHRussianTravelLimit2 = (routine: Element[], targetElement: Element): boolean => {
+  // 対象がロシアン転向移動技以外ならfalse
+  if (!isElementTypeIncluded(targetElement.element_type, ElementType.あん馬_ロシアン転向移動技2)) {
+    return false;
+  }
+  // 2つ選択していたらtrue
+  const count = routine.filter((element) =>
+    isElementTypeIncluded(element.element_type, ElementType.あん馬_ロシアン転向移動技2)
+  ).length;
+
+  return count == 1;
+};
+
+// RoutineRules用 | 選択済みのロシアン転向移動技コード取得
+export const getPHRussianTravelLimit2Codes = (routine: RoutineElement[]) =>
+  routine
+    .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_ロシアン転向移動技2))
+    .map((element) => element.code!);
