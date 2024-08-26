@@ -1,6 +1,6 @@
 import { Element, isElementTypeIncluded } from "./ElementUtil";
 import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "./RoutineFXUtil";
-import { isPHTravelLimit } from "./RoutinePHUtils";
+import { isPHRussianLimit, isPHTravelLimit } from "./RoutinePHUtils";
 import { ELEMENT_COUNT_DEDUCTIONS, ElementGroup, ElementStatus, ElementType, Events } from "./Type";
 
 // 6種目分のroutine
@@ -64,6 +64,8 @@ export const getElementStatus = (selectEvent: Events, routine: RoutineElement[],
   } else if (selectEvent === Events.あん馬) {
     if (isPHTravelLimit(routine, targetElement)) {
       return ElementStatus.あん馬_縦向き移動技制限;
+    } else if (isPHRussianLimit(routine, targetElement)) {
+      return ElementStatus.あん馬_ロシアン転向技制限;
     }
   }
 

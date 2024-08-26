@@ -76,6 +76,10 @@ const ElementsTile = ({
     if (status === ElementStatus.あん馬_縦向き移動技制限) {
       return <div className="common__label">縦向き移動技制限</div>;
     }
+    // あん馬_ロシアン転向技制限
+    if (status === ElementStatus.あん馬_ロシアン転向技制限) {
+      return <div className="common__label">ロシアン転向技制限</div>;
+    }
   };
 
   return (

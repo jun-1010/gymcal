@@ -255,8 +255,8 @@ html {
       flex-wrap: nowrap;
 
       .elements__tile {
-        min-width: 12rem;
-        max-width: 12rem;
+        min-width: 13rem;
+        max-width: 13rem;
         min-height: 5rem;
         padding: 1rem;
         margin: 0.2rem;
