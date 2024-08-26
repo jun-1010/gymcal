@@ -1,6 +1,11 @@
 import { CategorizedElements, getGroupElements } from "../../utilities/ElementUtil";
 import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "../../utilities/RoutineFXUtil";
-import { getPHHandstandLimitCodes, getPHRussianLimitCodes, getPHTravelLimitCodes } from "../../utilities/RoutinePHUtils";
+import {
+  getPHHandstandLimitCodes,
+  getPHRussianLimitCodes,
+  getPHRussianTravelLimit1Codes,
+  getPHTravelLimitCodes,
+} from "../../utilities/RoutinePHUtils";
 import {
   calculateElementCountDeduction,
   calculateNeutralDeduction,
@@ -69,6 +74,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
   const phTravelLimitCodes = selectEvent === Events.あん馬 ? getPHTravelLimitCodes(routine) : [];
   const phRussianLimitCodes = selectEvent === Events.あん馬 ? getPHRussianLimitCodes(routine) : [];
   const phHandstandLimitCodes = selectEvent === Events.あん馬 ? getPHHandstandLimitCodes(routine) : [];
+  const phRussianTranveLimit1Codes = selectEvent === Events.あん馬 ? getPHRussianTravelLimit1Codes(routine) : [];
 
   return (
     <>
@@ -524,6 +530,36 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionNode={
               <div className="rules__description">
                 <p>倒立する技は終末技を除いて1演技中2つまで使用できます。</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_ロシアン転向移動技制限1 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_ロシアン転向移動技制限1)}
+                {phRussianTranveLimit1Codes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phRussianTranveLimit1Codes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>以下のロシアン転向移動技は1演技中2つまで使用できます。</p>
+                <p>・III.57 下向き正転向移動(一把手～馬端)</p>
+                <p>・III.58 トンフェイ</p>
+                <p>・III.59 ヴァメン</p>
+                <p>・III.64 下向き720°(以上)転向移動(一把手～馬端)</p>
+                <p>・III.65 ウ・ヴォニアン</p>
+                <p>・III.70 ロス</p>
               </div>
             }
             show={selectEvent === Events.あん馬}

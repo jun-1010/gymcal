@@ -77,10 +77,30 @@ export const isPHHandstandLimit = (routine: Element[], targetElement: Element): 
   ).length;
 
   return count == 2;
-}
+};
 
-// RoutineRules用 | 倒立技制限判定
+// RoutineRules用 | 選択済みの倒立技コード取得
 export const getPHHandstandLimitCodes = (routine: RoutineElement[]) =>
   routine
     .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_倒立技))
     .map((element) => (element.code ? element.code : element.alias));
+
+// ElementTile用 | ロシアン転向移動技判定
+export const isPHRussianTravelLimit1 = (routine: Element[], targetElement: Element): boolean => {
+  // 対象がロシアン転向移動技以外ならfalse
+  if (!isElementTypeIncluded(targetElement.element_type, ElementType.あん馬_ロシアン転向移動技1)) {
+    return false;
+  }
+  // 2つ選択していたらtrue
+  const count = routine.filter((element) =>
+    isElementTypeIncluded(element.element_type, ElementType.あん馬_ロシアン転向移動技1)
+  ).length;
+
+  return count == 2;
+};
+
+// RoutineRules用 | 選択済みのロシアン転向移動技コード取得
+export const getPHRussianTravelLimit1Codes = (routine: RoutineElement[]) =>
+  routine
+    .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_ロシアン転向移動技1))
+    .map((element) => element.code!);
