@@ -224,3 +224,23 @@ export const getPHRussianTravelLimit2Codes = (routine: RoutineElement[]) =>
   routine
     .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_ロシアン転向移動技2))
     .map((element) => element.code!);
+
+// ElementTile用 | トンフェイ系判定
+export const isPHTongFeiLimit = (routine: Element[], targetElement: Element): boolean => { 
+  // 対象がトンフェイ系以外ならfalse
+  if (!isElementTypeIncluded(targetElement.element_type, ElementType.あん馬_トンフェイ系)) {
+    return false;
+  }
+  // 1つ選択していたらtrue
+  const count = routine.filter((element) =>
+    isElementTypeIncluded(element.element_type, ElementType.あん馬_トンフェイ系)
+  ).length;
+
+  return count == 1; 
+}
+
+// RoutineRules用 | 選択済みのトンフェイ系コード取得
+export const getPHTongFeiLimitCodes = (routine: RoutineElement[]) =>
+  routine
+    .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_トンフェイ系))
+    .map((element) => element.code!);

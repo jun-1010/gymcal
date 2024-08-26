@@ -1,6 +1,18 @@
 import { Element, isElementTypeIncluded } from "./ElementUtil";
 import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "./RoutineFXUtil";
-import { isPHBusnariLimit, isPHFlairLimit, isPHHandstandLimit, isPHRussianLimit, isPHRussianTravelLimit1, isPHRussianTravelLimit2, isPHSohnBezugoLimit, isPHSpindleLimit, isPHTravelLimit, isPHTravelSpindleLimit } from "./RoutinePHUtils";
+import {
+  isPHBusnariLimit,
+  isPHFlairLimit,
+  isPHHandstandLimit,
+  isPHRussianLimit,
+  isPHRussianTravelLimit1,
+  isPHRussianTravelLimit2,
+  isPHSohnBezugoLimit,
+  isPHSpindleLimit,
+  isPHTongFeiLimit,
+  isPHTravelLimit,
+  isPHTravelSpindleLimit,
+} from "./RoutinePHUtils";
 import { ELEMENT_COUNT_DEDUCTIONS, ElementGroup, ElementStatus, ElementType, Events } from "./Type";
 
 // 6種目分のroutine
@@ -47,7 +59,7 @@ export const getElementStatus = (selectEvent: Events, routine: RoutineElement[],
   // 共通制限ルールを最優先表示
   if (routine.some((element) => element.id === targetElement.id)) {
     return ElementStatus.選択済み;
-  } else if (routine.some((element) => element.code !== '' && element.code === targetElement.code)) {
+  } else if (routine.some((element) => element.code !== "" && element.code === targetElement.code)) {
     return ElementStatus.同一枠選択済み;
   } else if (isGroupLimited(routine, targetElement)) {
     return ElementStatus.技数制限_グループ;
@@ -82,6 +94,8 @@ export const getElementStatus = (selectEvent: Events, routine: RoutineElement[],
       return ElementStatus.あん馬_ブスナリ系制限; // 1
     } else if (isPHRussianTravelLimit2(routine, targetElement)) {
       return ElementStatus.あん馬_ロシアン転向移動技制限2; // 1
+    } else if (isPHTongFeiLimit(routine, targetElement)) {
+      return ElementStatus.あん馬_トンフェイ系制限; // 1
     }
   }
 

@@ -9,6 +9,7 @@ import {
   getPHRussianTravelLimit2Codes,
   getPHSohnBezugoLimitCodes,
   getPHSpindleLimitCodes,
+  getPHTongFeiLimitCodes,
   getPHTravelLimitCodes,
   getPHTravelSpindleLimitCodes,
 } from "../../utilities/RoutinePHUtils";
@@ -87,6 +88,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
   const phFlairLimitCodes = selectEvent === Events.あん馬 ? getPHFlairLimitCodes(routine) : [];
   const phBusnariLimitCodes = selectEvent === Events.あん馬 ? getPHBusnariLimitCodes(routine) : [];
   const phRussianTranveLimit2Codes = selectEvent === Events.あん馬 ? getPHRussianTravelLimit2Codes(routine) : [];
+  const phTongFeiLimitCodes = selectEvent === Events.あん馬 ? getPHTongFeiLimitCodes(routine) : [];
 
   return (
     <>
@@ -731,6 +733,33 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <p>・III.64 下向き720°(以上)転向移動(一把手～馬端)</p>
                 <p>・III.65 ウ・ヴォニアン</p>
                 <p>・III.70 ロス</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_トンフェイ系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_トンフェイ系制限)}
+                {phTongFeiLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phTongFeiLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>以下のトン・フェイ系の移動技は1演技中1つまで使用できます。</p>
+                <p>・III.57 下向き正転向移動(一把手～馬端)</p>
+                <p>・III.58 トンフェイ</p>
+                <p>・III.59 ヴァメン</p>
               </div>
             }
             show={selectEvent === Events.あん馬}
