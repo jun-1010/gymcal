@@ -454,7 +454,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             summaryNode={
               <span className="rules__summary-title">
                 {RuleKey(Rules.終末技制限)}
-                {routine[routine.length - 1].element_group === ElementGroup.EG4 ? (
+                {routine.length > 0 && routine[routine.length - 1].element_group === ElementGroup.EG4 ? (
                   <p className="common__label routine__summary-label">{routine[routine.length - 1].code}</p>
                 ) : null}
               </span>

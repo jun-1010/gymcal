@@ -71,7 +71,7 @@ export const getElementStatus = (selectEvent: Events, routine: RoutineElement[],
   }
   // 固有ルールの表示[床・鉄棒以外]
   if (selectEvent !== Events.床 && selectEvent !== Events.鉄棒) {
-    if (routine[routine.length - 1].element_group === ElementGroup.EG4) {
+    if (routine.length > 0 && routine[routine.length - 1].element_group === ElementGroup.EG4) {
       return ElementStatus.終末技制限;
     }
   }
@@ -207,6 +207,22 @@ export const updateElementGroupScoreInRoutine = (
           return { ...element, element_group_score: element.difficulty / 10 };
         }
       }
+    });
+  }
+  // 床と跳馬以外
+  if (selectEvent !== Events.床 && selectEvent !== Events.跳馬) {
+    // 終末技グループ得点を修正
+    newRoutine = newRoutine.map((element, index) => {
+      if (
+        index === newRoutine.length - 1 && // 最後の技
+        element.element_group === ElementGroup.EG4 // 終末技グループ
+      ) {
+        return {
+          ...element,
+          element_group_score: element.difficulty / 10,
+        };
+      }
+      return element;
     });
   }
 
