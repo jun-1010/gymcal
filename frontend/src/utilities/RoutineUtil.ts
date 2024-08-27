@@ -1,7 +1,11 @@
-import { Element } from "./Element";
-import { ElementGroup, ElementStatus, ElementType, Events } from "./Type";
-
-const ELEMENT_COUNT_DEDUCTIONS = [10, 7, 6, 5, 4, 3, 0];
+import { Element } from "./ElementUtil";
+import {
+  ELEMENT_COUNT_DEDUCTIONS,
+  ElementGroup,
+  ElementStatus,
+  ElementType,
+  Events,
+} from "./Type";
 
 // Elementにconnectionを追加
 export interface RoutineElement extends Element {
@@ -10,30 +14,59 @@ export interface RoutineElement extends Element {
   element_group_score: number | null;
 }
 
-// 表示Elementの状態を取得
-export const getElementStatus = (routine: Element[], targetElement: Element): number => {
-  // EG技数制限(鉄棒手放し技のみ条件付きで5技)
-  const isGroupLimited = (routine: Element[], targetElement: Element): boolean => {
-    let limit = 4;
-    // if (
-    //   targetElement.event === Events.鉄棒 &&
-    //   targetElement.element_group === ElementGroup.EG2
-    // ) {
-    //   limit = 5;
-    // }
-    let count = 0;
-    routine.forEach((element) => {
-      if (element.element_group === targetElement.element_group) {
-        count++;
-      }
-    });
-    return count == limit;
-  };
+// EG技数制限(鉄棒手放し技のみ条件付きで5技)
+export const isGroupLimited = (routine: Element[], targetElement: Element): boolean => {
+  let limit = 4;
+  // if (
+  //   targetElement.event === Events.鉄棒 &&
+  //   targetElement.element_group === ElementGroup.EG2
+  // ) {
+  //   limit = 5;
+  // }
+  let count = 0;
+  routine.forEach((element) => {
+    if (element.element_group === targetElement.element_group) {
+      count++;
+    }
+  });
+  return count == limit;
+};
 
+// 床の力技制限判定
+export const isFloorStrengthLimit = (
+  routine: Element[],
+  targetElement: Element
+): boolean => {
+  return (
+    targetElement.element_type === ElementType.床_力技 &&
+    routine.some((element) => element.element_type === ElementType.床_力技)
+  );
+};
+
+// 床の旋回技制限判定
+export const isFloorCircleLimit = (
+  routine: Element[],
+  targetElement: Element
+): boolean => {
+  return (
+    targetElement.element_type === ElementType.床_旋回 &&
+    routine.some((element) => element.element_type === ElementType.床_旋回)
+  );
+};
+
+// 表示Elementの状態を取得
+export const getElementStatus = (
+  routine: RoutineElement[],
+  targetElement: Element
+): number => {
   if (routine.some((element) => element.id === targetElement.id)) {
     return ElementStatus.選択済み;
   } else if (routine.some((element) => element.code === targetElement.code)) {
     return ElementStatus.同一枠選択済み;
+  } else if (isFloorStrengthLimit(routine, targetElement)) {
+    return ElementStatus.床_力技制限;
+  } else if (isFloorCircleLimit(routine, targetElement)) {
+    return ElementStatus.床_旋回制限;
   } else if (isGroupLimited(routine, targetElement)) {
     return ElementStatus.技数制限_グループ;
   } else if (routine.length >= 8) {
@@ -191,7 +224,7 @@ export const updateConnectionInRoutine = (
 ) => {
   // 組み合わせ対象が適切か確認(並べ替えされた場合を想定 ← [+]押下時はhandleConnectionClick()で対応済み)
   let newRoutine: RoutineElement[] = routine.map((element, index) => {
-    // 組み合わせが有効 && 組み合わせが適切 → 有効化
+    // 組み合わせが有効 && 組み合わせが適切(1技目チェック等) → 有効化
     if (element.is_connected && isConnectable(selectEvent, routine, element, index)) {
       return { ...element, is_connected: true };
     } else {
@@ -201,7 +234,7 @@ export const updateConnectionInRoutine = (
   });
 
   // 組み合わせ加点を計算
-  newRoutine = routine.map((element, index) => {
+  newRoutine = newRoutine.map((element, index) => {
     if (element.is_connected) {
       const previousElement = routine[index - 1];
       // 【床】
@@ -263,14 +296,36 @@ export const calculateTotalScore = (routine: RoutineElement[]): number => {
   return totalDScore;
 };
 
-export const calculateND = (routine: RoutineElement[]): string => {
-  const totalNDScore =
+// ニュートラルディダクションを計算
+export const calculateNeutralDeduction = (routine: RoutineElement[]): number => {
+  return (
+    calculateElementCountDeduction(routine) + calculateMultipleSaltoShortage(routine)
+  );
+};
+
+// 技数減点を計算
+export const calculateElementCountDeduction = (routine: RoutineElement[]): number => {
+  const elementCountDeduction =
     routine.length < ELEMENT_COUNT_DEDUCTIONS.length
       ? ELEMENT_COUNT_DEDUCTIONS[routine.length]
       : 0;
-  // 構成要求
 
-  return totalNDScore.toFixed(1);
+  return elementCountDeduction;
+};
+
+// ダブル系の有無によるNDを計算
+export const calculateMultipleSaltoShortage = (routine: RoutineElement[]): number => {
+  if (routine.length === 0) {
+    return 0;
+  }
+
+  const lastElement = routine[routine.length - 1] as RoutineElement;
+  // routineの最後のelementのelement_typeが2でないならば0.3を返す
+  if (lastElement.element_type !== 2) {
+    return 0.3;
+  }
+
+  return 0;
 };
 
 // 各グループ得点の合計を計算

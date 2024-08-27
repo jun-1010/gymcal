@@ -1,34 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Element, categorizeElements, getGroupElements, GroupElements } from "./Element";
+import {
+  categorizeElements,
+  getGroupElements,
+  GroupElements,
+} from "./utilities/ElementUtil";
 import "./App.css";
-import GroupTabs from "./components/GroupTabs";
-import {
-  Events,
-  ElementGroup,
-  difficulties,
-  element_groups,
-  statusClassMap,
-  ElementStatus,
-} from "./Type";
-import EventButtons from "./components/EventButtons";
+import { Events, ElementGroup } from "./utilities/Type";
 
-import AddIcon from "@mui/icons-material/Add";
-import AddBoxIcon from "@mui/icons-material/AddBox";
-import CloseIcon from "@mui/icons-material/Close";
 import {
-  calculateTotalScore,
-  calculateND,
-  calculateTotalConnectionValue,
-  calculateTotalDifficulty,
-  calculateTotalElementGroupScore,
-  isConnectable,
-  getElementStatus,
   RoutineElement,
   updateConnectionInRoutine,
   updateElementGroupScoreInRoutine,
-} from "./Routine";
+} from "./utilities/RoutineUtil";
 import useMedia from "use-media";
-import HeaderIcons from "./components/HeaderIcons";
+import Header from "./components/organisms/Header";
+import Elements from "./components/organisms/Elements";
+import Routine from "./components/organisms/Routine";
 
 const url = "http://54.250.128.188:8000/api/elements";
 // const url = "http://localhost:8000/api/elements";
@@ -40,7 +27,7 @@ const App: React.FC = () => {
   const [groupElements, setGroupElements] = useState({} as GroupElements);
   const [routineOpen, setRoutineOpen] = useState(0); // 0: 難度表 1: 半分 2:演技構成
   const [routine, setRoutine] = useState([] as RoutineElement[]);
-  const isMobile = useMedia({ maxWidth: "calc(700px - 1px)" });
+  const isMobile = useMedia({ maxWidth: "850px" });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,6 +49,7 @@ const App: React.FC = () => {
     fetchData();
   }, []);
 
+  // 種目かグループが変更されたら表示する技テーブルを更新する
   useEffect(() => {
     if (Object.keys(categorizedElements).length === 0) {
       return;
@@ -88,277 +76,47 @@ const App: React.FC = () => {
     updateConnectionInRoutine(selectEvent, routine, setRoutine);
   }, [routine]);
 
-  // 技選択時のhandle関数
-  const handleElementClick = (element: Element) => {
-    if (getElementStatus(routine, element) === ElementStatus.選択済み) {
-      setRoutine(routine.filter((e) => e.id !== element.id));
-      return;
+  // 画面幅変更時（PC→SP）にside modeの場合は演技構成表を開く
+  useEffect(() => {
+    if (isMobile && routineOpen === 1) {
+      setRoutineOpen(2);
     }
-    if (getElementStatus(routine, element) === ElementStatus.選択可能) {
-      const newRoutineElement: RoutineElement = {
-        ...element,
-        is_connected: false,
-        element_group_score: 0,
-        connection_value: null,
-      };
-      setRoutine([...routine, newRoutineElement]);
-    }
-  };
-
-  // ElementStatusを表示する関数
-  const renderElementStatusMessage = (element: Element) => {
-    const statusMessage = () => {
-      const status = getElementStatus(routine, element);
-      // 選択可能 → 何も表示しない
-      if (status === ElementStatus.選択可能) {
-        return null;
-      }
-      // 選択済み → 選択済み(技番号)
-      if (status === ElementStatus.選択済み) {
-        const index = routine.findIndex((e) => e.id === element.id);
-        return `選択済み(${index + 1}技目)`;
-      }
-      // 同一枠選択済み → 同一枠選択済み(技番号)
-      if (status === ElementStatus.同一枠選択済み) {
-        const code = routine.find((e) => e.code === element.code)?.code;
-        return `同一枠(${code})`;
-      }
-      // 技数制限_グループ → 技数制限_グループ
-      if (status === ElementStatus.技数制限_グループ) {
-        return "技数制限(グループ)";
-      }
-      // 技数制限_全体 → 技数制限_全体
-      if (status === ElementStatus.技数制限_全体) {
-        return "技数制限(全体)";
-      }
-    };
-
-    if (statusMessage() === null) {
-      return null;
-    }
-    return <div className="elements__status">{statusMessage()}</div>;
-  };
-
-  // そもそも組み合わせさせないための処理
-  const handleConnectionClick = (element: RoutineElement, index: number) => {
-    // 更新用関数
-    const updateRoutine = (targetElement: RoutineElement) => {
-      const newRoutine = routine.map((e, i) => (i === index ? targetElement : e));
-      setRoutine(newRoutine);
-    };
-
-    // 組み合わせ解除は無条件で実行
-    if (element.is_connected) {
-      updateRoutine({ ...element, is_connected: false, connection_value: null });
-      return; // handleConnectionClick()の終了
-    }
-
-    // 組み合わせが適切なら組み合わせを有効化
-    if (isConnectable(selectEvent, routine, element, index)) {
-      updateRoutine({ ...element, is_connected: true });
-      return; // handleConnectionClick()の終了
-    }
-  };
+  }, [isMobile]);
 
   return (
     <div className="App">
-      <div className="header">
-        {isMobile ? (
-          <>
-            <div className="header__left">
-              <h1 className="header__title">
-                <a href="/">GymCal</a>
-              </h1>
-              <EventButtons
-                selectEvent={selectEvent}
-                setSelectEvent={setSelectEvent}
-                isMobile={isMobile}
-              />
-            </div>
-            <div className="header__right">
-              <HeaderIcons
-                routineOpen={routineOpen}
-                setRoutineOpen={setRoutineOpen}
-                isMobile={isMobile}
-                badgeContent={routine.length}
-              />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="header__left">
-              <h1 className="header__title">
-                <a href="/">GymCal</a>
-              </h1>
-            </div>
-            <EventButtons
-              selectEvent={selectEvent}
-              setSelectEvent={setSelectEvent}
-              isMobile={isMobile}
-            />
-            <div className="header__right">
-              <HeaderIcons
-                routineOpen={routineOpen}
-                setRoutineOpen={setRoutineOpen}
-                isMobile={isMobile}
-                badgeContent={routine.length}
-              />
-            </div>
-          </>
-        )}
-      </div>
+      <Header
+        selectEvent={selectEvent}
+        setSelectEvent={setSelectEvent}
+        routineOpen={routineOpen}
+        setRoutineOpen={setRoutineOpen}
+        isMobile={isMobile}
+        routine={routine}
+      />
       {Object.keys(groupElements).length ? (
         <div className="main">
-          <div
-            className={`elements ${routineOpen === 0 ? "elements--full" : ""} ${
-              routineOpen === 1 ? "elements--side" : ""
-            }  ${routineOpen === 2 ? "elements--disabled" : ""}`}
-          >
-            <div className="elements__header">
-              <GroupTabs
-                selectEvent={selectEvent}
-                selectGroup={selectGroup}
-                setSelectGroup={setSelectGroup}
-              />
-            </div>
-            <div className="elements__group">
-              {Object.entries(groupElements as Object).map(([rowKey, rowElements]) => (
-                <div className="elements__row" key={rowKey}>
-                  {Object.entries(rowElements as Object).map(
-                    ([column_number, element]) => (
-                      <React.Fragment key={`${rowKey}-${column_number}`}>
-                        {element.name ? (
-                          <div
-                            className={`elements__tile ${
-                              statusClassMap[getElementStatus(routine, element)]
-                            }`}
-                            key={`${rowKey}-${column_number}`}
-                            onClick={() => {
-                              handleElementClick(element);
-                            }}
-                          >
-                            <div className="elements__labels">
-                              <span className="elements__difficulty">
-                                {selectEvent === Events.跳馬
-                                  ? element.difficulty
-                                  : difficulties[element.difficulty - 1]}
-                              </span>
-                              {renderElementStatusMessage(element)}
-                            </div>
-                            {element.alias && (
-                              <span className="elements__alias">{element.alias}</span>
-                            )}
-                            <div>{element.code}.{element.name}</div>
-                          </div>
-                        ) : (
-                          <div
-                            className="elements__tile"
-                            key={`${rowKey}-${column_number}`}
-                          ></div>
-                        )}
-                      </React.Fragment>
-                    )
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div
-            className={`routine ${routineOpen === 0 ? "routine--disabled" : ""} ${
-              routineOpen === 1 ? "routine--side" : ""
-            } ${routineOpen === 2 ? "routine--full" : ""}`}
-          >
-            <div className="routine__header">
-              合計Dスコア: {calculateTotalScore(routine).toFixed(1)} (ND:
-              {calculateND(routine)})
-            </div>
-            {routine.length ? (
-              <div className="routine__elements">
-                <div className="routine__element routine__element--header">
-                  <span className="routine__item">No.</span>
-                  <span></span>
-                  <span className="routine__item">名前</span>
-                  <span className="routine__item">EG</span>
-                  <span className="routine__item">難度</span>
-                  <span className="routine__item">CV</span>
-                </div>
-                {routine.map((element, index) => (
-                  <div className="routine__element" key={element.name}>
-                    <span className="routine__item">{index + 1}</span>
-                    <span
-                      className={`routine__item routine__icon ${
-                        element.is_connected ? "routine__icon--active" : ""
-                      }`}
-                      onClick={() => handleConnectionClick(element, index)}
-                    >
-                      {element.is_connected ? (
-                        <AddBoxIcon
-                          sx={{
-                            fontSize: "1.5rem",
-                          }}
-                        />
-                      ) : (
-                        <AddIcon
-                          sx={{
-                            fontSize: "1rem",
-                          }}
-                        />
-                      )}
-                    </span>
-                    <span className="routine__item">
-                      {element.code}.{element.alias ? element.alias : element.name}
-                    </span>
-                    <span className="routine__item">
-                      {element.element_group_score! > 0
-                        ? `${element_groups[element.element_group - 1]}(${
-                            element.element_group_score
-                          })`
-                        : `${element_groups[element.element_group - 1]}`}
-                    </span>
-                    <span className="routine__item">
-                      {difficulties[element.difficulty - 1]}
-                    </span>
-                    <span className="routine__item">{element.connection_value}</span>
-                    <span className="routine__item routine__icon">
-                      <CloseIcon
-                        sx={{
-                          fontSize: "1rem",
-                        }}
-                        onClick={() => setRoutine(routine.filter((e) => e !== element))}
-                      />
-                    </span>
-                  </div>
-                ))}
-                <div className="routine__element routine__element--footer">
-                  <span className="routine__item"></span>
-                  <span className="routine__item"></span>
-                  <span className="routine__item"></span>
-                  <span className="routine__item">
-                    {calculateTotalElementGroupScore(routine).toFixed(1)}
-                  </span>
-                  <span className="routine__item">
-                    {calculateTotalDifficulty(routine).toFixed(1)}
-                  </span>
-                  <span className="routine__item">
-                    {calculateTotalConnectionValue(routine).toFixed(1)}
-                  </span>
-                </div>
-                <div className="routine__element">
-                  <span className="routine__item"></span>
-                  <span className="routine__item"></span>
-                  <span className="routine__item"></span>
-                  <span className="routine__item"></span>
-                  <span className="routine__item"></span>
-                  <span className="routine__item"></span>
-                </div>
-              </div>
-            ) : (
-              <p>演技構成はありません</p>
-            )}
-          </div>
+          {/* 難度表 */}
+          <Elements
+            routineOpen={routineOpen}
+            selectEvent={selectEvent}
+            selectGroup={selectGroup}
+            setSelectGroup={setSelectGroup}
+            groupElements={groupElements}
+            routine={routine}
+            setRoutine={setRoutine}
+          />
+          {/* 演技構成表 */}
+          <Routine
+            selectEvent={selectEvent}
+            routine={routine}
+            setRoutine={setRoutine}
+            routineOpen={routineOpen}
+            setRoutineOpen={setRoutineOpen}
+            categorizedElements={categorizedElements}
+          />
         </div>
       ) : (
-        <div>
+        <div className="main__emplty">
           <p>ただいま絶賛開発中です。</p>
           <p>もう少しお待ち下さい🙇</p>
         </div>

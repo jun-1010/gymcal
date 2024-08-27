@@ -2,6 +2,8 @@ export const difficulties = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
 export const element_groups = ["I", "II", "III", "IV", "V"];
 
+export const ELEMENT_COUNT_DEDUCTIONS = [10, 7, 6, 5, 4, 3, 0, 0, 0];
+
 export enum Events {
   床 = 1,
   あん馬 = 2,
@@ -22,18 +24,18 @@ export enum ElementGroup {
   EG4 = 4,
 }
 
-export const getEventKey = (eventKey: number): string => {
+export const getEventKey = (event: number): string => {
   for (const key in Events) {
-    if (Events[key as keyof typeof Events] === eventKey) {
+    if (Events[key as keyof typeof Events] === event) {
       return key;
     }
   }
   return "Undefined";
 };
 
-export const getGroupKey = (groupKey: number): string => {
+export const getGroupKey = (group: number): string => {
   for (const key in ElementGroup) {
-    if (ElementGroup[key as keyof typeof ElementGroup] === groupKey) {
+    if (ElementGroup[key as keyof typeof ElementGroup] === group) {
       return key;
     }
   }
@@ -56,21 +58,55 @@ export const getGroupName = (selectEvent: number, selectGroup: number): string =
 
 export enum ElementType {
   ひねりを伴う1回宙 = 1,
-  ビッグタンブリング = 2,
+  ダブル系 = 2,
+  床_力技 = 3,
+  床_旋回 = 4,
 }
 
+// element__tileの状態表示に使用
 export enum ElementStatus {
   選択可能 = 1,
   選択済み = 2,
   同一枠選択済み = 3,
   技数制限_グループ = 4,
   技数制限_全体 = 5,
+  床_力技制限 = 6,
+  床_旋回制限 = 7,
 }
 
-export const statusClassMap: { [key: number]: string } = {
-  1: "elements__tile--active",
-  2: "elements__tile--selected",
-  3: "elements__tile--same-slot-selected",
-  4: "elements__tile--group-limit",
-  5: "elements__tile--total-limit",
+// active, selected, disabledの3つで十分
+export const statusClass = (status: number) => {
+  if (status === 1) {
+    return "elements__tile--active";
+  } else if (status === 2) {
+    return "elements__tile--selected";
+  } else if (3 <= status) {
+    return "elements__tile--disabled";
+  } else {
+    return "";
+  }
+};
+
+export enum Rules {
+  Dスコア = 1,
+  グループ得点 = 2,
+  難度点 = 3,
+  組み合わせ加点 = 4,
+  ニュートラルディダクション = 5,
+  技数減点 = 6,
+  ダブル系不足 = 7,
+  同一技制限 = 8,
+  同一枠制限 = 9,
+  グループ技数制限 = 10,
+  全体技数制限 = 11,
+  床_力技制限 = 12,
+}
+
+export const RuleKey = (ruleKey: number): string => {
+  for (const key in Rules) {
+    if (Rules[key as keyof typeof Rules] === ruleKey) {
+      return key;
+    }
+  }
+  return "Undefined";
 };
