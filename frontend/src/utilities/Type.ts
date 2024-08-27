@@ -81,6 +81,7 @@ export enum ElementType {
   あん馬_ブスナリ系 = 16,
   あん馬_ロシアン転向移動技2 = 17,
   あん馬_トンフェイ系 = 18,
+  あん馬_ニンレイエス系 = 19,
 }
 
 // element__tileの状態表示に使用
@@ -103,6 +104,7 @@ export enum ElementStatus {
   あん馬_ブスナリ系制限 = 16,
   あん馬_ロシアン転向移動技制限2 = 17,
   あん馬_トンフェイ系制限 = 18,
+  あん馬_ニンレイエス系制限 = 19,
 }
 
 // active, selected, disabledの3つで十分
@@ -143,6 +145,7 @@ export enum Rules {
   あん馬_ブスナリ系制限 = 22,
   あん馬_ロシアン転向移動技制限2 = 23,
   あん馬_トンフェイ系制限 = 24,
+  あん馬_ニンレイエス系制限 = 25,
 }
 
 export const RuleKey = (ruleKey: number): string => {

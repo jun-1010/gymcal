@@ -4,6 +4,7 @@ import {
   isPHBusnariLimit,
   isPHFlairLimit,
   isPHHandstandLimit,
+  isPHNinReyesLimit,
   isPHRussianLimit,
   isPHRussianTravelLimit1,
   isPHRussianTravelLimit2,
@@ -96,6 +97,8 @@ export const getElementStatus = (selectEvent: Events, routine: RoutineElement[],
       return ElementStatus.あん馬_ロシアン転向移動技制限2; // 1
     } else if (isPHTongFeiLimit(routine, targetElement)) {
       return ElementStatus.あん馬_トンフェイ系制限; // 1
+    } else if (isPHNinReyesLimit(routine, targetElement)) {
+      return ElementStatus.あん馬_ニンレイエス系制限; // 1
     }
   }
 

@@ -4,6 +4,7 @@ import {
   getPHBusnariLimitCodes,
   getPHFlairLimitCodes,
   getPHHandstandLimitCodes,
+  getPHNinReyesLimitCodes,
   getPHRussianLimitCodes,
   getPHRussianTravelLimit1Codes,
   getPHRussianTravelLimit2Codes,
@@ -89,6 +90,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
   const phBusnariLimitCodes = selectEvent === Events.あん馬 ? getPHBusnariLimitCodes(routine) : [];
   const phRussianTranveLimit2Codes = selectEvent === Events.あん馬 ? getPHRussianTravelLimit2Codes(routine) : [];
   const phTongFeiLimitCodes = selectEvent === Events.あん馬 ? getPHTongFeiLimitCodes(routine) : [];
+  const phNinReyesLimitCodes = selectEvent === Events.あん馬 ? getPHNinReyesLimitCodes(routine) : [];
 
   return (
     <>
@@ -568,12 +570,12 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionNode={
               <div className="rules__description">
                 <p>以下のロシアン転向移動技は1演技中2つまで使用できます。</p>
-                <p>・III.57 下向き正転向移動(一把手～馬端)</p>
-                <p>・III.58 トンフェイ</p>
-                <p>・III.59 ヴァメン</p>
-                <p>・III.64 下向き720°(以上)転向移動(一把手～馬端)</p>
-                <p>・III.65 ウ・ヴォニアン</p>
-                <p>・III.70 ロス</p>
+                <p>・III57 下向き正転向移動(一把手～馬端)</p>
+                <p>・III58 トンフェイ</p>
+                <p>・III59 ヴァメン</p>
+                <p>・III64 下向き720°(以上)転向移動(一把手～馬端)</p>
+                <p>・III65 ウ・ヴォニアン</p>
+                <p>・III70 ロス</p>
               </div>
             }
             show={selectEvent === Events.あん馬}
@@ -598,10 +600,10 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionNode={
               <div className="rules__description">
                 <p>以下のひねりを伴う3/3移動技は1演技中2つまで使用できます。</p>
-                <p>・III.17 正面横移動ひねり、背面横移動ひねり（馬端～馬端）</p>
-                <p>・III.22 縦向き1/3前移動直ちに縦向き2/3移動ひねり（ニン・レイエス）</p>
-                <p>・III.23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）</p>
-                <p>・III.29 開脚旋回縦向き3/3移動1回ひねり（2回以内の旋回で）（ウルジカ2/ブルクハルト）</p>
+                <p>・III17 正面横移動ひねり、背面横移動ひねり（馬端～馬端）</p>
+                <p>・III22 縦向き1/3前移動直ちに縦向き2/3移動ひねり（ニン・レイエス）</p>
+                <p>・III23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）</p>
+                <p>・III29 開脚旋回縦向き3/3移動1回ひねり（2回以内の旋回で）（ウルジカ2/ブルクハルト）</p>
               </div>
             }
             show={selectEvent === Events.あん馬}
@@ -626,13 +628,13 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionNode={
               <div className="rules__description">
                 <p>以下の1回ひねりを伴う技は1演技中2つまで使用できます。</p>
-                <p>・II-28 一把手を挟んで横向き旋回1回ひねり（2回以内の旋回で） </p>
-                <p>・II-29 横向き旋回1回ひねり移動（2回以内の旋回で）（アイヒホルン） </p>
-                <p>・II-30 両把手を挟んで横向き旋回1回ひねり（2回以内の旋回で）（ケイハ）</p>
-                <p>・II-30 馬端外向き縦向き支持から両把手を越えて縦向き旋回1回ひねり（2回以内の旋回で）（ケイハ5）</p>
-                <p>・II-34 馬端旋回1回ひねり（2回以内の旋回で）（マジャール）</p>
-                <p>・II-35 両把手上横向き旋回1回ひねり（2回以内の旋回で）（ベルキ）</p>
-                <p>・II-36 あん部馬背縦向き旋回1回ひねり（2回以内の旋回で）</p>
+                <p>・II28 一把手を挟んで横向き旋回1回ひねり（2回以内の旋回で） </p>
+                <p>・II29 横向き旋回1回ひねり移動（2回以内の旋回で）（アイヒホルン） </p>
+                <p>・II30 両把手を挟んで横向き旋回1回ひねり（2回以内の旋回で）（ケイハ）</p>
+                <p>・II30 馬端外向き縦向き支持から両把手を越えて縦向き旋回1回ひねり（2回以内の旋回で）（ケイハ5）</p>
+                <p>・II34 馬端旋回1回ひねり（2回以内の旋回で）（マジャール）</p>
+                <p>・II35 両把手上横向き旋回1回ひねり（2回以内の旋回で）（ベルキ）</p>
+                <p>・II36 あん部馬背縦向き旋回1回ひねり（2回以内の旋回で）</p>
               </div>
             }
             show={selectEvent === Events.あん馬}
@@ -730,9 +732,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionNode={
               <div className="rules__description">
                 <p>以下のロシアン転向移動技は1演技中1つまで使用できます。</p>
-                <p>・III.64 下向き720°(以上)転向移動(一把手～馬端)</p>
-                <p>・III.65 ウ・ヴォニアン</p>
-                <p>・III.70 ロス</p>
+                <p>・III64 下向き720°(以上)転向移動(一把手～馬端)</p>
+                <p>・III65 ウ・ヴォニアン</p>
+                <p>・III70 ロス</p>
               </div>
             }
             show={selectEvent === Events.あん馬}
@@ -757,9 +759,35 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionNode={
               <div className="rules__description">
                 <p>以下のトン・フェイ系の移動技は1演技中1つまで使用できます。</p>
-                <p>・III.57 下向き正転向移動(一把手～馬端)</p>
-                <p>・III.58 トンフェイ</p>
-                <p>・III.59 ヴァメン</p>
+                <p>・III57 下向き正転向移動(一把手～馬端)</p>
+                <p>・III58 トンフェイ</p>
+                <p>・III59 ヴァメン</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_ニンレイエス系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_ニンレイエス系制限)}
+                {phNinReyesLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phNinReyesLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>以下のニン・レイエス系の移動技は1演技中1つまで使用できます。</p>
+                <p>・III22 縦向き1/3前移動直ちに縦向き2/3移動ひねり（ニン・レイエス）</p>
+                <p>・III23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）</p>
               </div>
             }
             show={selectEvent === Events.あん馬}

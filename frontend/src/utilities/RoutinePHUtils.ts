@@ -244,3 +244,23 @@ export const getPHTongFeiLimitCodes = (routine: RoutineElement[]) =>
   routine
     .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_トンフェイ系))
     .map((element) => element.code!);
+
+// ElementTile用 ニンレイエス系判定
+export const isPHNinReyesLimit = (routine: Element[], targetElement: Element): boolean => {
+  // 対象がニンレイエス系以外ならfalse
+  if (!isElementTypeIncluded(targetElement.element_type, ElementType.あん馬_ニンレイエス系)) {
+    return false;
+  }
+  // 1つ選択していたらtrue
+  const count = routine.filter((element) =>
+    isElementTypeIncluded(element.element_type, ElementType.あん馬_ニンレイエス系)
+  ).length;
+
+  return count == 1;
+};
+
+// RoutineRules用 | 選択済みのニンレイエス系コード取得
+export const getPHNinReyesLimitCodes = (routine: RoutineElement[]) =>
+  routine
+    .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_ニンレイエス系))
+    .map((element) => element.code!);
