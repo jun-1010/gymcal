@@ -1,18 +1,41 @@
 import { CategorizedElements, getGroupElements } from "../../utilities/ElementUtil";
+import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "../../utilities/RoutineFXUtil";
+import {
+  getPHBusnariLimitCodes,
+  getPHCombineLimitCodes,
+  getPHFlairLimitCodes,
+  getPHFlopLimitCodes,
+  getPHHandstandLimitCodes,
+  getPHNinReyesLimitCodes,
+  getPHRussianLimitCodes,
+  getPHRussianTravelLimit1Codes,
+  getPHRussianTravelLimit2Codes,
+  getPHSohnBezugoLimitCodes,
+  getPHSpindleLimitCodes,
+  getPHTongFeiLimitCodes,
+  getPHTravelLimitCodes,
+  getPHTravelSpindleLimitCodes,
+} from "../../utilities/RoutinePHUtils";
 import {
   calculateElementCountDeduction,
-  calculateMultipleSaltoShortage,
   calculateNeutralDeduction,
   calculateTotalConnectionValue,
   calculateTotalDifficulty,
   calculateTotalElementGroupScore,
   calculateTotalScore,
-  isFloorCircleLimit,
-  isFloorStrengthLimit,
   isGroupLimited,
   RoutineElement,
 } from "../../utilities/RoutineUtil";
-import { ELEMENT_COUNT_DEDUCTIONS, Events, RuleKey, Rules, getGroupKey } from "../../utilities/Type";
+import {
+  ELEMENT_COUNT_DEDUCTIONS,
+  ElementGroup,
+  Events,
+  RuleKey,
+  RuleName,
+  Rules,
+  element_groups,
+  getGroupKey,
+} from "../../utilities/Type";
 import RoutineRule from "../atoms/RoutineRule";
 
 // 同一枠の技を持つ技のコードを取得
@@ -25,7 +48,12 @@ const getSameSlotCodes = (routine: RoutineElement[], categorizedElements: Catego
 
     Object.values(groupElements).forEach((rowElements) => {
       Object.values(rowElements).forEach((groupElement) => {
-        if ("code" in groupElement && groupElement.id !== element.id && groupElement.code === element.code) {
+        if (
+          "code" in groupElement &&
+          groupElement.code !== "" &&
+          groupElement.id !== element.id &&
+          groupElement.code === element.code
+        ) {
           sameSlotCodes.push(groupElement.code!);
         }
       });
@@ -58,8 +86,24 @@ interface RoutineRulesProps {
 export const RoutineRules = ({ selectEvent, routine, categorizedElements }: RoutineRulesProps) => {
   const sameSlotCodes = getSameSlotCodes(routine, categorizedElements);
   const limitedGroups = getLimitedGroups(routine);
-  const floorStrengthLimitCode = routine.find((element) => isFloorStrengthLimit(routine, element))?.code || "";
-  const floorCircleLimitCode = routine.find((element) => isFloorCircleLimit(routine, element))?.code || "";
+  const fxStrengthLimitCode =
+    (selectEvent === Events.床 && routine.find((element) => isFXStrengthLimit(routine, element))?.code) || "";
+  const fxCircleLimitCode =
+    (selectEvent === Events.床 && routine.find((element) => isFXCircleLimit(routine, element))?.code) || "";
+  const phTravelLimitCodes = selectEvent === Events.あん馬 ? getPHTravelLimitCodes(routine) : [];
+  const phRussianLimitCodes = selectEvent === Events.あん馬 ? getPHRussianLimitCodes(routine) : [];
+  const phHandstandLimitCodes = selectEvent === Events.あん馬 ? getPHHandstandLimitCodes(routine) : [];
+  const phRussianTranveLimit1Codes = selectEvent === Events.あん馬 ? getPHRussianTravelLimit1Codes(routine) : [];
+  const phTranveSpindleLimitCodes = selectEvent === Events.あん馬 ? getPHTravelSpindleLimitCodes(routine) : [];
+  const phSpindleLimitCodes = selectEvent === Events.あん馬 ? getPHSpindleLimitCodes(routine) : [];
+  const phSohnBezugoLimitCodes = selectEvent === Events.あん馬 ? getPHSohnBezugoLimitCodes(routine) : [];
+  const phFlairLimitCodes = selectEvent === Events.あん馬 ? getPHFlairLimitCodes(routine) : [];
+  const phBusnariLimitCodes = selectEvent === Events.あん馬 ? getPHBusnariLimitCodes(routine) : [];
+  const phRussianTranveLimit2Codes = selectEvent === Events.あん馬 ? getPHRussianTravelLimit2Codes(routine) : [];
+  const phTongFeiLimitCodes = selectEvent === Events.あん馬 ? getPHTongFeiLimitCodes(routine) : [];
+  const phNinReyesLimitCodes = selectEvent === Events.あん馬 ? getPHNinReyesLimitCodes(routine) : [];
+  const phFlopLimitCodes = selectEvent === Events.あん馬 ? getPHFlopLimitCodes(routine) : [];
+  const phCombineLimitCodes = selectEvent === Events.あん馬 ? getPHCombineLimitCodes(routine) : [];
 
   return (
     <>
@@ -405,13 +449,32 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             show={true}
           />
 
+          {/* 終末技制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleKey(Rules.終末技制限)}
+                {routine[routine.length - 1].element_group === ElementGroup.EG4 ? (
+                  <p className="common__label routine__summary-label">{routine[routine.length - 1].code}</p>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>終末技は終末技グループから1演技中1つまで使用できます。</p>
+                <p>終末技を選択したら技の解除はできますが技の新規選択はできません。</p>
+              </div>
+            }
+            show={selectEvent !== Events.床 && selectEvent !== Events.跳馬}
+          />
+
           {/* 床_力技制限 */}
           <RoutineRule
             summaryNode={
               <span className="rules__summary-title">
-                力技制限
-                {floorStrengthLimitCode ? (
-                  <p className="common__label routine__summary-label">{floorStrengthLimitCode}</p>
+                {RuleName(Rules.床_力技制限)}
+                {fxStrengthLimitCode ? (
+                  <p className="common__label routine__summary-label">{fxStrengthLimitCode}</p>
                 ) : null}
               </span>
             }
@@ -431,10 +494,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
           <RoutineRule
             summaryNode={
               <span className="rules__summary-title">
-                旋回制限
-                {floorCircleLimitCode ? (
-                  <p className="common__label routine__summary-label">{floorCircleLimitCode}</p>
-                ) : null}
+                {RuleName(Rules.床_旋回制限)}
+                {fxCircleLimitCode ? <p className="common__label routine__summary-label">{fxCircleLimitCode}</p> : null}
               </span>
             }
             descriptionNode={
@@ -443,6 +504,373 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               </div>
             }
             show={selectEvent === Events.床}
+          />
+
+          {/* あん馬_縦向き移動技制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_縦向き移動技制限)}
+                {phTravelLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phTravelLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>縦向き3部分前及び後ろ移動技は1演技中2つまで使用できます。</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_ロシアン転向技制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_ロシアン転向技制限)}
+                {phRussianLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phRussianLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>ロシアン転向技は終末技を含めて1演技中2つまで使用できます。</p>
+                <p>また、同じ場所でのロシアン転向技は1つまで使用できます。</p>
+                <p>例）</p>
+                <p>・馬端馬背ロシアン1080°転向～ロシアン720°転向下り：不認定+B難度</p>
+                <p>・あん部馬背ロシアン720°転向～あん部馬背ロシアン1080°転向：不認定+E難度</p>
+                <p>・あん部馬背ロシアン360° ～馬端馬背ロシアン1080°転向～ロシアン360°転向下り：C難度+不認定+A難度</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_倒立技制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_倒立技制限)}
+                {phHandstandLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phHandstandLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>倒立する技は終末技を除いて1演技中2つまで使用できます。</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_ロシアン転向移動技制限1 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_ロシアン転向移動技制限1)}
+                {phRussianTranveLimit1Codes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phRussianTranveLimit1Codes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>以下のロシアン転向移動技は1演技中2つまで使用できます。</p>
+                <p>・III57 下向き正転向移動(一把手～馬端)</p>
+                <p>・III58 トンフェイ</p>
+                <p>・III59 ヴァメン</p>
+                <p>・III64 下向き720°(以上)転向移動(一把手～馬端)</p>
+                <p>・III65 ウ・ヴォニアン</p>
+                <p>・III70 ロス</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_移動ひねり技制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_移動ひねり技制限)}
+                {phTranveSpindleLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phTranveSpindleLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>以下のひねりを伴う3/3移動技は1演技中2つまで使用できます。</p>
+                <p>・III17 正面横移動ひねり、背面横移動ひねり（馬端～馬端）</p>
+                <p>・III22 縦向き1/3前移動直ちに縦向き2/3移動ひねり（ニン・レイエス）</p>
+                <p>・III23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）</p>
+                <p>・III29 開脚旋回縦向き3/3移動1回ひねり（2回以内の旋回で）（ウルジカ2/ブルクハルト）</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_ひねり技制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_ひねり技制限)}
+                {phSpindleLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phSpindleLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>以下の1回ひねりを伴う技は1演技中2つまで使用できます。</p>
+                <p>・II28 一把手を挟んで横向き旋回1回ひねり（2回以内の旋回で） </p>
+                <p>・II29 横向き旋回1回ひねり移動（2回以内の旋回で）（アイヒホルン） </p>
+                <p>・II30 両把手を挟んで横向き旋回1回ひねり（2回以内の旋回で）（ケイハ）</p>
+                <p>・II30 馬端外向き縦向き支持から両把手を越えて縦向き旋回1回ひねり（2回以内の旋回で）（ケイハ5）</p>
+                <p>・II34 馬端旋回1回ひねり（2回以内の旋回で）（マジャール）</p>
+                <p>・II35 両把手上横向き旋回1回ひねり（2回以内の旋回で）（ベルキ）</p>
+                <p>・II36 あん部馬背縦向き旋回1回ひねり（2回以内の旋回で）</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_ショーンべズゴ系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_ショーンべズゴ系制限)}
+                {phSohnBezugoLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phSohnBezugoLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>ショーン系及びベズゴ系の技はフロップやコンバイン、倒立技を含め1演技中2つまで使用できます。</p>
+                <p>それぞれ2回ずつではなくショーン系とべズゴ系合わせて2つまでです。 </p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_開脚旋回技制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_開脚旋回技制限)}
+                {phFlairLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phFlairLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>開脚旋回で実施される技は終末技は含まずに1演技中4つまで使用できます。</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_ブスナリ系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_ブスナリ系制限)}
+                {phBusnariLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phBusnariLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>ブスナリ系の技は1演技中1つまで使用できます。</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_ロシアン転向移動技制限2 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_ロシアン転向移動技制限2)}
+                {phRussianTranveLimit2Codes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phRussianTranveLimit2Codes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>以下のロシアン転向移動技は1演技中1つまで使用できます。</p>
+                <p>・III64 下向き720°(以上)転向移動(一把手～馬端)</p>
+                <p>・III65 ウ・ヴォニアン</p>
+                <p>・III70 ロス</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_トンフェイ系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_トンフェイ系制限)}
+                {phTongFeiLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phTongFeiLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>以下のトン・フェイ系の移動技は1演技中1つまで使用できます。</p>
+                <p>・III57 下向き正転向移動(一把手～馬端)</p>
+                <p>・III58 トンフェイ</p>
+                <p>・III59 ヴァメン</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_ニンレイエス系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_ニンレイエス系制限)}
+                {phNinReyesLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phNinReyesLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>以下のニン・レイエス系の移動技は1演技中1つまで使用できます。</p>
+                <p>・III22 縦向き1/3前移動直ちに縦向き2/3移動ひねり（ニン・レイエス）</p>
+                <p>・III23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_フロップ系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_フロップ系制限)}
+                {phFlopLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phFlopLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>フロップ系の技は1演技中1つまで使用できます。</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_コンバイン系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_コンバイン系制限)}
+                {phCombineLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phCombineLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>コンバイン系の技は1演技中1つまで使用できます。</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
           />
         </div>
       </div>

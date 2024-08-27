@@ -64,8 +64,8 @@ html {
 .common__label {
   font-weight: 550;
   font-size: 0.8rem;
-  padding: 0 0.5rem;
-  height: 1.5rem;
+  padding: 0.2rem 0.5rem;
+  height: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -255,8 +255,8 @@ html {
       flex-wrap: nowrap;
 
       .elements__tile {
-        min-width: 12rem;
-        max-width: 12rem;
+        min-width: 13rem;
+        max-width: 13rem;
         min-height: 5rem;
         padding: 1rem;
         margin: 0.2rem;
@@ -553,9 +553,11 @@ html {
           display: flex;
           align-items: center;
           gap: 0.5rem;
+          width: calc(100% - 1.2rem);
 
           .rules__summary-labels {
             display: flex;
+            align-items: center;
             gap: 0.2rem;
           }
         }

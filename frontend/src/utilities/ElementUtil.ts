@@ -12,7 +12,7 @@ export interface Element {
   column_number: number;
   start_direction: number | null;
   end_direction: number | null;
-  element_type: number | null;
+  element_type: string | null;
 }
 
 export interface GroupElements {
@@ -117,3 +117,10 @@ export const getGroupElements = (
 //   // return
 //   return "hoge";
 // };
+
+export const isElementTypeIncluded = (elementTypes: string | null, elementTypeToCheck: number) => {
+  if (elementTypes === null || typeof elementTypes !== "string") {
+    return false;
+  }
+  return elementTypes.split("-").includes(elementTypeToCheck.toString());
+};
