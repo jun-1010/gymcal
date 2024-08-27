@@ -62,7 +62,8 @@ html {
   font-size: 0.8rem;
   padding: 0 0.5rem;
   height: 1.5rem;
-  display: flex;
+  /* ビルドで消えてしまうため!importantを付与 */
+  display: flex !important;
   justify-content: center;
   align-items: center;
   border-radius: 0.5rem;
@@ -78,12 +79,14 @@ html {
 .header {
   margin: 0.5rem 1rem;
   height: var(--header-height);
-  display: flex;
+  /* ビルドで消えてしまうため!importantを付与 */
+  display: flex !important;
   justify-content: space-between;
   align-items: center;
 
   .header__left {
-    display: flex;
+    /* ビルドで消えてしまうため!importantを付与 */
+    display: flex !important;
     align-items: center;
     gap: 1rem;
 
@@ -100,7 +103,8 @@ html {
   .header__right {
     margin-top: 0.2rem;
     .header__icons {
-      display: flex;
+      /* ビルドで消えてしまうため!importantを付与 */
+      display: flex !important;
       justify-content: right;
       align-items: center;
       cursor: pointer;
@@ -123,7 +127,8 @@ html {
 メイン
 **********************************/
 .main {
-  display: flex;
+  /* ビルドで消えてしまうため!importantを付与 */
+  display: flex !important;
   justify-content: space-between;
   margin: 0 0.5rem;
   height: calc(100dvh - var(--header-height) - 2rem);
@@ -132,7 +137,8 @@ html {
 .main__emplty {
   height: 10rem;
   width: 100%;
-  display: flex;
+  /* ビルドで消えてしまうため!importantを付与 */
+  display: flex !important;
   justify-content: center;
   align-items: center;
 }
@@ -148,7 +154,8 @@ html {
 
 .event-dropdown__selected {
   padding: 0.2rem;
-  display: flex;
+  /* ビルドで消えてしまうため!importantを付与 */
+  display: flex !important;
   justify-content: center;
   align-items: center;
   gap: 0.1rem;
@@ -165,7 +172,8 @@ html {
 
   .event-dropdown__icon {
     opacity: 0.8;
-    display: flex;
+    /* ビルドで消えてしまうため!importantを付与 */
+    display: flex !important;
     justify-content: center;
     align-items: center;
     transition: transform 0.3s ease; /* スムーズな回転 */
@@ -205,7 +213,8 @@ html {
 ********************************************/
 .group-tabs {
   background-color: var(--white);
-  display: flex;
+  /* ビルドで消えてしまうため!importantを付与 */
+  display: flex !important;
   gap: 0.5rem;
   overflow-x: scroll;
   &::-webkit-scrollbar {
@@ -247,7 +256,8 @@ html {
     overflow: scroll;
 
     .elements__row {
-      display: flex;
+      /* ビルドで消えてしまうため!importantを付与 */
+      display: flex !important;
       flex-wrap: nowrap;
 
       .elements__tile {
@@ -259,13 +269,15 @@ html {
         border-radius: 0.5rem;
         background-color: var(--white);
         box-shadow: 0 0 0.2rem 0.05rem var(--gray);
-        display: flex;
-        flex-direction: column;
+        /* ビルドで消えてしまうため!importantを付与 */
+        display: flex !important;
+        flex-direction: column !important;
         gap: 0.2rem;
         user-select: none;
 
         .elements__labels {
-          display: flex;
+          /* ビルドで消えてしまうため!importantを付与 */
+          display: flex !important;
           gap: 0.5rem;
           font-size: 0.8rem;
         }
@@ -324,8 +336,9 @@ html {
   background-color: var(--white);
   border-radius: 1rem;
   box-shadow: 0 0.2rem 0.5rem 0.1rem var(--gray);
-  display: flex;
-  flex-direction: column;
+  /* ビルドで消えてしまうため!importantを付与 */
+  display: flex !important;
+  flex-direction: column !important;
   gap: 1rem;
   height: calc(100%);
   overflow-y: scroll;
@@ -334,21 +347,24 @@ html {
     font-weight: bold;
     border-bottom: 0.1rem solid var(--dark-gray);
     padding: 0 0 0.5rem 0;
-    display: flex;
-    flex-direction: row;
+    /* ビルドで消えてしまうため!importantを付与 */
+    display: flex !important;
+    flex-direction: row !important;
     gap: 0.5rem;
     font-size: 1.1rem;
   }
 
   .routine__table {
-    display: flex;
-    flex-direction: column;
+    /* ビルドで消えてしまうため!importantを付与 */
+    display: flex !important;
+    flex-direction: column !important;
     gap: 1rem;
     margin-bottom: 3rem;
 
     .routine__elements {
-      display: flex;
-      flex-direction: column;
+      /* ビルドで消えてしまうため!importantを付与 */
+      display: flex !important;
+      flex-direction: column !important;
       gap: 0.2rem;
       background-color: var(--light-orange);
       padding: 1rem 0.2rem 1rem 0.5rem;
@@ -365,7 +381,8 @@ html {
         column-gap: 0.3rem;
 
         .routine__item {
-          display: flex;
+          /* ビルドで消えてしまうため!importantを付与 */
+          display: flex !important;
           justify-content: left;
           align-items: center;
           line-height: 1.4rem;
@@ -376,7 +393,8 @@ html {
         }
 
         .routine__icon {
-          display: flex;
+          /* ビルドで消えてしまうため!importantを付与 */
+          display: flex !important;
           justify-content: center;
           align-items: center;
           opacity: 0.2;
@@ -400,8 +418,9 @@ html {
     .routine__empty-box {
       background-color: var(--light-orange);
       padding: 2rem 0;
-      display: flex;
-      flex-direction: column;
+      /* ビルドで消えてしまうため!importantを付与 */
+      display: flex !important;
+      flex-direction: column !important;
       align-items: center;
       gap: 1.5rem;
       .routine__empty-message-box {
@@ -432,13 +451,15 @@ html {
     }
 
     .routine__summaries {
-      display: flex;
-      flex-direction: column;
+      /* ビルドで消えてしまうため!importantを付与 */
+      display: flex !important;
+      flex-direction: column !important;
       gap: 0.5rem;
 
       .routine__summary {
-        display: flex;
-        flex-direction: row;
+        /* ビルドで消えてしまうため!importantを付与 */
+        display: flex !important;
+        flex-direction: row !important;
         justify-content: flex-end;
         width: 100%;
         gap: 0.5rem;
@@ -453,13 +474,15 @@ html {
 
   /* 演技構成表下のルール */
   .routine__rules {
-    display: flex;
-    flex-direction: column;
+    /* ビルドで消えてしまうため!importantを付与 */
+    display: flex !important;
+    flex-direction: column !important;
     gap: 2.5rem; /* セクション間隔 */
 
     .rules__section {
-      display: flex;
-      flex-direction: column;
+      /* ビルドで消えてしまうため!importantを付与 */
+      display: flex !important;
+      flex-direction: column !important;
       gap: 0.5rem;
     }
 
@@ -473,7 +496,8 @@ html {
       box-shadow: 0 0 0.2rem 0.1rem var(--gray);
 
       summary {
-        display: flex;
+        /* ビルドで消えてしまうため!importantを付与 */
+        display: flex !important;
         justify-content: space-between;
         align-items: center;
         padding: 0.5rem 1.5rem 0.5rem 1rem;
@@ -481,12 +505,14 @@ html {
         font-weight: bold;
 
         .rules__summary-title {
-          display: flex;
+          /* ビルドで消えてしまうため!importantを付与 */
+          display: flex !important;
           align-items: center;
           gap: 0.5rem;
 
           .rules__summary-labels {
-            display: flex;
+            /* ビルドで消えてしまうため!importantを付与 */
+            display: flex !important;
             gap: 0.2rem;
           }
         }
@@ -527,7 +553,8 @@ html {
           width: fit-content;
 
           .rules__table-row {
-            display: flex;
+            /* ビルドで消えてしまうため!importantを付与 */
+            display: flex !important;
             justify-content: center;
             gap: 0.3rem;
             max-width: 50rem;
@@ -536,7 +563,8 @@ html {
           }
 
           .rules__table-cell {
-            display: flex;
+            /* ビルドで消えてしまうため!importantを付与 */
+            display: flex !important;
             justify-content: center;
             align-items: center;
             width: 1.5rem;
@@ -607,7 +635,8 @@ PC mode
   種目ボタン
   ********************************************/
   .event-buttons {
-    display: flex;
+    /* ビルドで消えてしまうため!importantを付与 */
+    display: flex !important;
     background-color: var(--gray);
     border-radius: 1rem;
 
