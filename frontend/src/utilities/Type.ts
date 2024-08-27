@@ -109,6 +109,7 @@ export enum ElementStatus {
   あん馬_ニンレイエス系制限 = 19,
   あん馬_フロップ系制限 = 20,
   あん馬_コンバイン系制限 = 21,
+  終末技制限 = 22,
 }
 
 // active, selected, disabledの3つで十分
@@ -152,6 +153,7 @@ export enum Rules {
   あん馬_ニンレイエス系制限 = 25,
   あん馬_フロップ系制限 = 26,
   あん馬_コンバイン系制限 = 27,
+  終末技制限 = 28,
 }
 
 export const RuleKey = (ruleKey: number): string => {

@@ -64,6 +64,10 @@ const ElementsTile = ({
     if (status === ElementStatus.技数制限_全体) {
       return <div className="common__label">全体技数制限</div>;
     }
+    // 終末技制限
+    if (status === ElementStatus.終末技制限) {
+      return <div className="common__label">終末技制限</div>;
+    }
     // 床_力技制限
     if (status === ElementStatus.床_力技制限) {
       return <div className="common__label">力技制限</div>;

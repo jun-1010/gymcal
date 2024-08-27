@@ -26,7 +26,16 @@ import {
   isGroupLimited,
   RoutineElement,
 } from "../../utilities/RoutineUtil";
-import { ELEMENT_COUNT_DEDUCTIONS, Events, RuleKey, RuleName, Rules, getGroupKey } from "../../utilities/Type";
+import {
+  ELEMENT_COUNT_DEDUCTIONS,
+  ElementGroup,
+  Events,
+  RuleKey,
+  RuleName,
+  Rules,
+  element_groups,
+  getGroupKey,
+} from "../../utilities/Type";
 import RoutineRule from "../atoms/RoutineRule";
 
 // 同一枠の技を持つ技のコードを取得
@@ -438,6 +447,25 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               </div>
             }
             show={true}
+          />
+
+          {/* 終末技制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleKey(Rules.終末技制限)}
+                {routine[routine.length - 1].element_group === ElementGroup.EG4 ? (
+                  <p className="common__label routine__summary-label">{routine[routine.length - 1].code}</p>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>終末技は終末技グループから1演技中1つまで使用できます。</p>
+                <p>終末技を選択したら技の解除はできますが技の新規選択はできません。</p>
+              </div>
+            }
+            show={selectEvent !== Events.床 && selectEvent !== Events.跳馬}
           />
 
           {/* 床_力技制限 */}

@@ -69,14 +69,22 @@ export const getElementStatus = (selectEvent: Events, routine: RoutineElement[],
   } else if (routine.length >= 8) {
     return ElementStatus.技数制限_全体;
   }
-  // 種目固有ルールの表示
+  // 固有ルールの表示[床・鉄棒以外]
+  if (selectEvent !== Events.床 && selectEvent !== Events.鉄棒) {
+    if (routine[routine.length - 1].element_group === ElementGroup.EG4) {
+      return ElementStatus.終末技制限;
+    }
+  }
+  // 固有ルールの表示[床]
   if (selectEvent === Events.床) {
     if (isFXStrengthLimit(routine, targetElement)) {
       return ElementStatus.床_力技制限;
     } else if (isFXCircleLimit(routine, targetElement)) {
       return ElementStatus.床_旋回制限;
     }
-  } else if (selectEvent === Events.あん馬) {
+  }
+  // 固有ルールの表示[あん馬]
+  if (selectEvent === Events.あん馬) {
     if (isPHTravelLimit(routine, targetElement)) {
       return ElementStatus.あん馬_縦向き移動技制限; // 2
     } else if (isPHRussianLimit(routine, targetElement)) {
