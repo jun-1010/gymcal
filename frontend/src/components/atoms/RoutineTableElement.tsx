@@ -40,7 +40,7 @@ const RoutineTableElement = ({
   };
 
   return (
-    <div className="routine__element" key={element.name}>
+    <div className="routine__element" key={element.id}>
       <span className="routine__item">{index + 1}</span>
       <span
         className={`routine__item routine__icon ${

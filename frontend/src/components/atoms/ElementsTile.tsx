@@ -156,8 +156,8 @@ const ElementsTile = ({
           </div>
           {element.alias && <span className="elements__alias">{element.alias}</span>}
           <div>
-            {element.name && <>{element.code}.{element.name}</>}
-            {/* {element.code}.{element.name} */}
+            {element.code && <>{element.code}.</>}
+            {element.name && <>{element.name}</>}
           </div>
         </div>
       ) : (
