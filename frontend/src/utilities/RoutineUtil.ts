@@ -2,6 +2,7 @@ import { Element, isElementTypeIncluded } from "./ElementUtil";
 import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "./RoutineFXUtil";
 import {
   isPHBusnariLimit,
+  isPHCombineLimit,
   isPHFlairLimit,
   isPHFlopLimit,
   isPHHandstandLimit,
@@ -102,6 +103,8 @@ export const getElementStatus = (selectEvent: Events, routine: RoutineElement[],
       return ElementStatus.あん馬_ニンレイエス系制限; // 1
     } else if (isPHFlopLimit(routine, targetElement)) {
       return ElementStatus.あん馬_フロップ系制限; // 1
+    } else if (isPHCombineLimit(routine, targetElement)) {
+      return ElementStatus.あん馬_コンバイン系制限; // 1
     }
   }
 

@@ -124,6 +124,10 @@ const ElementsTile = ({
     if (status === ElementStatus.あん馬_フロップ系制限) {
       return <div className="common__label">フロップ系制限</div>;
     }
+    // あん馬_コンバイン系制限
+    if (status === ElementStatus.あん馬_コンバイン系制限) {
+      return <div className="common__label">コンバイン系制限</div>;
+    }
   };
 
   return (

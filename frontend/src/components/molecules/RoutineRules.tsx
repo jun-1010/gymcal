@@ -2,6 +2,7 @@ import { CategorizedElements, getGroupElements } from "../../utilities/ElementUt
 import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "../../utilities/RoutineFXUtil";
 import {
   getPHBusnariLimitCodes,
+  getPHCombineLimitCodes,
   getPHFlairLimitCodes,
   getPHFlopLimitCodes,
   getPHHandstandLimitCodes,
@@ -93,6 +94,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
   const phTongFeiLimitCodes = selectEvent === Events.あん馬 ? getPHTongFeiLimitCodes(routine) : [];
   const phNinReyesLimitCodes = selectEvent === Events.あん馬 ? getPHNinReyesLimitCodes(routine) : [];
   const phFlopLimitCodes = selectEvent === Events.あん馬 ? getPHFlopLimitCodes(routine) : [];
+  const phCombineLimitCodes = selectEvent === Events.あん馬 ? getPHCombineLimitCodes(routine) : [];
 
   return (
     <>
@@ -814,6 +816,30 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionNode={
               <div className="rules__description">
                 <p>フロップ系の技は1演技中1つまで使用できます。</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_コンバイン系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_コンバイン系制限)}
+                {phCombineLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phCombineLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>コンバイン系の技は1演技中1つまで使用できます。</p>
               </div>
             }
             show={selectEvent === Events.あん馬}

@@ -284,3 +284,23 @@ export const getPHFlopLimitCodes = (routine: RoutineElement[]) =>
   routine
     .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_フロップ系))
     .map((element) => element.alias!); // フロップは独自追加技のためaliasを表示
+
+// ElementTile用 | コンバイン系判定
+export const isPHCombineLimit = (routine: Element[], targetElement: Element): boolean => {
+  // 対象がフロップ系以外ならfalse
+  if (!isElementTypeIncluded(targetElement.element_type, ElementType.あん馬_コンバイン系)) {
+    return false;
+  }
+  // 1つ選択していたらtrue
+  const count = routine.filter((element) =>
+    isElementTypeIncluded(element.element_type, ElementType.あん馬_コンバイン系)
+  ).length;
+
+  return count == 1;
+};
+
+// RoutineRules用 | 選択済みのフロップ系コード取得
+export const getPHCombineLimitCodes = (routine: RoutineElement[]) =>
+  routine
+    .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_コンバイン系))
+    .map((element) => element.alias!); // コンバインは独自追加技のためaliasを表示
