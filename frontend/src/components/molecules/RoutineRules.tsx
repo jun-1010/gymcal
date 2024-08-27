@@ -3,6 +3,7 @@ import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } fr
 import {
   getPHBusnariLimitCodes,
   getPHFlairLimitCodes,
+  getPHFlopLimitCodes,
   getPHHandstandLimitCodes,
   getPHNinReyesLimitCodes,
   getPHRussianLimitCodes,
@@ -91,6 +92,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
   const phRussianTranveLimit2Codes = selectEvent === Events.あん馬 ? getPHRussianTravelLimit2Codes(routine) : [];
   const phTongFeiLimitCodes = selectEvent === Events.あん馬 ? getPHTongFeiLimitCodes(routine) : [];
   const phNinReyesLimitCodes = selectEvent === Events.あん馬 ? getPHNinReyesLimitCodes(routine) : [];
+  const phFlopLimitCodes = selectEvent === Events.あん馬 ? getPHFlopLimitCodes(routine) : [];
 
   return (
     <>
@@ -788,6 +790,30 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <p>以下のニン・レイエス系の移動技は1演技中1つまで使用できます。</p>
                 <p>・III22 縦向き1/3前移動直ちに縦向き2/3移動ひねり（ニン・レイエス）</p>
                 <p>・III23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）</p>
+              </div>
+            }
+            show={selectEvent === Events.あん馬}
+          />
+
+          {/* あん馬_フロップ系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.あん馬_フロップ系制限)}
+                {phFlopLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {phFlopLimitCodes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>フロップ系の技は1演技中1つまで使用できます。</p>
               </div>
             }
             show={selectEvent === Events.あん馬}

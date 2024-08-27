@@ -264,3 +264,23 @@ export const getPHNinReyesLimitCodes = (routine: RoutineElement[]) =>
   routine
     .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_ニンレイエス系))
     .map((element) => element.code!);
+
+// ElementTile用 | フロップ系判定
+export const isPHFlopLimit = (routine: Element[], targetElement: Element): boolean => {
+  // 対象がフロップ系以外ならfalse
+  if (!isElementTypeIncluded(targetElement.element_type, ElementType.あん馬_フロップ系)) {
+    return false;
+  }
+  // 1つ選択していたらtrue
+  const count = routine.filter((element) =>
+    isElementTypeIncluded(element.element_type, ElementType.あん馬_フロップ系)
+  ).length;
+
+  return count == 1;
+};
+
+// RoutineRules用 | 選択済みのフロップ系コード取得
+export const getPHFlopLimitCodes = (routine: RoutineElement[]) =>
+  routine
+    .filter((element) => isElementTypeIncluded(element.element_type, ElementType.あん馬_フロップ系))
+    .map((element) => element.alias!); // フロップは独自追加技のためaliasを表示

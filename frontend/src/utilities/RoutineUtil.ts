@@ -3,6 +3,7 @@ import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } fr
 import {
   isPHBusnariLimit,
   isPHFlairLimit,
+  isPHFlopLimit,
   isPHHandstandLimit,
   isPHNinReyesLimit,
   isPHRussianLimit,
@@ -99,6 +100,8 @@ export const getElementStatus = (selectEvent: Events, routine: RoutineElement[],
       return ElementStatus.あん馬_トンフェイ系制限; // 1
     } else if (isPHNinReyesLimit(routine, targetElement)) {
       return ElementStatus.あん馬_ニンレイエス系制限; // 1
+    } else if (isPHFlopLimit(routine, targetElement)) {
+      return ElementStatus.あん馬_フロップ系制限; // 1
     }
   }
 
