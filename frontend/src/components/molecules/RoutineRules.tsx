@@ -16,7 +16,7 @@ import {
   getPHTravelLimitCodes,
   getPHTravelSpindleLimitCodes,
 } from "../../utilities/RoutinePHUtils";
-import { srCombinationCode } from "../../utilities/RoutineSRUtil";
+import { calculateSwingHandstandShortage, srCombinationCode } from "../../utilities/RoutineSRUtil";
 import {
   calculateElementCountDeduction,
   calculateNeutralDeduction,
@@ -307,7 +307,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               <div className="rules__description">
                 <p>以下の要求を満たさない場合、減点が付与されます。</p>
                 <p>・6技以上による構成（技数減点）</p>
-                <p>・終末技が2回もしくは3回宙返り技（ダブル系不足）</p>
+                {selectEvent === Events.床 && <p>・終末技が2回もしくは3回宙返り技（ダブル系不足）</p>}
+                {selectEvent === Events.つり輪 && <p>・振動倒立技を使用している（振動倒立技不足）</p>}
               </div>
             }
             show={true}
@@ -361,11 +362,11 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             show={true}
           />
 
-          {/* ダブル系 */}
+          {/* 床_ダブル系 */}
           <RoutineRule
             summaryNode={
               <span className="rules__summary-title">
-                {RuleKey(Rules.ダブル系不足)}
+                {RuleName(Rules.床_ダブル系不足)}
                 {calculateMultipleSaltoShortage(routine) > 0 ? (
                   <p className="common__label routine__summary-label">
                     ダブル系不足:{calculateMultipleSaltoShortage(routine).toFixed(1)}
@@ -377,10 +378,32 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             }
             descriptionNode={
               <div className="rules__description">
-                <p>終末技が2回もしくは3回宙返り技でない場合、減点が付与されます（仮）。</p>
+                <p>終末技が2回もしくは3回宙返り技でない場合、減点が付与されます。</p>
               </div>
             }
             show={selectEvent === Events.床}
+          />
+
+          {/* つり輪_振動倒立不足 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.つり輪_振動倒立不足)}
+                {calculateSwingHandstandShortage(routine) > 0 ? (
+                  <p className="common__label routine__summary-label">
+                    振動倒立技不足:{calculateSwingHandstandShortage(routine).toFixed(1)}
+                  </p>
+                ) : (
+                  <></>
+                )}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>振動倒立技が演技に含まれていない場合、減点が付与されます。</p>
+              </div>
+            }
+            show={selectEvent === Events.つり輪}
           />
         </div>
 

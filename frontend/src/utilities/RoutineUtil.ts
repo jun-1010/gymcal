@@ -16,6 +16,7 @@ import {
   isPHTravelLimit,
   isPHTravelSpindleLimit,
 } from "./RoutinePHUtils";
+import { calculateSwingHandstandShortage } from "./RoutineSRUtil";
 import { ELEMENT_COUNT_DEDUCTIONS, ElementGroup, ElementStatus, ElementType, Events } from "./Type";
 
 // 6種目分のroutine
@@ -387,6 +388,8 @@ export const calculateTotalScore = (routine: RoutineElement[]): number => {
 export const calculateNeutralDeduction = (selectEvent: Events, routine: RoutineElement[]): number => {
   if (selectEvent === Events.床) {
     return calculateElementCountDeduction(routine) + calculateMultipleSaltoShortage(routine);
+  } else if (selectEvent === Events.つり輪) {
+    return calculateElementCountDeduction(routine) + calculateSwingHandstandShortage(routine);
   }
 
   return calculateElementCountDeduction(routine);

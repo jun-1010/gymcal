@@ -82,7 +82,6 @@ const RoutineTableElement = ({
             fontSize: "1rem",
           }}
           onClick={() => {
-            console.log(routine.filter((e) => e !== element));
             setRoutine(routine.filter((e) => e !== element));
           }}
         />
