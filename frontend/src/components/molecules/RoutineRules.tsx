@@ -16,6 +16,7 @@ import {
   getPHTravelLimitCodes,
   getPHTravelSpindleLimitCodes,
 } from "../../utilities/RoutinePHUtils";
+import { srCombinationCode } from "../../utilities/RoutineSRUtil";
 import {
   calculateElementCountDeduction,
   calculateNeutralDeduction,
@@ -212,11 +213,11 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             show={true}
           />
 
-          {/* 組み合わせ加点 */}
+          {/* 床_組み合わせ加点 */}
           <RoutineRule
             summaryNode={
               <span className="rules__summary-title">
-                {RuleKey(Rules.組み合わせ加点)}
+                {RuleName(Rules.床_組み合わせ加点)}
 
                 {calculateTotalConnectionValue(routine) > 0 ? (
                   <p className="common__label routine__summary-label">
@@ -251,7 +252,34 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <p> 例）後方伸身宙返り5/2ひねり + 前方伸身宙返り2回ひねり</p>
               </div>
             }
-            show={selectEvent === Events.床 || selectEvent === Events.鉄棒}
+            show={selectEvent === Events.床}
+          />
+
+          {/* つり輪_組み合わせ加点 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.つり輪_組み合わせ加点)}
+
+                {srCombinationCode(routine).length > 0 ? (
+                  <p className="common__label routine__summary-label">{srCombinationCode(routine)}</p>
+                ) : (
+                  <></>
+                )}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>
+                  ヤマワキやジョナサンから直接振動倒立技を実施した場合、ヤマワキやジョナサンは一段階格上げとなります。
+                </p>
+                <p>この加点は難度点に付与されます。</p>
+                <p>例:</p>
+                <p>・I45.ジョナサン(C)+I81.後ろ振り倒立(C)→D+C</p>
+                <p>・I44.ヤマワキ(B)+I45.ジョナサン(C)+I81.後ろ振り倒立→B+D+C</p>
+              </div>
+            }
+            show={selectEvent === Events.つり輪}
           />
         </div>
 

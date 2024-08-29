@@ -11,13 +11,7 @@ interface ElementsTileProps {
   elementsTileKey: string;
 }
 
-const ElementsTile = ({
-  selectEvent,
-  element,
-  setRoutine,
-  routine,
-  elementsTileKey,
-}: ElementsTileProps) => {
+const ElementsTile = ({ selectEvent, element, setRoutine, routine, elementsTileKey }: ElementsTileProps) => {
   // 技選択時のhandle関数
   const handleElementClick = (element: Element) => {
     if (getElementStatus(selectEvent, routine, element) === ElementStatus.選択済み) {
@@ -28,6 +22,7 @@ const ElementsTile = ({
       const newRoutineElement: RoutineElement = {
         ...element,
         is_connected: false,
+        is_connection_value_calculated: false,
         element_group_score: 0,
         connection_value: null,
       };
@@ -45,11 +40,7 @@ const ElementsTile = ({
     // 選択済み → 選択済み(技番号)
     if (status === ElementStatus.選択済み) {
       const index = routine.findIndex((e) => e.id === element.id);
-      return (
-        <div className="common__label common__label--active">{`選択済み(${
-          index + 1
-        }技目)`}</div>
-      );
+      return <div className="common__label common__label--active">{`選択済み(${index + 1}技目)`}</div>;
     }
     // 同一枠選択済み → 同一枠選択済み(技番号)
     if (status === ElementStatus.同一枠選択済み) {
@@ -152,9 +143,7 @@ const ElementsTile = ({
                   : ""
               }`}
             >
-              {selectEvent === Events.跳馬
-                ? element.difficulty
-                : difficulties[element.difficulty - 1]}
+              {selectEvent === Events.跳馬 ? element.difficulty : difficulties[element.difficulty - 1]}
             </span>
             {renderElementStatusLabel(element)}
           </div>

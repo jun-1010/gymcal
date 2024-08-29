@@ -34,8 +34,14 @@ export const initialRoutines: Routines = {
 
 // Elementにconnectionを追加
 export interface RoutineElement extends Element {
-  is_connected: boolean | null;
+  // 接続状態を保持する
+  is_connected: boolean | null; // null or false: 未接続, true: 接続済み
+  // 加算の計算済み状態を保持する（代入は何回レンダリングしてもいいけど加算は1回だけしたい）
+  // null or false: 未計算, true: 計算済み
+  is_connection_value_calculated: boolean | null;
+  // 組み合わせ加点
   connection_value: number | null;
+  // グループ得点
   element_group_score: number | null;
 }
 
@@ -279,7 +285,7 @@ export const updateConnectionInRoutine = (
   routine: RoutineElement[],
   setRoutine: (routine: RoutineElement[]) => void
 ) => {
-  // 組み合わせ対象が適切か確認(並べ替えされた場合を想定 ← [+]押下時はhandleConnectionClick()で対応済み)
+  // [共通]組み合わせ対象が適切か確認(並べ替えされた場合を想定 ← [+]押下時はhandleConnectionClick()で対応済み)
   let newRoutine: RoutineElement[] = routine.map((element, index) => {
     // 組み合わせが有効 && 組み合わせが適切(1技目チェック等) → 有効化
     if (element.is_connected && isConnectable(selectEvent, routine, element, index)) {
@@ -291,17 +297,17 @@ export const updateConnectionInRoutine = (
   });
 
   // 組み合わせ加点を計算
-  newRoutine = newRoutine.map((element, index) => {
-    if (element.is_connected) {
-      const previousElement = routine[index - 1];
-      // 【床】
-      if (selectEvent === Events.床) {
+  if (selectEvent === Events.床) {
+    newRoutine.forEach((element, index) => {
+      if (element.is_connected) {
+        const previousElement = routine[index - 1];
         // ひねりを伴う1回宙同士の組み合わせ → null
         if (
           isElementTypeIncluded(previousElement.element_type, ElementType.ひねりを伴う1回宙) &&
           isElementTypeIncluded(element.element_type, ElementType.ひねりを伴う1回宙)
         ) {
-          return { ...element, connection_value: null };
+          element.connection_value = null;
+          return; // 次の要素へ
         }
 
         // D以上 + BorC → 0.1
@@ -309,27 +315,51 @@ export const updateConnectionInRoutine = (
           (previousElement.difficulty >= 4 && element.difficulty === 2) ||
           (previousElement.difficulty >= 4 && element.difficulty === 3)
         ) {
-          return { ...element, connection_value: 0.1 };
+          element.connection_value = 0.1;
+          return;
         }
         // BorC + D以上 → 0.1
         if (
           (previousElement.difficulty === 2 && element.difficulty >= 4) ||
           (previousElement.difficulty === 3 && element.difficulty >= 4)
         ) {
-          return { ...element, connection_value: 0.1 };
+          element.connection_value = 0.1;
+          return;
         }
         // D以上 + D以上 → 0.2
         if (previousElement.difficulty >= 4 && element.difficulty >= 4) {
-          return { ...element, connection_value: 0.2 };
+          element.connection_value = 0.2;
+          return;
         }
       }
-
-      return element; // TODO: 他の種目は別途追加する
-    } else {
-      // 組み合わせ非対象の場合は connection_value を 更新しない
-      return element;
-    }
-  });
+    });
+  } else if (selectEvent === Events.つり輪) {
+    newRoutine.forEach((element, index) => {
+      // ヤマワキ系加点の計算(ヤマワキorジョナサン+後ろ振り上がり倒立 → ヤマワキ系の難度点0.1加算)
+      const nextElement = routine[index + 1] ? routine[index + 1] : null;
+      if (
+        nextElement &&
+        isElementTypeIncluded(element.element_type, ElementType.つり輪_ヤマワキ系) &&
+        isElementTypeIncluded(nextElement.element_type, ElementType.つり輪_後ろ振り上がり倒立)
+      ) {
+        if (nextElement.is_connected) {
+          //ヤマワキ系の難度点0.1加算
+          if (element.is_connection_value_calculated === false) {
+            // 未計算
+            element.difficulty += 1;
+            element.is_connection_value_calculated = true;
+          }
+        } else {
+          // ヤマワキ系の難度点リセット
+          if (element.is_connection_value_calculated === true) {
+            // 計算済み
+            element.difficulty -= 1;
+            element.is_connection_value_calculated = false;
+          }
+        }
+      }
+    });
+  }
 
   // 変更がある場合のみ setRoutine を呼び出す(useEffectの無限ループ対策)
   if (JSON.stringify(newRoutine) !== JSON.stringify(routine)) {

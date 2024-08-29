@@ -55,6 +55,12 @@ export const GroupNames: { [key: number]: { [key: number]: string } } = {
     [ElementGroup.EG3]: "旋回技（移動）",
     [ElementGroup.EG4]: "終末技",
   },
+  [Events.つり輪]: {
+    [ElementGroup.EG1]: "振動技",
+    [ElementGroup.EG2]: "力静止技",
+    [ElementGroup.EG3]: "振動力静止技",
+    [ElementGroup.EG4]: "終末技",
+  },
   // 他の種目も追加する
 };
 
@@ -84,6 +90,8 @@ export enum ElementType {
   あん馬_ニンレイエス系 = 19,
   あん馬_フロップ系 = 20,
   あん馬_コンバイン系 = 21,
+  つり輪_ヤマワキ系 = 37,
+  つり輪_後ろ振り上がり倒立 = 38,
 }
 
 // element__tileの状態表示に使用
@@ -129,7 +137,7 @@ export enum Rules {
   Dスコア = 1,
   グループ得点 = 2,
   難度点 = 3,
-  組み合わせ加点 = 4,
+  床_組み合わせ加点 = 4,
   ニュートラルディダクション = 5,
   技数減点 = 6,
   ダブル系不足 = 7,
@@ -154,6 +162,8 @@ export enum Rules {
   あん馬_フロップ系制限 = 26,
   あん馬_コンバイン系制限 = 27,
   終末技制限 = 28,
+
+  つり輪_組み合わせ加点 = 31,
 }
 
 export const RuleKey = (ruleKey: number): string => {
