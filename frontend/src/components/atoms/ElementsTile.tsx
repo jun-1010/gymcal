@@ -25,6 +25,7 @@ const ElementsTile = ({ selectEvent, element, setRoutine, routine, elementsTileK
         is_connection_value_calculated: false,
         element_group_score: 0,
         connection_value: null,
+        is_qualified: true,
       };
       setRoutine([...routine, newRoutineElement]);
     }
@@ -122,6 +123,10 @@ const ElementsTile = ({ selectEvent, element, setRoutine, routine, elementsTileK
     // あん馬_コンバイン系制限
     if (status === ElementStatus.あん馬_コンバイン系制限) {
       return <div className="common__label">コンバイン系制限</div>;
+    }
+    // つり輪_力技制限1
+    if (status === ElementStatus.つり輪_力技制限1) {
+      return <div className="common__label">力技制限1</div>;
     }
   };
 

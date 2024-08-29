@@ -16,7 +16,7 @@ import {
   getPHTravelLimitCodes,
   getPHTravelSpindleLimitCodes,
 } from "../../utilities/RoutinePHUtils";
-import { calculateSwingHandstandShortage, srCombinationCode } from "../../utilities/RoutineSRUtil";
+import { calculateSwingHandstandShortage, getSRStrengthLimit1Codes, srCombinationCode } from "../../utilities/RoutineSRUtil";
 import {
   calculateElementCountDeduction,
   calculateNeutralDeduction,
@@ -105,6 +105,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
   const phNinReyesLimitCodes = selectEvent === Events.あん馬 ? getPHNinReyesLimitCodes(routine) : [];
   const phFlopLimitCodes = selectEvent === Events.あん馬 ? getPHFlopLimitCodes(routine) : [];
   const phCombineLimitCodes = selectEvent === Events.あん馬 ? getPHCombineLimitCodes(routine) : [];
+  const srStrengthLimit1Codes = selectEvent === Events.つり輪 ? getSRStrengthLimit1Codes(routine) : [];
 
   return (
     <>
@@ -922,6 +923,32 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               </div>
             }
             show={selectEvent === Events.あん馬}
+          />
+
+          {/* つり輪_力技制限1 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.つり輪_力技制限1)}
+                {srStrengthLimit1Codes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {srStrengthLimit1Codes.map((code, index) => (
+                      <p key={index} className="common__label routine__summary-label">
+                        {code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>EG2またはEG3の技は直接3回を超えて使用できません。</p>
+                <p>EG2またはEG3の技が連続していないとするためにはEG1からB難度以上の振動技が必要です。</p>
+                <p>ただしけ上がりor後方け上がりは連続を切る条件を満たしません。</p>
+              </div>
+            }
+            show={selectEvent === Events.つり輪}
           />
         </div>
       </div>

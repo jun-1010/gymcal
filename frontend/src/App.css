@@ -460,6 +460,10 @@ html {
         }
       }
 
+      .routine__element--unqualified {
+        text-decoration: line-through; 
+      }
+
       .routine__element--footer {
         font-weight: bold;
         /* border-top: 0.1rem solid var(--dark-gray); */
