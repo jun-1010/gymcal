@@ -925,7 +925,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             summaryNode={
               <span className="rules__summary-title">
                 {RuleName(Rules.つり輪_力技制限1)}
-                {srStrengthLimit1CodesList[srStrengthLimit1CodesList.length - 1].length >= 3 ? (
+                {srStrengthLimit1CodesList.length > 0 &&
+                srStrengthLimit1CodesList[srStrengthLimit1CodesList.length - 1].length >= 3 ? (
                   <div className="rules__summary-labels">
                     <p className="common__label">✔️</p>
                   </div>
