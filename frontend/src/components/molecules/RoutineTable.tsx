@@ -8,11 +8,12 @@ import {
   calculateTotalScore,
   RoutineElement,
 } from "../../utilities/RoutineUtil";
-import { Events } from "../../utilities/Type";
+import { Events, RuleName, Rules } from "../../utilities/Type";
 import RoutineSummaryLabel from "../atoms/RoutineSummaryLabel";
 import RoutineTableElement from "../atoms/RoutineTableElement";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { calculateMultipleSaltoShortage } from "../../utilities/RoutineFXUtil";
+import { calculateSwingHandstandShortage } from "../../utilities/RoutineSRUtil";
 
 interface RoutineTableProps {
   selectEvent: Events;
@@ -137,14 +138,20 @@ const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen }: Rout
             <RoutineSummaryLabel
               score={calculateElementCountDeduction(routine)}
               isActive={false}
-              label="技数減点"
+              label={RuleName(Rules.技数減点)}
               show={true}
             />
             <RoutineSummaryLabel
               score={calculateMultipleSaltoShortage(routine)}
               isActive={false}
-              label="ダブル系不足"
+              label={RuleName(Rules.床_ダブル系不足)}
               show={selectEvent === Events.床}
+            />
+            <RoutineSummaryLabel
+              score={calculateSwingHandstandShortage(routine)}
+              isActive={false}
+              label={RuleName(Rules.つり輪_振動倒立不足)}
+              show={selectEvent === Events.つり輪}
             />
           </div>
         </div>
