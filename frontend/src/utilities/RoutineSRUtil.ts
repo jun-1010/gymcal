@@ -97,16 +97,17 @@ export const isSRStrengthLimit1 = (routine: Element[], targetElement: Element): 
 
 // B以上の振動技で区切られた技コード
 export const getSRStrengthLimit1Codes = (routine: RoutineElement[]): string[][] => {
-  let codes_list: string[][] = [];
+  let codes_list: string[][] = [[]];
   let index = 0;
   routine.forEach((element) => {
-    if (isElementTypeIncluded(element.element_type, ElementType.つり輪_力技制限1を切れる技)) {
+    if (
+      isElementTypeIncluded(element.element_type, ElementType.つり輪_力技制限1を切れる技) &&
+      codes_list[index].length > 0 // この条件がないとEG1の技ごとに配列が追加されてしまう
+    ) {
       index++;
+      codes_list[index] = [];
     }
     if (element.element_group === ElementGroup.EG2 || element.element_group === ElementGroup.EG3) {
-      if (!codes_list[index]) {
-        codes_list[index] = [];
-      }
       codes_list[index].push(element.code!);
     }
   });
