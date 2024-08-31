@@ -65,6 +65,9 @@ export const GroupNames: { [key: number]: { [key: number]: string } } = {
 };
 
 export const getGroupName = (selectEvent: number, selectGroup: number): string => {
+  if (!GroupNames[selectEvent] || !GroupNames[selectEvent][selectGroup]) {
+    return "Undefined";
+  }
   return `${getGroupKey(selectGroup)}:${GroupNames[selectEvent][selectGroup]}`;
 };
 
@@ -92,9 +95,35 @@ export enum ElementType {
   あん馬_コンバイン系 = 21,
   つり輪_振動倒立技 = 22,
   つり輪_力技制限1を切れる技 = 23,
+  つり輪_力技制限2_脚前挙 = 24,
+  つり輪_力技制限2_脚上挙 = 25,
+  つり輪_力技制限2_十字倒立 = 26,
+  つり輪_力技制限2_背面水平 = 27,
+  つり輪_力技制限2_上水平 = 28,
+  つり輪_力技制限2_開脚上水平 = 29,
+  つり輪_力技制限2_中水平 = 30,
+  つり輪_力技制限2_正面水平 = 31,
+  つり輪_力技制限2_上向き中水平 = 32,
+  つり輪_力技制限2_十字懸垂 = 33,
+  // つり輪_力技制限2_脚前挙十字懸垂 = 34,
+  // つり輪_力技制限2_脚上挙十字懸垂  = 35,
+  つり輪_力技制限2_倒立 = 36,
   つり輪_ヤマワキ系 = 37,
   つり輪_後ろ振り上がり倒立 = 38,
 }
+
+export const getElementTypeName = (targetElementType: number): string => {
+  let elementTypeKey = "";
+  for (const key in ElementType) {
+    if (ElementType[key as keyof typeof ElementType] === targetElementType) {
+      elementTypeKey = key;
+    }
+  }
+  let elementTypeName = "";
+  const parts = elementTypeKey.split("_");
+  elementTypeName = parts[parts.length - 1];
+  return `${elementTypeName}`;
+};
 
 // element__tileの状態表示に使用
 export enum ElementStatus {
@@ -108,20 +137,138 @@ export enum ElementStatus {
   あん馬_縦向き移動技制限 = 8,
   あん馬_ロシアン転向技制限 = 9,
   あん馬_倒立技制限 = 10,
-  あん馬_ロシアン転向移動技制限1 = 11,
+  あん馬_ロシアン転向移動技1 = 11,
   あん馬_移動ひねり技制限 = 12,
   あん馬_ひねり技制限 = 13,
-  あん馬_ショーンべズゴ系制限 = 14,
+  あん馬_ショーンべズゴ系 = 14,
   あん馬_開脚旋回技制限 = 15,
   あん馬_ブスナリ系制限 = 16,
-  あん馬_ロシアン転向移動技制限2 = 17,
+  あん馬_ロシアン転向移動技2 = 17,
   あん馬_トンフェイ系制限 = 18,
   あん馬_ニンレイエス系制限 = 19,
   あん馬_フロップ系制限 = 20,
   あん馬_コンバイン系制限 = 21,
   終末技制限 = 22,
   つり輪_力技制限1 = 23,
+  つり輪_力技制限2_脚前挙 = 24,
+  つり輪_力技制限2_脚上挙 = 25,
+  つり輪_力技制限2_十字倒立 = 26,
+  つり輪_力技制限2_背面水平 = 27,
+  つり輪_力技制限2_上水平 = 28,
+  つり輪_力技制限2_開脚上水平 = 29,
+  つり輪_力技制限2_中水平 = 30,
+  つり輪_力技制限2_正面水平 = 31,
+  つり輪_力技制限2_上向き中水平 = 32,
+  つり輪_力技制限2_十字懸垂 = 33,
+  // つり輪_力技制限2_脚前挙十字懸垂 = 34,
+  // つり輪_力技制限2_脚上挙十字懸垂  = 35,
+  つり輪_力技制限2_倒立 = 36,
 }
+
+// elementTypeに対応するelementStatusを返す
+export const getElementStatusFromElementType = (elementType: ElementType): ElementStatus => {
+  switch (elementType) {
+    case ElementType.床_力技:
+      return ElementStatus.床_力技制限;
+
+    case ElementType.床_旋回:
+      return ElementStatus.床_旋回制限;
+
+    case ElementType.あん馬_縦向き移動技:
+      return ElementStatus.あん馬_縦向き移動技制限;
+
+    case ElementType.あん馬_把手上ロシアン転向技:
+    case ElementType.あん馬_馬端ロシアン転向技:
+    case ElementType.あん馬_一把手上ロシアン転向技:
+    case ElementType.あん馬_馬背ロシアン転向技:
+      return ElementStatus.あん馬_ロシアン転向技制限;
+
+    case ElementType.あん馬_倒立技:
+      return ElementStatus.あん馬_倒立技制限;
+
+    case ElementType.あん馬_ロシアン転向移動技1:
+      return ElementStatus.あん馬_ロシアン転向移動技1;
+
+    case ElementType.あん馬_移動ひねり技:
+      return ElementStatus.あん馬_移動ひねり技制限;
+
+    case ElementType.あん馬_ひねり技:
+      return ElementStatus.あん馬_ひねり技制限;
+
+    case ElementType.あん馬_ショーンべズゴ系:
+      return ElementStatus.あん馬_ショーンべズゴ系;
+
+    case ElementType.あん馬_開脚旋回技:
+      return ElementStatus.あん馬_開脚旋回技制限;
+
+    case ElementType.あん馬_ブスナリ系:
+      return ElementStatus.あん馬_ブスナリ系制限;
+
+    case ElementType.あん馬_ロシアン転向移動技2:
+      return ElementStatus.あん馬_ロシアン転向移動技2;
+
+    case ElementType.あん馬_トンフェイ系:
+      return ElementStatus.あん馬_トンフェイ系制限;
+
+    case ElementType.あん馬_ニンレイエス系:
+      return ElementStatus.あん馬_ニンレイエス系制限;
+
+    case ElementType.あん馬_フロップ系:
+      return ElementStatus.あん馬_フロップ系制限;
+
+    case ElementType.あん馬_コンバイン系:
+      return ElementStatus.あん馬_コンバイン系制限;
+
+    case ElementType.つり輪_力技制限2_脚前挙:
+      return ElementStatus.つり輪_力技制限2_脚前挙;
+
+    case ElementType.つり輪_力技制限2_脚上挙:
+      return ElementStatus.つり輪_力技制限2_脚上挙;
+
+    case ElementType.つり輪_力技制限2_十字倒立:
+      return ElementStatus.つり輪_力技制限2_十字倒立;
+
+    case ElementType.つり輪_力技制限2_背面水平:
+      return ElementStatus.つり輪_力技制限2_背面水平;
+
+    case ElementType.つり輪_力技制限2_上水平:
+      return ElementStatus.つり輪_力技制限2_上水平;
+
+    case ElementType.つり輪_力技制限2_開脚上水平:
+      return ElementStatus.つり輪_力技制限2_開脚上水平;
+
+    case ElementType.つり輪_力技制限2_中水平:
+      return ElementStatus.つり輪_力技制限2_中水平;
+
+    case ElementType.つり輪_力技制限2_正面水平:
+      return ElementStatus.つり輪_力技制限2_正面水平;
+
+    case ElementType.つり輪_力技制限2_上向き中水平:
+      return ElementStatus.つり輪_力技制限2_上向き中水平;
+
+    case ElementType.つり輪_力技制限2_十字懸垂:
+      return ElementStatus.つり輪_力技制限2_十字懸垂;
+
+    case ElementType.つり輪_力技制限2_倒立:
+      return ElementStatus.つり輪_力技制限2_倒立;
+
+    default:
+      return ElementStatus.選択可能;
+  }
+};
+
+export const getElementStatusName = (targetElementStatus: number): string => {
+  let elementStatusKey = "";
+  for (const key in ElementStatus) {
+    if (ElementStatus[key as keyof typeof ElementStatus] === targetElementStatus) {
+      elementStatusKey = key;
+    }
+  }
+  let elementStatusName = "";
+  const parts = elementStatusKey.split("_");
+  elementStatusName = parts[parts.length - 1];
+  return `${elementStatusName}`;
+};
 
 // active, selected, disabledの3つで十分
 export const statusClass = (status: number) => {
@@ -167,8 +314,8 @@ export enum Rules {
   終末技制限 = 28,
   つり輪_振動倒立不足 = 29,
   つり輪_力技制限1 = 30,
-
-  つり輪_組み合わせ加点 = 31,
+  つり輪_力技制限2 = 31,
+  つり輪_組み合わせ加点 = 32,
 }
 
 export const RuleKey = (ruleKey: number): string => {

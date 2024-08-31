@@ -1,3 +1,4 @@
+import React from "react";
 import { CategorizedElements, getGroupElements } from "../../utilities/ElementUtil";
 import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "../../utilities/RoutineFXUtil";
 import {
@@ -16,7 +17,12 @@ import {
   getPHTravelLimitCodes,
   getPHTravelSpindleLimitCodes,
 } from "../../utilities/RoutinePHUtils";
-import { calculateSwingHandstandShortage, getSRStrengthLimit1Codes, srCombinationCode } from "../../utilities/RoutineSRUtil";
+import {
+  calculateSwingHandstandShortage,
+  getSRStrengthLimit1Codes,
+  getSRStrengthLimit2Codes,
+  srCombinationCode,
+} from "../../utilities/RoutineSRUtil";
 import {
   calculateElementCountDeduction,
   calculateNeutralDeduction,
@@ -34,10 +40,11 @@ import {
   RuleKey,
   RuleName,
   Rules,
-  element_groups,
   getGroupKey,
+  getGroupName,
 } from "../../utilities/Type";
 import RoutineRule from "../atoms/RoutineRule";
+import { spawn } from "child_process";
 
 // 同一枠の技を持つ技のコードを取得
 const getSameSlotCodes = (routine: RoutineElement[], categorizedElements: CategorizedElements) => {
@@ -105,7 +112,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
   const phNinReyesLimitCodes = selectEvent === Events.あん馬 ? getPHNinReyesLimitCodes(routine) : [];
   const phFlopLimitCodes = selectEvent === Events.あん馬 ? getPHFlopLimitCodes(routine) : [];
   const phCombineLimitCodes = selectEvent === Events.あん馬 ? getPHCombineLimitCodes(routine) : [];
-  const srStrengthLimit1Codes = selectEvent === Events.つり輪 ? getSRStrengthLimit1Codes(routine) : [];
+  const srStrengthLimit1CodesList = selectEvent === Events.つり輪 ? getSRStrengthLimit1Codes(routine) : [];
+  const srStrengthLimit2Codes = selectEvent === Events.つり輪 ? getSRStrengthLimit2Codes(routine) : [];
 
   return (
     <>
@@ -126,7 +134,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {RuleKey(Rules.Dスコア)}
 
                 {calculateTotalScore(routine) > 0 ? (
-                  <p className="common__label common__label--active routine__summary-label">
+                  <p className="common__label common__label--active ">
                     Dスコア: {calculateTotalScore(routine).toFixed(1)}
                   </p>
                 ) : null}
@@ -150,9 +158,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {RuleKey(Rules.グループ得点)}
 
                 {calculateTotalElementGroupScore(routine) > 0 ? (
-                  <p className="common__label routine__summary-label">
-                    EG: {calculateTotalElementGroupScore(routine).toFixed(1)}
-                  </p>
+                  <p className="common__label ">EG: {calculateTotalElementGroupScore(routine).toFixed(1)}</p>
                 ) : (
                   <></>
                 )}
@@ -198,9 +204,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {RuleKey(Rules.難度点)}
 
                 {calculateTotalDifficulty(routine) > 0 ? (
-                  <p className="common__label routine__summary-label">
-                    難度: {calculateTotalDifficulty(routine).toFixed(1)}
-                  </p>
+                  <p className="common__label ">難度: {calculateTotalDifficulty(routine).toFixed(1)}</p>
                 ) : (
                   <></>
                 )}
@@ -221,9 +225,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {RuleName(Rules.床_組み合わせ加点)}
 
                 {calculateTotalConnectionValue(routine) > 0 ? (
-                  <p className="common__label routine__summary-label">
-                    CV: {calculateTotalConnectionValue(routine).toFixed(1)}
-                  </p>
+                  <p className="common__label ">CV: {calculateTotalConnectionValue(routine).toFixed(1)}</p>
                 ) : (
                   <></>
                 )}
@@ -263,7 +265,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {RuleName(Rules.つり輪_組み合わせ加点)}
 
                 {srCombinationCode(routine).length > 0 ? (
-                  <p className="common__label routine__summary-label">{srCombinationCode(routine)}</p>
+                  <p className="common__label ">{srCombinationCode(routine)}</p>
                 ) : (
                   <></>
                 )}
@@ -272,7 +274,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionNode={
               <div className="rules__description">
                 <p>
-                  ヤマワキやジョナサンから直接振動倒立技を実施した場合、ヤマワキやジョナサンは一段階格上げとなります。
+                  ヤマワキやジョナサンから直接振動倒立技を実施した場合、ヤマワキやジョナサンは
+                  <span style={{ fontWeight: "bold" }}>一段階格上げ</span>となります。
                 </p>
                 <p>この加点は難度点に付与されます。</p>
                 <p>例:</p>
@@ -296,7 +299,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               <span className="rules__summary-title">
                 {RuleKey(Rules.ニュートラルディダクション)}
                 {calculateNeutralDeduction(selectEvent, routine) > 0 ? (
-                  <p className="common__label common__label--active routine__summary-label">
+                  <p className="common__label common__label--active ">
                     ND:{calculateNeutralDeduction(selectEvent, routine).toFixed(1)}
                   </p>
                 ) : (
@@ -321,9 +324,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               <span className="rules__summary-title">
                 {RuleKey(Rules.技数減点)}
                 {calculateElementCountDeduction(routine) > 0 ? (
-                  <p className="common__label routine__summary-label">
-                    技数減点:{calculateElementCountDeduction(routine).toFixed(1)}
-                  </p>
+                  <p className="common__label ">技数減点:{calculateElementCountDeduction(routine).toFixed(1)}</p>
                 ) : (
                   <></>
                 )}
@@ -369,9 +370,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               <span className="rules__summary-title">
                 {RuleName(Rules.床_ダブル系不足)}
                 {calculateMultipleSaltoShortage(routine) > 0 ? (
-                  <p className="common__label routine__summary-label">
-                    ダブル系不足:{calculateMultipleSaltoShortage(routine).toFixed(1)}
-                  </p>
+                  <p className="common__label ">ダブル系不足:{calculateMultipleSaltoShortage(routine).toFixed(1)}</p>
                 ) : (
                   <></>
                 )}
@@ -391,9 +390,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               <span className="rules__summary-title">
                 {RuleName(Rules.つり輪_振動倒立不足)}
                 {calculateSwingHandstandShortage(routine) > 0 ? (
-                  <p className="common__label routine__summary-label">
-                    振動倒立技不足:{calculateSwingHandstandShortage(routine).toFixed(1)}
-                  </p>
+                  <p className="common__label ">振動倒立技不足:{calculateSwingHandstandShortage(routine).toFixed(1)}</p>
                 ) : (
                   <></>
                 )}
@@ -423,11 +420,11 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {sameSlotCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {sameSlotCodes.slice(0, 4).map((e, index) => (
-                      <p key={index} className="common__label routine__summary-label">
+                      <p key={index} className="common__label ">
                         {e}
                       </p>
                     ))}
-                    {sameSlotCodes.length > 4 && <p className="common__label routine__summary-label">...</p>}
+                    {sameSlotCodes.length > 4 && <p className="common__label ">...</p>}
                   </div>
                 ) : null}
               </span>
@@ -458,7 +455,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {limitedGroups.length > 0 ? (
                   <div className="rules__summary-labels">
                     {limitedGroups.map((e, index) => (
-                      <p key={index} className="common__label routine__summary-label">
+                      <p key={index} className="common__label ">
                         {e}
                       </p>
                     ))}
@@ -486,7 +483,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             summaryNode={
               <span className="rules__summary-title">
                 {RuleKey(Rules.全体技数制限)}
-                {routine.length === 8 ? <p className="common__label routine__summary-label">✔️</p> : null}
+                {routine.length === 8 ? <p className="common__label ">✔️</p> : null}
               </span>
             }
             descriptionNode={
@@ -507,7 +504,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               <span className="rules__summary-title">
                 {RuleKey(Rules.終末技制限)}
                 {routine.length > 0 && routine[routine.length - 1].element_group === ElementGroup.EG4 ? (
-                  <p className="common__label routine__summary-label">{routine[routine.length - 1].code}</p>
+                  <p className="common__label ">{routine[routine.length - 1].code}</p>
                 ) : null}
               </span>
             }
@@ -525,9 +522,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             summaryNode={
               <span className="rules__summary-title">
                 {RuleName(Rules.床_力技制限)}
-                {fxStrengthLimitCode ? (
-                  <p className="common__label routine__summary-label">{fxStrengthLimitCode}</p>
-                ) : null}
+                {fxStrengthLimitCode ? <p className="common__label ">{fxStrengthLimitCode}</p> : null}
               </span>
             }
             descriptionNode={
@@ -547,7 +542,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             summaryNode={
               <span className="rules__summary-title">
                 {RuleName(Rules.床_旋回制限)}
-                {fxCircleLimitCode ? <p className="common__label routine__summary-label">{fxCircleLimitCode}</p> : null}
+                {fxCircleLimitCode ? <p className="common__label ">{fxCircleLimitCode}</p> : null}
               </span>
             }
             descriptionNode={
@@ -566,7 +561,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {phTravelLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {phTravelLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label routine__summary-label">
+                      <p key={index} className="common__label ">
                         {code}
                       </p>
                     ))}
@@ -590,7 +585,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {phRussianLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {phRussianLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label routine__summary-label">
+                      <p key={index} className="common__label ">
                         {code}
                       </p>
                     ))}
@@ -619,7 +614,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {phHandstandLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {phHandstandLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label routine__summary-label">
+                      <p key={index} className="common__label ">
                         {code}
                       </p>
                     ))}
@@ -643,7 +638,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {phRussianTranveLimit1Codes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {phRussianTranveLimit1Codes.map((code, index) => (
-                      <p key={index} className="common__label routine__summary-label">
+                      <p key={index} className="common__label ">
                         {code}
                       </p>
                     ))}
@@ -673,7 +668,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {phTranveSpindleLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {phTranveSpindleLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label routine__summary-label">
+                      <p key={index} className="common__label ">
                         {code}
                       </p>
                     ))}
@@ -701,7 +696,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {phSpindleLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {phSpindleLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label routine__summary-label">
+                      <p key={index} className="common__label ">
                         {code}
                       </p>
                     ))}
@@ -732,7 +727,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {phSohnBezugoLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {phSohnBezugoLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label routine__summary-label">
+                      <p key={index} className="common__label ">
                         {code}
                       </p>
                     ))}
@@ -757,7 +752,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {phFlairLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {phFlairLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label routine__summary-label">
+                      <p key={index} className="common__label ">
                         {code}
                       </p>
                     ))}
@@ -781,7 +776,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {phBusnariLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {phBusnariLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label routine__summary-label">
+                      <p key={index} className="common__label ">
                         {code}
                       </p>
                     ))}
@@ -805,7 +800,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {phRussianTranveLimit2Codes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {phRussianTranveLimit2Codes.map((code, index) => (
-                      <p key={index} className="common__label routine__summary-label">
+                      <p key={index} className="common__label ">
                         {code}
                       </p>
                     ))}
@@ -832,7 +827,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {phTongFeiLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {phTongFeiLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label routine__summary-label">
+                      <p key={index} className="common__label ">
                         {code}
                       </p>
                     ))}
@@ -859,7 +854,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {phNinReyesLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {phNinReyesLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label routine__summary-label">
+                      <p key={index} className="common__label ">
                         {code}
                       </p>
                     ))}
@@ -885,7 +880,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {phFlopLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {phFlopLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label routine__summary-label">
+                      <p key={index} className="common__label ">
                         {code}
                       </p>
                     ))}
@@ -909,7 +904,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {phCombineLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {phCombineLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label routine__summary-label">
+                      <p key={index} className="common__label ">
                         {code}
                       </p>
                     ))}
@@ -930,22 +925,152 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             summaryNode={
               <span className="rules__summary-title">
                 {RuleName(Rules.つり輪_力技制限1)}
-                {srStrengthLimit1Codes.length > 0 ? (
+                {srStrengthLimit1CodesList.length > 0 ? (
                   <div className="rules__summary-labels">
-                    {srStrengthLimit1Codes.map((code, index) => (
-                      <p key={index} className="common__label routine__summary-label">
-                        {code}
-                      </p>
-                    ))}
+                    <p className="common__label">✔️</p>
                   </div>
                 ) : null}
               </span>
             }
             descriptionNode={
               <div className="rules__description">
-                <p>EG2またはEG3の技は直接3回を超えて使用できません。</p>
-                <p>EG2またはEG3の技が連続していないとするためにはEG1からB難度以上の振動技が必要です。</p>
+                <p>以下の力技を連続で選択中です。</p>
+                <div className="rules__description-label-box">
+                  {srStrengthLimit1CodesList.map((codes, outerIndex) => (
+                    <span key={outerIndex} className="rules__description-labels">
+                      {codes.map((code, innerIndex) => (
+                        <React.Fragment key={innerIndex}>
+                          <span className="common__label">{code}</span>
+                          {innerIndex < codes.length - 1 && <span>→</span>}
+                        </React.Fragment>
+                      ))}
+                    </span>
+                  ))}
+                </div>
+
+                <p className="rules__section-line" />
+                <p>
+                  EG2またはEG3の技は<span style={{ fontWeight: "bold" }}>直接3回</span>を超えて使用できません。
+                </p>
+                <p>
+                  EG2またはEG3の技が連続していないとするためにはEG1から
+                  <span style={{ fontWeight: "bold" }}>B難度以上の振動技</span>が必要です。
+                </p>
                 <p>ただしけ上がりor後方け上がりは連続を切る条件を満たしません。</p>
+              </div>
+            }
+            show={selectEvent === Events.つり輪}
+          />
+
+          {/* つり輪_力技制限2 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.つり輪_力技制限2)}
+                {srStrengthLimit2Codes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {srStrengthLimit2Codes.slice(0, 3).map((row, index) => (
+                      <p key={index} className="common__label ">
+                        {row.code}
+                      </p>
+                    ))}
+                    {srStrengthLimit2Codes.length > 3 && <p className="common__label ">...</p>}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>以下の力技を選択中(制限中)です。</p>
+                <div className="rules__description-label-box">
+                  {([ElementGroup.EG2, ElementGroup.EG3] as ElementGroup[]).map((group) => (
+                    <div key={group}>
+                      <p>{getGroupName(selectEvent, group)}</p>
+                      <p className="rules__description-labels">
+                        {srStrengthLimit2Codes.filter((row) => row.elementGroup === group).length > 0 ? (
+                          srStrengthLimit2Codes
+                            .filter((row) => row.elementGroup === group)
+                            .map((row, index) => (
+                              <span key={index} className="common__label ">
+                                {row.code}.{row.typeName}
+                              </span>
+                            ))
+                        ) : (
+                          <span>選択していません</span>
+                        )}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+                <p className="rules__section-line" />
+                <p>
+                  終末姿勢が同一の力静止技は<span style={{ fontWeight: "bold" }}>EG2とEG3で1回ずつ</span>使用できます。
+                </p>
+                <p>・OK例:異なるEGで終末姿勢が同一</p>
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--3rem">EG2</td>
+                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
+                        II52.アザリアン
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
+                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
+                        III16.ホンマ十字懸垂
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p>・NG例:同一EGで終末姿勢が同一</p>
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
+                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
+                        III47.後方け上がり中水平
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
+                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
+                        III71.後ろ振り上がり中水平
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                {/* <p>脚前挙と脚上挙の2姿勢については別の姿勢として扱います。</p>
+                <p>・OK例:同一EGで脚前挙と脚上挙</p>
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
+                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>III2.前振り上がり脚前挙</td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
+                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>III3.前振り上がり脚上挙</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p> ・NG例:同一EGで終末姿勢が同一 </p>
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
+                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
+                        III2.前振り上がり脚前挙
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
+                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
+                        III8.け上がり脚前挙
+                      </td>
+                    </tr>
+                  </tbody>
+                </table> */}
               </div>
             }
             show={selectEvent === Events.つり輪}

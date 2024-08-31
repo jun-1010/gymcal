@@ -9,7 +9,7 @@ const RoutineSummaryLabel = ({ score, isActive, label, show }: RoutineSummaryLab
   return (
     <>
       {show && score > 0 ? (
-        <p className={`common__label ${isActive ? "common__label--active" : ""} routine__summary-label`}>
+        <p className={`common__label ${isActive ? "common__label--active" : ""} `}>
           {label}: {score.toFixed(1)}
         </p>
       ) : (

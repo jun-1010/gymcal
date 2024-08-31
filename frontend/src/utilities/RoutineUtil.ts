@@ -16,7 +16,7 @@ import {
   isPHTravelLimit,
   isPHTravelSpindleLimit,
 } from "./RoutinePHUtils";
-import { calculateSwingHandstandShortage, countSequenceStrengths, isSRStrengthLimit1 } from "./RoutineSRUtil";
+import { calculateSwingHandstandShortage, countSequenceStrengths, getElementStatusLimited, hasStrengtElement, isSRStrengthLimit1 } from "./RoutineSRUtil";
 import { ELEMENT_COUNT_DEDUCTIONS, ElementGroup, ElementStatus, ElementType, Events } from "./Type";
 
 // 6種目分のroutine
@@ -103,19 +103,19 @@ export const getElementStatus = (selectEvent: Events, routine: RoutineElement[],
     } else if (isPHHandstandLimit(routine, targetElement)) {
       return ElementStatus.あん馬_倒立技制限; // 2 w/o dismount
     } else if (isPHRussianTravelLimit1(routine, targetElement)) {
-      return ElementStatus.あん馬_ロシアン転向移動技制限1; // 2
+      return ElementStatus.あん馬_ロシアン転向移動技1; // 2
     } else if (isPHTravelSpindleLimit(routine, targetElement)) {
       return ElementStatus.あん馬_移動ひねり技制限; // 2
     } else if (isPHSpindleLimit(routine, targetElement)) {
       return ElementStatus.あん馬_ひねり技制限; // 2
     } else if (isPHSohnBezugoLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_ショーンべズゴ系制限; // 2
+      return ElementStatus.あん馬_ショーンべズゴ系; // 2
     } else if (isPHFlairLimit(routine, targetElement)) {
       return ElementStatus.あん馬_開脚旋回技制限; // 4 w/o dismount
     } else if (isPHBusnariLimit(routine, targetElement)) {
       return ElementStatus.あん馬_ブスナリ系制限; // 1
     } else if (isPHRussianTravelLimit2(routine, targetElement)) {
-      return ElementStatus.あん馬_ロシアン転向移動技制限2; // 1
+      return ElementStatus.あん馬_ロシアン転向移動技2; // 1
     } else if (isPHTongFeiLimit(routine, targetElement)) {
       return ElementStatus.あん馬_トンフェイ系制限; // 1
     } else if (isPHNinReyesLimit(routine, targetElement)) {
@@ -130,6 +130,10 @@ export const getElementStatus = (selectEvent: Events, routine: RoutineElement[],
   if (selectEvent === Events.つり輪) {
     if (isSRStrengthLimit1(routine, targetElement)) {
       return ElementStatus.つり輪_力技制限1;
+    }
+    // 力技制限2
+    if (hasStrengtElement(routine)) {
+      return getElementStatusLimited(routine, targetElement);
     }
   }
 
