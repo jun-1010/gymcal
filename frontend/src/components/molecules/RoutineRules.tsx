@@ -936,19 +936,49 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionNode={
               <div className="rules__description">
                 <p>以下の力技を連続で選択中です。</p>
-                <div className="rules__description-label-box">
+                {/* <div className="rules__description-label-box">
                   {srStrengthLimit1CodesList.map((codes, outerIndex) => (
-                    <span key={outerIndex} className="rules__description-labels">
-                      {codes.length > 0
-                        ? codes.map((code, innerIndex) => (
+                    <>
+                      {codes.length > 0 ? (
+                        <span key={outerIndex} className="rules__description-labels">
+                          {codes.map((code, innerIndex) => (
                             <React.Fragment key={innerIndex}>
                               <span className="common__label">{code}</span>
                               {innerIndex < codes.length - 1 && <span>→</span>}
                             </React.Fragment>
-                          ))
-                        : outerIndex === 0 && <span>選択していません</span>}
-                    </span>
+                          ))}
+                        </span>
+                      ) : (
+                        <>
+                          {outerIndex === 0 && (
+                            <span key={outerIndex} className="rules__description-labels">
+                              選択していません
+                            </span>
+                          )}
+                        </>
+                      )}
+                    </>
                   ))}
+                </div> */}
+                <div className="rules__description-label-box">
+                  {srStrengthLimit1CodesList.map((codes, outerIndex) =>
+                    codes.length > 0 ? (
+                      <span key={outerIndex} className="rules__description-labels">
+                        {codes.map((code, innerIndex) => (
+                          <React.Fragment key={innerIndex}>
+                            <span className="common__label">{code}</span>
+                            {innerIndex < codes.length - 1 && <span>→</span>}
+                          </React.Fragment>
+                        ))}
+                      </span>
+                    ) : (
+                      outerIndex === 0 && (
+                        <span key={outerIndex} className="rules__description-labels">
+                          選択していません
+                        </span>
+                      )
+                    )
+                  )}
                 </div>
 
                 <p className="rules__section-line" />
