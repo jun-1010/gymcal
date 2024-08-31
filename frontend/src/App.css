@@ -66,6 +66,7 @@ html {
   font-size: 0.8rem;
   padding: 0.2rem 0.5rem;
   height: fit-content;
+  width: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -303,7 +304,7 @@ html {
 
       /* 制限状態（未選択・解除不可） */
       .elements__tile--disabled {
-        opacity: 0.6;
+        opacity: 0.5;
       }
     }
   }
@@ -399,7 +400,7 @@ html {
             background-color: var(--red);
             border: none;
             color: var(--white);
-            
+
             &:hover {
               background-color: var(--red-hover-color);
             }
@@ -460,6 +461,10 @@ html {
         }
       }
 
+      .routine__element--unqualified {
+        text-decoration: line-through;
+      }
+
       .routine__element--footer {
         font-weight: bold;
         /* border-top: 0.1rem solid var(--dark-gray); */
@@ -512,10 +517,6 @@ html {
         width: 100%;
         gap: 0.5rem;
         align-items: center;
-
-        .routine__summary-label {
-          font-size: 0.9rem;
-        }
       }
     }
   }
@@ -589,7 +590,7 @@ html {
         }
 
         .rules__table-table {
-          margin: 1em 0;
+          margin: 1rem 0;
           font-size: 0.9rem;
           font-weight: bold;
           background-color: var(--light-gray);
@@ -599,7 +600,7 @@ html {
 
           .rules__table-row {
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             gap: 0.3rem;
             max-width: 50rem;
             min-width: 100%;
@@ -626,6 +627,14 @@ html {
           .rules__table-cell--6rem {
             width: 6rem;
           }
+
+          .rules__table-cell--12rem {
+            width: 12rem;
+          }
+
+          .rules__table-cell--left {
+            justify-content: left;
+          }
         }
 
         .rules__section-line {
@@ -634,6 +643,27 @@ html {
           background-color: var(--gray);
           margin: 1rem 0;
         }
+
+        .rules__description-label-box {
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          align-items: flex-start;
+          gap: 1rem;
+          margin: 1rem 0;
+          background-color: var(--light-gray);
+          padding: 1rem;
+          border-radius: 0.5rem;
+          font-size: 0.9rem;
+          width: fit-content;
+        }
+
+        .rules__description-labels {
+          display: flex;
+          flex-direction: row;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
       }
     }
 
@@ -641,6 +671,7 @@ html {
       summary::after {
         transform: rotate(225deg);
       }
+
       .rules__description {
         transform: none;
         opacity: 1;

@@ -9,11 +9,13 @@ import {
   Routines,
   updateConnectionInRoutine,
   updateElementGroupScoreInRoutine,
+  updateRoutineForValidation,
 } from "./utilities/RoutineUtil";
 import useMedia from "use-media";
 import Header from "./components/organisms/Header";
 import Elements from "./components/organisms/Elements";
 import Routine from "./components/organisms/Routine";
+import { checkPrime } from "crypto";
 
 const url = "http://localhost:8000/api/elements";
 
@@ -149,6 +151,8 @@ const App: React.FC = () => {
     if (!isInitialized) {
       return;
     }
+    // 振動倒立技が解除されて力技が4連続になるケースを想定
+    updateRoutineForValidation(selectEvent, routine, setRoutine);
     // グループ得点を更新する
     updateElementGroupScoreInRoutine(selectEvent, routine, setRoutine);
     // 組み合わせ加点を更新する

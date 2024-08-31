@@ -1,6 +1,6 @@
 import React from "react";
 import { getElementStatus, RoutineElement } from "../../utilities/RoutineUtil";
-import { difficulties, ElementStatus, Events, statusClass } from "../../utilities/Type";
+import { difficulties, ElementStatus, Events, getElementStatusName, statusClass } from "../../utilities/Type";
 import { Element } from "../../utilities/ElementUtil";
 
 interface ElementsTileProps {
@@ -11,13 +11,7 @@ interface ElementsTileProps {
   elementsTileKey: string;
 }
 
-const ElementsTile = ({
-  selectEvent,
-  element,
-  setRoutine,
-  routine,
-  elementsTileKey,
-}: ElementsTileProps) => {
+const ElementsTile = ({ selectEvent, element, setRoutine, routine, elementsTileKey }: ElementsTileProps) => {
   // 技選択時のhandle関数
   const handleElementClick = (element: Element) => {
     if (getElementStatus(selectEvent, routine, element) === ElementStatus.選択済み) {
@@ -28,8 +22,10 @@ const ElementsTile = ({
       const newRoutineElement: RoutineElement = {
         ...element,
         is_connected: false,
+        is_connection_value_calculated: false,
         element_group_score: 0,
         connection_value: null,
+        is_qualified: true,
       };
       setRoutine([...routine, newRoutineElement]);
     }
@@ -45,11 +41,7 @@ const ElementsTile = ({
     // 選択済み → 選択済み(技番号)
     if (status === ElementStatus.選択済み) {
       const index = routine.findIndex((e) => e.id === element.id);
-      return (
-        <div className="common__label common__label--active">{`選択済み(${
-          index + 1
-        }技目)`}</div>
-      );
+      return <div className="common__label common__label--active">{`選択済み(${index + 1}技目)`}</div>;
     }
     // 同一枠選択済み → 同一枠選択済み(技番号)
     if (status === ElementStatus.同一枠選択済み) {
@@ -64,74 +56,8 @@ const ElementsTile = ({
     if (status === ElementStatus.技数制限_全体) {
       return <div className="common__label">全体技数制限</div>;
     }
-    // 終末技制限
-    if (status === ElementStatus.終末技制限) {
-      return <div className="common__label">終末技制限</div>;
-    }
-    // 床_力技制限
-    if (status === ElementStatus.床_力技制限) {
-      return <div className="common__label">力技制限</div>;
-    }
-    // 床_旋回制限
-    if (status === ElementStatus.床_旋回制限) {
-      return <div className="common__label">旋回制限</div>;
-    }
-    // あん馬_縦向き移動技制限
-    if (status === ElementStatus.あん馬_縦向き移動技制限) {
-      return <div className="common__label">縦向き移動技制限</div>;
-    }
-    // あん馬_ロシアン転向技制限
-    if (status === ElementStatus.あん馬_ロシアン転向技制限) {
-      return <div className="common__label">ロシアン転向技制限</div>;
-    }
-    // あん馬_倒立技制限
-    if (status === ElementStatus.あん馬_倒立技制限) {
-      return <div className="common__label">倒立技制限</div>;
-    }
-    // あん馬_ロシアン転向移動技制限1
-    if (status === ElementStatus.あん馬_ロシアン転向移動技制限1) {
-      return <div className="common__label">ロシアン転向移動技1</div>;
-    }
-    // あん馬_移動ひねり技制限
-    if (status === ElementStatus.あん馬_移動ひねり技制限) {
-      return <div className="common__label">移動ひねり技制限</div>;
-    }
-    // あん馬_ひねり技制限
-    if (status === ElementStatus.あん馬_ひねり技制限) {
-      return <div className="common__label">ひねり技制限</div>;
-    }
-    // あん馬_ショーンべズゴ系制限
-    if (status === ElementStatus.あん馬_ショーンべズゴ系制限) {
-      return <div className="common__label">ショーンべズゴ系</div>;
-    }
-    // あん馬_開脚旋回技制限
-    if (status === ElementStatus.あん馬_開脚旋回技制限) {
-      return <div className="common__label">開脚旋回技制限</div>;
-    }
-    // あん馬_ブスナリ系技制限
-    if (status === ElementStatus.あん馬_ブスナリ系制限) {
-      return <div className="common__label">ブスナリ系制限</div>;
-    }
-    // あん馬_ロシアン転向移動技制限2
-    if (status === ElementStatus.あん馬_ロシアン転向移動技制限2) {
-      return <div className="common__label">ロシアン転向移動技2</div>;
-    }
-    // あん馬_トンフェイ系制限
-    if (status === ElementStatus.あん馬_トンフェイ系制限) {
-      return <div className="common__label">トンフェイ系制限</div>;
-    }
-    // あん馬_ニンレイエス系制限
-    if (status === ElementStatus.あん馬_ニンレイエス系制限) {
-      return <div className="common__label">ニンレイエス系制限</div>;
-    }
-    // あん馬_フロップ系制限
-    if (status === ElementStatus.あん馬_フロップ系制限) {
-      return <div className="common__label">フロップ系制限</div>;
-    }
-    // あん馬_コンバイン系制限
-    if (status === ElementStatus.あん馬_コンバイン系制限) {
-      return <div className="common__label">コンバイン系制限</div>;
-    }
+    // それ以外は状態名のラストフレーズ
+    return <div className="common__label">{getElementStatusName(status)}</div>;
   };
 
   return (
@@ -152,9 +78,7 @@ const ElementsTile = ({
                   : ""
               }`}
             >
-              {selectEvent === Events.跳馬
-                ? element.difficulty
-                : difficulties[element.difficulty - 1]}
+              {selectEvent === Events.跳馬 ? element.difficulty : difficulties[element.difficulty - 1]}
             </span>
             {renderElementStatusLabel(element)}
           </div>
