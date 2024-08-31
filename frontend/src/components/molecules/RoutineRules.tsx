@@ -925,7 +925,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             summaryNode={
               <span className="rules__summary-title">
                 {RuleName(Rules.つり輪_力技制限1)}
-                {srStrengthLimit1CodesList.length > 0 ? (
+                {srStrengthLimit1CodesList[srStrengthLimit1CodesList.length - 1].length >= 3 ? (
                   <div className="rules__summary-labels">
                     <p className="common__label">✔️</p>
                   </div>
@@ -938,12 +938,14 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <div className="rules__description-label-box">
                   {srStrengthLimit1CodesList.map((codes, outerIndex) => (
                     <span key={outerIndex} className="rules__description-labels">
-                      {codes.map((code, innerIndex) => (
-                        <React.Fragment key={innerIndex}>
-                          <span className="common__label">{code}</span>
-                          {innerIndex < codes.length - 1 && <span>→</span>}
-                        </React.Fragment>
-                      ))}
+                      {codes.length > 0
+                        ? codes.map((code, innerIndex) => (
+                            <React.Fragment key={innerIndex}>
+                              <span className="common__label">{code}</span>
+                              {innerIndex < codes.length - 1 && <span>→</span>}
+                            </React.Fragment>
+                          ))
+                        : outerIndex === 0 && <span>選択していません</span>}
                     </span>
                   ))}
                 </div>
