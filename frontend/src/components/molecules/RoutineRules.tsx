@@ -1,6 +1,10 @@
 import React from "react";
 import { CategorizedElements, getGroupElements } from "../../utilities/ElementUtil";
-import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "../../utilities/RoutineFXUtil";
+import {
+  calculateMultipleSaltoShortage,
+  isFXCircleLimit,
+  isFXStrengthLimit,
+} from "../../utilities/RoutineFXUtil";
 import {
   getPHBusnariLimitCodes,
   getPHCombineLimitCodes,
@@ -45,14 +49,22 @@ import {
 } from "../../utilities/Type";
 import RoutineRule from "../atoms/RoutineRule";
 import { spawn } from "child_process";
+import { calculateVTScore } from "../../utilities/RoutineVTUtil";
 
 // 同一枠の技を持つ技のコードを取得
-const getSameSlotCodes = (routine: RoutineElement[], categorizedElements: CategorizedElements) => {
+const getSameSlotCodes = (
+  routine: RoutineElement[],
+  categorizedElements: CategorizedElements
+) => {
   // 同一枠制限
   let sameSlotCodes: string[] = [];
 
   routine.forEach((element) => {
-    const groupElements = getGroupElements(categorizedElements, element.event, element.element_group);
+    const groupElements = getGroupElements(
+      categorizedElements,
+      element.event,
+      element.element_group
+    );
 
     Object.values(groupElements).forEach((rowElements) => {
       Object.values(rowElements).forEach((groupElement) => {
@@ -91,29 +103,53 @@ interface RoutineRulesProps {
   categorizedElements: CategorizedElements;
 }
 
-export const RoutineRules = ({ selectEvent, routine, categorizedElements }: RoutineRulesProps) => {
+export const RoutineRules = ({
+  selectEvent,
+  routine,
+  categorizedElements,
+}: RoutineRulesProps) => {
   const sameSlotCodes = getSameSlotCodes(routine, categorizedElements);
   const limitedGroups = getLimitedGroups(routine);
   const fxStrengthLimitCode =
-    (selectEvent === Events.床 && routine.find((element) => isFXStrengthLimit(routine, element))?.code) || "";
+    (selectEvent === Events.床 &&
+      routine.find((element) => isFXStrengthLimit(routine, element))?.code) ||
+    "";
   const fxCircleLimitCode =
-    (selectEvent === Events.床 && routine.find((element) => isFXCircleLimit(routine, element))?.code) || "";
-  const phTravelLimitCodes = selectEvent === Events.あん馬 ? getPHTravelLimitCodes(routine) : [];
-  const phRussianLimitCodes = selectEvent === Events.あん馬 ? getPHRussianLimitCodes(routine) : [];
-  const phHandstandLimitCodes = selectEvent === Events.あん馬 ? getPHHandstandLimitCodes(routine) : [];
-  const phRussianTranveLimit1Codes = selectEvent === Events.あん馬 ? getPHRussianTravelLimit1Codes(routine) : [];
-  const phTranveSpindleLimitCodes = selectEvent === Events.あん馬 ? getPHTravelSpindleLimitCodes(routine) : [];
-  const phSpindleLimitCodes = selectEvent === Events.あん馬 ? getPHSpindleLimitCodes(routine) : [];
-  const phSohnBezugoLimitCodes = selectEvent === Events.あん馬 ? getPHSohnBezugoLimitCodes(routine) : [];
-  const phFlairLimitCodes = selectEvent === Events.あん馬 ? getPHFlairLimitCodes(routine) : [];
-  const phBusnariLimitCodes = selectEvent === Events.あん馬 ? getPHBusnariLimitCodes(routine) : [];
-  const phRussianTranveLimit2Codes = selectEvent === Events.あん馬 ? getPHRussianTravelLimit2Codes(routine) : [];
-  const phTongFeiLimitCodes = selectEvent === Events.あん馬 ? getPHTongFeiLimitCodes(routine) : [];
-  const phNinReyesLimitCodes = selectEvent === Events.あん馬 ? getPHNinReyesLimitCodes(routine) : [];
-  const phFlopLimitCodes = selectEvent === Events.あん馬 ? getPHFlopLimitCodes(routine) : [];
-  const phCombineLimitCodes = selectEvent === Events.あん馬 ? getPHCombineLimitCodes(routine) : [];
-  const srStrengthLimit1CodesList = selectEvent === Events.つり輪 ? getSRStrengthLimit1Codes(routine) : [];
-  const srStrengthLimit2Codes = selectEvent === Events.つり輪 ? getSRStrengthLimit2Codes(routine) : [];
+    (selectEvent === Events.床 &&
+      routine.find((element) => isFXCircleLimit(routine, element))?.code) ||
+    "";
+  const phTravelLimitCodes =
+    selectEvent === Events.あん馬 ? getPHTravelLimitCodes(routine) : [];
+  const phRussianLimitCodes =
+    selectEvent === Events.あん馬 ? getPHRussianLimitCodes(routine) : [];
+  const phHandstandLimitCodes =
+    selectEvent === Events.あん馬 ? getPHHandstandLimitCodes(routine) : [];
+  const phRussianTranveLimit1Codes =
+    selectEvent === Events.あん馬 ? getPHRussianTravelLimit1Codes(routine) : [];
+  const phTranveSpindleLimitCodes =
+    selectEvent === Events.あん馬 ? getPHTravelSpindleLimitCodes(routine) : [];
+  const phSpindleLimitCodes =
+    selectEvent === Events.あん馬 ? getPHSpindleLimitCodes(routine) : [];
+  const phSohnBezugoLimitCodes =
+    selectEvent === Events.あん馬 ? getPHSohnBezugoLimitCodes(routine) : [];
+  const phFlairLimitCodes =
+    selectEvent === Events.あん馬 ? getPHFlairLimitCodes(routine) : [];
+  const phBusnariLimitCodes =
+    selectEvent === Events.あん馬 ? getPHBusnariLimitCodes(routine) : [];
+  const phRussianTranveLimit2Codes =
+    selectEvent === Events.あん馬 ? getPHRussianTravelLimit2Codes(routine) : [];
+  const phTongFeiLimitCodes =
+    selectEvent === Events.あん馬 ? getPHTongFeiLimitCodes(routine) : [];
+  const phNinReyesLimitCodes =
+    selectEvent === Events.あん馬 ? getPHNinReyesLimitCodes(routine) : [];
+  const phFlopLimitCodes =
+    selectEvent === Events.あん馬 ? getPHFlopLimitCodes(routine) : [];
+  const phCombineLimitCodes =
+    selectEvent === Events.あん馬 ? getPHCombineLimitCodes(routine) : [];
+  const srStrengthLimit1CodesList =
+    selectEvent === Events.つり輪 ? getSRStrengthLimit1Codes(routine) : [];
+  const srStrengthLimit2Codes =
+    selectEvent === Events.つり輪 ? getSRStrengthLimit2Codes(routine) : [];
 
   return (
     <>
@@ -124,7 +160,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
         <div className="rules__section">
           <div className="rules__section-header">
             <p className="rules__section-title">加算ルール</p>
-            <p className="rules__section-description">条件を満たした場合に加算されるルール</p>
+            <p className="rules__section-description">
+              条件を満たした場合に加算されるルール
+            </p>
           </div>
 
           {/* Dスコア */}
@@ -148,7 +186,42 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <p>・組み合わせ加点(CV)</p>
               </div>
             }
-            show={true}
+            show={selectEvent !== Events.跳馬}
+          />
+
+          {/* 跳馬_Dスコア */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                Dスコア
+                {calculateVTScore(routine) > 0 ? (
+                  <p className="common__label common__label--active ">
+                    {routine.length === 2 && "平均"}Dスコア:{" "}
+                    {calculateVTScore(routine).toFixed(1)}
+                  </p>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>跳馬のDスコアは技ひとつひとつに割り振られています。</p>
+                <p>
+                  種目別において選手は2つの跳躍を行い、その
+                  <span style={{ fontWeight: "bold" }}>平均スコア</span>
+                  が得点になります。
+                </p>
+                <p>例:</p>
+                <div className="rules__description-label-box">
+                  <span>・1跳躍目: D5.6 + E9.0 = 14.4</span>
+                  <span>・2跳躍目: D5.2 + E9.2 = 14.2</span>
+                  <span>
+                    ・決定点：{" "}
+                    <span style={{ fontWeight: "bold" }}>(14.4 + 14.2) / 2 = 14.3</span>
+                  </span>
+                </div>
+              </div>
+            }
+            show={selectEvent === Events.跳馬}
           />
 
           {/* グループ得点 */}
@@ -158,7 +231,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {RuleKey(Rules.グループ得点)}
 
                 {calculateTotalElementGroupScore(routine) > 0 ? (
-                  <p className="common__label ">EG: {calculateTotalElementGroupScore(routine).toFixed(1)}</p>
+                  <p className="common__label ">
+                    EG: {calculateTotalElementGroupScore(routine).toFixed(1)}
+                  </p>
                 ) : (
                   <></>
                 )}
@@ -177,7 +252,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--3rem">難度</td>
                       <td className={`rules__table-cell rules__table-cell--3rem`}>A~C</td>
-                      <td className={`rules__table-cell rules__table-cell--3rem`}>D以上</td>
+                      <td className={`rules__table-cell rules__table-cell--3rem`}>
+                        D以上
+                      </td>
                     </tr>
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--3rem">加点</td>
@@ -194,7 +271,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 </p>
               </div>
             }
-            show={true}
+            show={selectEvent !== Events.跳馬}
           />
 
           {/* 難度点 */}
@@ -204,7 +281,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {RuleKey(Rules.難度点)}
 
                 {calculateTotalDifficulty(routine) > 0 ? (
-                  <p className="common__label ">難度: {calculateTotalDifficulty(routine).toFixed(1)}</p>
+                  <p className="common__label ">
+                    難度: {calculateTotalDifficulty(routine).toFixed(1)}
+                  </p>
                 ) : (
                   <></>
                 )}
@@ -215,7 +294,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <p>最大8つの技の難度点が加算されます。</p>
               </div>
             }
-            show={true}
+            show={selectEvent !== Events.跳馬}
           />
 
           {/* 床_組み合わせ加点 */}
@@ -225,7 +304,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {RuleName(Rules.床_組み合わせ加点)}
 
                 {calculateTotalConnectionValue(routine) > 0 ? (
-                  <p className="common__label ">CV: {calculateTotalConnectionValue(routine).toFixed(1)}</p>
+                  <p className="common__label ">
+                    CV: {calculateTotalConnectionValue(routine).toFixed(1)}
+                  </p>
                 ) : (
                   <></>
                 )}
@@ -237,9 +318,15 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <table className="rules__table-table">
                   <tbody>
                     <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--6rem">組み合わせ</td>
-                      <td className={`rules__table-cell  rules__table-cell--6rem`}>D以上+BorC</td>
-                      <td className={`rules__table-cell  rules__table-cell--6rem`}>D以上+D以上</td>
+                      <td className="rules__table-cell rules__table-cell--6rem">
+                        組み合わせ
+                      </td>
+                      <td className={`rules__table-cell  rules__table-cell--6rem`}>
+                        D以上+BorC
+                      </td>
+                      <td className={`rules__table-cell  rules__table-cell--6rem`}>
+                        D以上+D以上
+                      </td>
                     </tr>
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--6rem">加点</td>
@@ -286,129 +373,152 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             show={selectEvent === Events.つり輪}
           />
         </div>
+        {selectEvent !== Events.跳馬 && (
+          <div className="rules__section">
+            <div className="rules__section-header">
+              <p className="rules__section-title">減点ルール</p>
+              <p className="rules__section-description">
+                条件を満たさない場合に減点されるルール
+              </p>
+            </div>
 
-        <div className="rules__section">
-          <div className="rules__section-header">
-            <p className="rules__section-title">減点ルール</p>
-            <p className="rules__section-description">条件を満たさない場合に減点されるルール</p>
+            {/* ニュートラルディダクション */}
+            <RoutineRule
+              summaryNode={
+                <span className="rules__summary-title">
+                  {RuleKey(Rules.ニュートラルディダクション)}
+                  {calculateNeutralDeduction(selectEvent, routine) > 0 ? (
+                    <p className="common__label common__label--active ">
+                      ND:{calculateNeutralDeduction(selectEvent, routine).toFixed(1)}
+                    </p>
+                  ) : (
+                    <></>
+                  )}
+                </span>
+              }
+              descriptionNode={
+                <div className="rules__description">
+                  <p>以下の要求を満たさない場合、減点が付与されます。</p>
+                  <p>・6技以上による構成（技数減点）</p>
+                  {selectEvent === Events.床 && (
+                    <p>・終末技が2回もしくは3回宙返り技（ダブル系不足）</p>
+                  )}
+                  {selectEvent === Events.つり輪 && (
+                    <p>・振動倒立技を使用している（振動倒立技不足）</p>
+                  )}
+                </div>
+              }
+              show={selectEvent !== Events.跳馬}
+            />
+
+            {/* 技数減点 */}
+            <RoutineRule
+              summaryNode={
+                <span className="rules__summary-title">
+                  {RuleKey(Rules.技数減点)}
+                  {calculateElementCountDeduction(routine) > 0 ? (
+                    <p className="common__label ">
+                      技数減点:{calculateElementCountDeduction(routine).toFixed(1)}
+                    </p>
+                  ) : (
+                    <></>
+                  )}
+                </span>
+              }
+              descriptionNode={
+                <div className="rules__description">
+                  <p>少ない技数の演技には減点が発生します(ND)。</p>
+                  <table className="rules__table-table">
+                    <tbody>
+                      <tr className="rules__table-row">
+                        <td className="rules__table-cell rules__table-cell--3rem">
+                          技数
+                        </td>
+                        {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
+                          <td
+                            key={index}
+                            className={`rules__table-cell ${
+                              routine.length === index ? "rules__table-cell--active" : ""
+                            }`}
+                          >
+                            {index}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr className="rules__table-row">
+                        <td className="rules__table-cell rules__table-cell--3rem">
+                          減点
+                        </td>
+                        {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
+                          <td
+                            key={index}
+                            className={`rules__table-cell ${
+                              routine.length === index ? "rules__table-cell--active" : ""
+                            }`}
+                          >
+                            {deduction}
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              }
+              show={selectEvent !== Events.跳馬}
+            />
+
+            {/* 床_ダブル系 */}
+            <RoutineRule
+              summaryNode={
+                <span className="rules__summary-title">
+                  {RuleName(Rules.床_ダブル系不足)}
+                  {calculateMultipleSaltoShortage(routine) > 0 ? (
+                    <p className="common__label ">
+                      ダブル系不足:{calculateMultipleSaltoShortage(routine).toFixed(1)}
+                    </p>
+                  ) : (
+                    <></>
+                  )}
+                </span>
+              }
+              descriptionNode={
+                <div className="rules__description">
+                  <p>終末技が2回もしくは3回宙返り技でない場合、減点が付与されます。</p>
+                </div>
+              }
+              show={selectEvent === Events.床}
+            />
+
+            {/* つり輪_振動倒立不足 */}
+            <RoutineRule
+              summaryNode={
+                <span className="rules__summary-title">
+                  {RuleName(Rules.つり輪_振動倒立不足)}
+                  {calculateSwingHandstandShortage(routine) > 0 ? (
+                    <p className="common__label ">
+                      振動倒立技不足:{calculateSwingHandstandShortage(routine).toFixed(1)}
+                    </p>
+                  ) : (
+                    <></>
+                  )}
+                </span>
+              }
+              descriptionNode={
+                <div className="rules__description">
+                  <p>振動倒立技が演技に含まれていない場合、減点が付与されます。</p>
+                </div>
+              }
+              show={selectEvent === Events.つり輪}
+            />
           </div>
-
-          {/* ニュートラルディダクション */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleKey(Rules.ニュートラルディダクション)}
-                {calculateNeutralDeduction(selectEvent, routine) > 0 ? (
-                  <p className="common__label common__label--active ">
-                    ND:{calculateNeutralDeduction(selectEvent, routine).toFixed(1)}
-                  </p>
-                ) : (
-                  <></>
-                )}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>以下の要求を満たさない場合、減点が付与されます。</p>
-                <p>・6技以上による構成（技数減点）</p>
-                {selectEvent === Events.床 && <p>・終末技が2回もしくは3回宙返り技（ダブル系不足）</p>}
-                {selectEvent === Events.つり輪 && <p>・振動倒立技を使用している（振動倒立技不足）</p>}
-              </div>
-            }
-            show={true}
-          />
-
-          {/* 技数減点 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleKey(Rules.技数減点)}
-                {calculateElementCountDeduction(routine) > 0 ? (
-                  <p className="common__label ">技数減点:{calculateElementCountDeduction(routine).toFixed(1)}</p>
-                ) : (
-                  <></>
-                )}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>少ない技数の演技には減点が発生します(ND)。</p>
-                <table className="rules__table-table">
-                  <tbody>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--3rem">技数</td>
-                      {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
-                        <td
-                          key={index}
-                          className={`rules__table-cell ${routine.length === index ? "rules__table-cell--active" : ""}`}
-                        >
-                          {index}
-                        </td>
-                      ))}
-                    </tr>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--3rem">減点</td>
-                      {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
-                        <td
-                          key={index}
-                          className={`rules__table-cell ${routine.length === index ? "rules__table-cell--active" : ""}`}
-                        >
-                          {deduction}
-                        </td>
-                      ))}
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            }
-            show={true}
-          />
-
-          {/* 床_ダブル系 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.床_ダブル系不足)}
-                {calculateMultipleSaltoShortage(routine) > 0 ? (
-                  <p className="common__label ">ダブル系不足:{calculateMultipleSaltoShortage(routine).toFixed(1)}</p>
-                ) : (
-                  <></>
-                )}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>終末技が2回もしくは3回宙返り技でない場合、減点が付与されます。</p>
-              </div>
-            }
-            show={selectEvent === Events.床}
-          />
-
-          {/* つり輪_振動倒立不足 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.つり輪_振動倒立不足)}
-                {calculateSwingHandstandShortage(routine) > 0 ? (
-                  <p className="common__label ">振動倒立技不足:{calculateSwingHandstandShortage(routine).toFixed(1)}</p>
-                ) : (
-                  <></>
-                )}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>振動倒立技が演技に含まれていない場合、減点が付与されます。</p>
-              </div>
-            }
-            show={selectEvent === Events.つり輪}
-          />
-        </div>
+        )}
 
         <div className="rules__section">
           <div className="rules__section-header">
             <p className="rules__section-title">制限ルール</p>
-            <p className="rules__section-description">条件を満たした技に選択制限がかかるルール</p>
+            <p className="rules__section-description">
+              条件を満たした技に選択制限がかかるルール
+            </p>
           </div>
 
           {/* 同一枠制限 */}
@@ -443,7 +553,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 </p>
               </div>
             }
-            show={true}
+            show={selectEvent !== Events.跳馬}
           />
 
           {/* グループ技数制限 */}
@@ -475,7 +585,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
           */}
               </div>
             }
-            show={true}
+            show={selectEvent !== Events.跳馬}
           />
 
           {/* 全体技数制限 */}
@@ -495,7 +605,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <p>8つ以上の技を実施してもDスコアには加算されません。</p>
               </div>
             }
-            show={true}
+            show={selectEvent !== Events.跳馬}
           />
 
           {/* 終末技制限 */}
@@ -503,7 +613,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             summaryNode={
               <span className="rules__summary-title">
                 {RuleKey(Rules.終末技制限)}
-                {routine.length > 0 && routine[routine.length - 1].element_group === ElementGroup.EG4 ? (
+                {routine.length > 0 &&
+                routine[routine.length - 1].element_group === ElementGroup.EG4 ? (
                   <p className="common__label ">{routine[routine.length - 1].code}</p>
                 ) : null}
               </span>
@@ -522,7 +633,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             summaryNode={
               <span className="rules__summary-title">
                 {RuleName(Rules.床_力技制限)}
-                {fxStrengthLimitCode ? <p className="common__label ">{fxStrengthLimitCode}</p> : null}
+                {fxStrengthLimitCode ? (
+                  <p className="common__label ">{fxStrengthLimitCode}</p>
+                ) : null}
               </span>
             }
             descriptionNode={
@@ -542,7 +655,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             summaryNode={
               <span className="rules__summary-title">
                 {RuleName(Rules.床_旋回制限)}
-                {fxCircleLimitCode ? <p className="common__label ">{fxCircleLimitCode}</p> : null}
+                {fxCircleLimitCode ? (
+                  <p className="common__label ">{fxCircleLimitCode}</p>
+                ) : null}
               </span>
             }
             descriptionNode={
@@ -599,8 +714,13 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <p>また、同じ場所でのロシアン転向技は1つまで使用できます。</p>
                 <p>例）</p>
                 <p>・馬端馬背ロシアン1080°転向～ロシアン720°転向下り：不認定+B難度</p>
-                <p>・あん部馬背ロシアン720°転向～あん部馬背ロシアン1080°転向：不認定+E難度</p>
-                <p>・あん部馬背ロシアン360° ～馬端馬背ロシアン1080°転向～ロシアン360°転向下り：C難度+不認定+A難度</p>
+                <p>
+                  ・あん部馬背ロシアン720°転向～あん部馬背ロシアン1080°転向：不認定+E難度
+                </p>
+                <p>
+                  ・あん部馬背ロシアン360°
+                  ～馬端馬背ロシアン1080°転向～ロシアン360°転向下り：C難度+不認定+A難度
+                </p>
               </div>
             }
             show={selectEvent === Events.あん馬}
@@ -681,8 +801,13 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <p>以下のひねりを伴う3/3移動技は1演技中2つまで使用できます。</p>
                 <p>・III17 正面横移動ひねり、背面横移動ひねり（馬端～馬端）</p>
                 <p>・III22 縦向き1/3前移動直ちに縦向き2/3移動ひねり（ニン・レイエス）</p>
-                <p>・III23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）</p>
-                <p>・III29 開脚旋回縦向き3/3移動1回ひねり（2回以内の旋回で）（ウルジカ2/ブルクハルト）</p>
+                <p>
+                  ・III23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）
+                </p>
+                <p>
+                  ・III29
+                  開脚旋回縦向き3/3移動1回ひねり（2回以内の旋回で）（ウルジカ2/ブルクハルト）
+                </p>
               </div>
             }
             show={selectEvent === Events.あん馬}
@@ -709,8 +834,13 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <p>以下の1回ひねりを伴う技は1演技中2つまで使用できます。</p>
                 <p>・II28 一把手を挟んで横向き旋回1回ひねり（2回以内の旋回で） </p>
                 <p>・II29 横向き旋回1回ひねり移動（2回以内の旋回で）（アイヒホルン） </p>
-                <p>・II30 両把手を挟んで横向き旋回1回ひねり（2回以内の旋回で）（ケイハ）</p>
-                <p>・II30 馬端外向き縦向き支持から両把手を越えて縦向き旋回1回ひねり（2回以内の旋回で）（ケイハ5）</p>
+                <p>
+                  ・II30 両把手を挟んで横向き旋回1回ひねり（2回以内の旋回で）（ケイハ）
+                </p>
+                <p>
+                  ・II30
+                  馬端外向き縦向き支持から両把手を越えて縦向き旋回1回ひねり（2回以内の旋回で）（ケイハ5）
+                </p>
                 <p>・II34 馬端旋回1回ひねり（2回以内の旋回で）（マジャール）</p>
                 <p>・II35 両把手上横向き旋回1回ひねり（2回以内の旋回で）（ベルキ）</p>
                 <p>・II36 あん部馬背縦向き旋回1回ひねり（2回以内の旋回で）</p>
@@ -737,7 +867,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             }
             descriptionNode={
               <div className="rules__description">
-                <p>ショーン系及びベズゴ系の技はフロップやコンバイン、倒立技を含め1演技中2つまで使用できます。</p>
+                <p>
+                  ショーン系及びベズゴ系の技はフロップやコンバイン、倒立技を含め1演技中2つまで使用できます。
+                </p>
                 <p>それぞれ2回ずつではなくショーン系とべズゴ系合わせて2つまでです。 </p>
               </div>
             }
@@ -762,7 +894,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             }
             descriptionNode={
               <div className="rules__description">
-                <p>開脚旋回で実施される技は終末技は含まずに1演技中4つまで使用できます。</p>
+                <p>
+                  開脚旋回で実施される技は終末技は含まずに1演技中4つまで使用できます。
+                </p>
               </div>
             }
             show={selectEvent === Events.あん馬}
@@ -866,7 +1000,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               <div className="rules__description">
                 <p>以下のニン・レイエス系の移動技は1演技中1つまで使用できます。</p>
                 <p>・III22 縦向き1/3前移動直ちに縦向き2/3移動ひねり（ニン・レイエス）</p>
-                <p>・III23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）</p>
+                <p>
+                  ・III23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）
+                </p>
               </div>
             }
             show={selectEvent === Events.あん馬}
@@ -926,7 +1062,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               <span className="rules__summary-title">
                 {RuleName(Rules.つり輪_力技制限1)}
                 {srStrengthLimit1CodesList.length > 0 &&
-                srStrengthLimit1CodesList[srStrengthLimit1CodesList.length - 1].length >= 3 ? (
+                srStrengthLimit1CodesList[srStrengthLimit1CodesList.length - 1].length >=
+                  3 ? (
                   <div className="rules__summary-labels">
                     <p className="common__label">✔️</p>
                   </div>
@@ -983,11 +1120,13 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
 
                 <p className="rules__section-line" />
                 <p>
-                  EG2またはEG3の技は<span style={{ fontWeight: "bold" }}>直接3回</span>を超えて使用できません。
+                  EG2またはEG3の技は<span style={{ fontWeight: "bold" }}>直接3回</span>
+                  を超えて使用できません。
                 </p>
                 <p>
                   EG2またはEG3の技が連続していないとするためにはEG1から
-                  <span style={{ fontWeight: "bold" }}>B難度以上の振動技</span>が必要です。
+                  <span style={{ fontWeight: "bold" }}>B難度以上の振動技</span>
+                  が必要です。
                 </p>
                 <p>ただしけ上がりor後方け上がりは連続を切る条件を満たしません。</p>
               </div>
@@ -1007,7 +1146,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                         {row.code}
                       </p>
                     ))}
-                    {srStrengthLimit2Codes.length > 3 && <p className="common__label ">...</p>}
+                    {srStrengthLimit2Codes.length > 3 && (
+                      <p className="common__label ">...</p>
+                    )}
                   </div>
                 ) : null}
               </span>
@@ -1016,41 +1157,51 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               <div className="rules__description">
                 <p>以下の力技を選択中(制限中)です。</p>
                 <div className="rules__description-label-box">
-                  {([ElementGroup.EG2, ElementGroup.EG3] as ElementGroup[]).map((group) => (
-                    <div key={group}>
-                      <p>{getGroupName(selectEvent, group)}</p>
-                      <p className="rules__description-labels">
-                        {srStrengthLimit2Codes.filter((row) => row.elementGroup === group).length > 0 ? (
-                          srStrengthLimit2Codes
-                            .filter((row) => row.elementGroup === group)
-                            .map((row, index) => (
-                              <span key={index} className="common__label ">
-                                {row.code}.{row.typeName}
-                              </span>
-                            ))
-                        ) : (
-                          <span>選択していません</span>
-                        )}
-                      </p>
-                    </div>
-                  ))}
+                  {([ElementGroup.EG2, ElementGroup.EG3] as ElementGroup[]).map(
+                    (group) => (
+                      <div key={group}>
+                        <p>{getGroupName(selectEvent, group)}</p>
+                        <p className="rules__description-labels">
+                          {srStrengthLimit2Codes.filter(
+                            (row) => row.elementGroup === group
+                          ).length > 0 ? (
+                            srStrengthLimit2Codes
+                              .filter((row) => row.elementGroup === group)
+                              .map((row, index) => (
+                                <span key={index} className="common__label ">
+                                  {row.code}.{row.typeName}
+                                </span>
+                              ))
+                          ) : (
+                            <span>選択していません</span>
+                          )}
+                        </p>
+                      </div>
+                    )
+                  )}
                 </div>
                 <p className="rules__section-line" />
                 <p>
-                  終末姿勢が同一の力静止技は<span style={{ fontWeight: "bold" }}>EG2とEG3で1回ずつ</span>使用できます。
+                  終末姿勢が同一の力静止技は
+                  <span style={{ fontWeight: "bold" }}>EG2とEG3で1回ずつ</span>
+                  使用できます。
                 </p>
                 <p>・OK例:異なるEGで終末姿勢が同一</p>
                 <table className="rules__table-table">
                   <tbody>
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--3rem">EG2</td>
-                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
+                      <td
+                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
+                      >
                         II52.アザリアン
                       </td>
                     </tr>
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
-                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
+                      <td
+                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
+                      >
                         III16.ホンマ十字懸垂
                       </td>
                     </tr>
@@ -1061,13 +1212,17 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                   <tbody>
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
-                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
+                      <td
+                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
+                      >
                         III47.後方け上がり中水平
                       </td>
                     </tr>
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
-                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
+                      <td
+                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
+                      >
                         III71.後ろ振り上がり中水平
                       </td>
                     </tr>
@@ -1107,6 +1262,55 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               </div>
             }
             show={selectEvent === Events.つり輪}
+          />
+
+          {/* 跳馬_グループ制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.跳馬_グループ制限)}
+                {routine.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {routine.map((element, index) => (
+                      <p key={index} className="common__label ">
+                        {/* {Object.entries(ElementGroup).find(([key, value]) => value === element.element_group) || ""} */}
+                        {Object.keys(ElementGroup).find(
+                          (key) =>
+                            ElementGroup[key as keyof typeof ElementGroup] ===
+                            element.element_group
+                        ) || ""}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>種目別において、選手は2つの跳躍を行います。</p>
+                <p>
+                  2つの跳躍は<span style={{ fontWeight: "bold" }}>異なるグループ</span>
+                  から選択する必要があります。
+                </p>
+              </div>
+            }
+            show={selectEvent === Events.跳馬}
+          />
+
+          {/* 跳馬_2技制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.跳馬_2技制限)}
+                {routine.length === 2 ? <p className="common__label ">✔️</p> : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>種目別において、選手は2つまで跳躍を行います。</p>
+              </div>
+            }
+            show={selectEvent === Events.跳馬}
           />
         </div>
       </div>

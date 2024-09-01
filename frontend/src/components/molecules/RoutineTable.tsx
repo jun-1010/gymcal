@@ -8,12 +8,13 @@ import {
   calculateTotalScore,
   RoutineElement,
 } from "../../utilities/RoutineUtil";
-import { Events, RuleName, Rules } from "../../utilities/Type";
+import { Events, hasCVEvents, RuleName, Rules } from "../../utilities/Type";
 import RoutineSummaryLabel from "../atoms/RoutineSummaryLabel";
 import RoutineTableElement from "../atoms/RoutineTableElement";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { calculateMultipleSaltoShortage } from "../../utilities/RoutineFXUtil";
 import { calculateSwingHandstandShortage } from "../../utilities/RoutineSRUtil";
+import { calculateVTScore } from "../../utilities/RoutineVTUtil";
 
 interface RoutineTableProps {
   selectEvent: Events;
@@ -76,13 +77,13 @@ const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen }: Rout
       <div className="routine__table">
         {routine.length ? (
           <div className="routine__elements">
-            <div className="routine__element routine__element--header">
-              <span className="routine__item">No.</span>
+            <div className={`routine__element routine__element--header ${hasCVEvents(selectEvent) && "routine__element--with-cv"}`}>
+              <span className={`routine__item`}>No.</span>
               <span></span>
-              <span className="routine__item">名前</span>
-              <span className="routine__item">EG</span>
+              <span className={`routine__item`}>名前</span>
+              <span className={`routine__item ${selectEvent === Events.跳馬 ? "routine__item--hidden" : ""}`}>EG</span>
               <span className="routine__item routine__item--center">難度</span>
-              <span className="routine__item">CV</span>
+              <span className={`routine__item ${!hasCVEvents(selectEvent) &&"routine__item--hidden"}`}>CV</span>
             </div>
             {routine.map((element, index) => (
               <RoutineTableElement
@@ -113,19 +114,35 @@ const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen }: Rout
         )}
         <div className="routine__summaries">
           <div className="routine__summary">
-            <RoutineSummaryLabel score={calculateTotalScore(routine)} isActive={true} label="Dスコア" show={true} />
+            <RoutineSummaryLabel
+              score={calculateTotalScore(routine)}
+              isActive={true}
+              label="Dスコア"
+              show={selectEvent !== Events.跳馬}
+            />
+            <RoutineSummaryLabel
+              score={calculateVTScore(routine)}
+              isActive={true}
+              label={`${routine.length === 2 ? "平均" : ""}Dスコア`}
+              show={selectEvent === Events.跳馬}
+            />
             <RoutineSummaryLabel
               score={calculateTotalElementGroupScore(routine)}
               isActive={false}
               label="EG"
-              show={true}
+              show={selectEvent !== Events.跳馬}
             />
-            <RoutineSummaryLabel score={calculateTotalDifficulty(routine)} isActive={false} label="難度" show={true} />
+            <RoutineSummaryLabel
+              score={calculateTotalDifficulty(routine)}
+              isActive={false}
+              label="難度"
+              show={selectEvent !== Events.跳馬}
+            />
             <RoutineSummaryLabel
               score={calculateTotalConnectionValue(routine)}
               isActive={false}
               label="CV"
-              show={selectEvent === Events.床 || selectEvent === Events.鉄棒}
+              show={hasCVEvents(selectEvent)}
             />
           </div>
           <div className="routine__summary">
@@ -133,13 +150,13 @@ const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen }: Rout
               score={calculateNeutralDeduction(selectEvent, routine)}
               isActive={true}
               label="ND"
-              show={true}
+              show={selectEvent !== Events.跳馬}
             />
             <RoutineSummaryLabel
               score={calculateElementCountDeduction(routine)}
               isActive={false}
               label={RuleName(Rules.技数減点)}
-              show={true}
+              show={selectEvent !== Events.跳馬}
             />
             <RoutineSummaryLabel
               score={calculateMultipleSaltoShortage(routine)}

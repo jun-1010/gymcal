@@ -78,7 +78,7 @@ const ElementsTile = ({ selectEvent, element, setRoutine, routine, elementsTileK
                   : ""
               }`}
             >
-              {selectEvent === Events.跳馬 ? element.difficulty : difficulties[element.difficulty - 1]}
+              {selectEvent === Events.跳馬 ? (element.difficulty/10).toFixed(1) : difficulties[element.difficulty - 1]}
             </span>
             {renderElementStatusLabel(element)}
           </div>

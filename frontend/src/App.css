@@ -432,8 +432,8 @@ html {
       .routine__element {
         padding: 0.2rem;
         display: grid;
-        /* No. Connection, Name, EG, 難度, CV, 削除 */
-        grid-template-columns: 1rem 1rem 1fr 3rem 2rem 2rem 1rem;
+        /* No. Connection, Name, EG, 難度, 削除 */
+        grid-template-columns: 1rem 1rem 1fr 3rem 2rem 1rem;
         column-gap: 0.3rem;
 
         .routine__item {
@@ -445,6 +445,10 @@ html {
 
         .routine__item--center {
           justify-content: center;
+        }
+
+        .routine__item--hidden {
+          display: none;
         }
 
         .routine__icon {
@@ -461,6 +465,11 @@ html {
         .routine__icon--active {
           opacity: 1;
         }
+      }
+
+      .routine__element--with-cv {
+        /* No. Connection, Name, EG, 難度, CV, 削除 */
+        grid-template-columns: 1rem 1rem 1fr 3rem 2rem 2rem 1rem;
       }
 
       .routine__element--unqualified {
