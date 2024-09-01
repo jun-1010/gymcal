@@ -17,11 +17,16 @@ export enum Events {
   // 女子床 = 10,
 }
 
+export const hasCVEvents = (event: Events) => {
+  return event === Events.床 || event === Events.平行棒 || event === Events.鉄棒;
+}
+
 export enum ElementGroup {
   EG1 = 1,
   EG2 = 2,
   EG3 = 3,
   EG4 = 4,
+  EG5 = 5,
 }
 
 export const getEventKey = (event: number): string => {
@@ -61,6 +66,13 @@ export const GroupNames: { [key: number]: { [key: number]: string } } = {
     [ElementGroup.EG3]: "振動力静止技",
     [ElementGroup.EG4]: "終末技",
   },
+  [Events.跳馬]: {
+    [ElementGroup.EG1]: "1回宙返りひねり技",
+    [ElementGroup.EG2]: "前方技",
+    [ElementGroup.EG3]: "側方技",
+    [ElementGroup.EG4]: "ロンダート入りひねり技",
+    [ElementGroup.EG5]: "ロンダート入り技",
+  }
   // 他の種目も追加する
 };
 
@@ -163,6 +175,8 @@ export enum ElementStatus {
   // つり輪_力技制限2_脚前挙十字懸垂 = 34,
   // つり輪_力技制限2_脚上挙十字懸垂  = 35,
   つり輪_力技制限2_倒立 = 36,
+  跳馬_グループ制限 = 37,
+  跳馬_2技制限 = 38,
 }
 
 // elementTypeに対応するelementStatusを返す
@@ -316,6 +330,8 @@ export enum Rules {
   つり輪_力技制限1 = 30,
   つり輪_力技制限2 = 31,
   つり輪_組み合わせ加点 = 32,
+  跳馬_グループ制限 = 33,
+  跳馬_2技制限 = 34,
 }
 
 export const RuleKey = (ruleKey: number): string => {

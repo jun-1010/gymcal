@@ -1,5 +1,9 @@
 import { Element, isElementTypeIncluded } from "./ElementUtil";
-import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "./RoutineFXUtil";
+import {
+  calculateMultipleSaltoShortage,
+  isFXCircleLimit,
+  isFXStrengthLimit,
+} from "./RoutineFXUtil";
 import {
   isPHBusnariLimit,
   isPHCombineLimit,
@@ -16,8 +20,20 @@ import {
   isPHTravelLimit,
   isPHTravelSpindleLimit,
 } from "./RoutinePHUtils";
-import { calculateSwingHandstandShortage, countSequenceStrengths, getElementStatusLimited, hasStrengtElement, isSRStrengthLimit1 } from "./RoutineSRUtil";
-import { ELEMENT_COUNT_DEDUCTIONS, ElementGroup, ElementStatus, ElementType, Events } from "./Type";
+import {
+  calculateSwingHandstandShortage,
+  countSequenceStrengths,
+  getElementStatusLimited,
+  hasStrengtElement,
+  isSRStrengthLimit1,
+} from "./RoutineSRUtil";
+import {
+  ELEMENT_COUNT_DEDUCTIONS,
+  ElementGroup,
+  ElementStatus,
+  ElementType,
+  Events,
+} from "./Type";
 
 // 6種目分のroutine
 export interface Routines {
@@ -49,7 +65,10 @@ export interface RoutineElement extends Element {
 }
 
 // EG技数制限(鉄棒手放し技のみ条件付きで5技)
-export const isGroupLimited = (routine: RoutineElement[], targetElement: Element): boolean => {
+export const isGroupLimited = (
+  routine: RoutineElement[],
+  targetElement: Element
+): boolean => {
   let limit = 4;
   // if (
   //   targetElement.event === Events.鉄棒 &&
@@ -69,20 +88,29 @@ export const isGroupLimited = (routine: RoutineElement[], targetElement: Element
 };
 
 // 表示Elementの状態を取得
-export const getElementStatus = (selectEvent: Events, routine: RoutineElement[], targetElement: Element): number => {
+export const getElementStatus = (
+  selectEvent: Events,
+  routine: RoutineElement[],
+  targetElement: Element
+): number => {
   // 共通制限ルールを最優先表示
   if (routine.some((element) => element.id === targetElement.id)) {
     return ElementStatus.選択済み;
-  } else if (routine.some((element) => element.code !== "" && element.code === targetElement.code)) {
+  } else if (
+    routine.some((element) => element.code !== "" && element.code === targetElement.code)
+  ) {
     return ElementStatus.同一枠選択済み;
   } else if (isGroupLimited(routine, targetElement)) {
     return ElementStatus.技数制限_グループ;
   } else if (routine.filter((element) => element.is_qualified).length >= 8) {
     return ElementStatus.技数制限_全体;
   }
-  // 固有ルールの表示[床・鉄棒以外]
-  if (selectEvent !== Events.床 && selectEvent !== Events.鉄棒) {
-    if (routine.length > 0 && routine[routine.length - 1].element_group === ElementGroup.EG4) {
+  // 固有ルールの表示[床以外]
+  if (selectEvent !== Events.床) {
+    if (
+      routine.length > 0 &&
+      routine[routine.length - 1].element_group === ElementGroup.EG4
+    ) {
       return ElementStatus.終末技制限;
     }
   }
@@ -130,10 +158,18 @@ export const getElementStatus = (selectEvent: Events, routine: RoutineElement[],
   if (selectEvent === Events.つり輪) {
     if (isSRStrengthLimit1(routine, targetElement)) {
       return ElementStatus.つり輪_力技制限1;
+    } else if (hasStrengtElement(routine)) {
+      return getElementStatusLimited(routine, targetElement); // 力技制限2
     }
-    // 力技制限2
-    if (hasStrengtElement(routine)) {
-      return getElementStatusLimited(routine, targetElement);
+  }
+  // 固有ルールの表示[跳馬]
+  if (selectEvent === Events.跳馬) {
+    if (routine.length === 2) {
+      return ElementStatus.跳馬_2技制限;
+    } else if (
+      routine.some((element) => element.element_group === targetElement.element_group)
+    ) {
+      return ElementStatus.跳馬_グループ制限;
     }
   }
 
@@ -155,10 +191,18 @@ export const updateRoutineForValidation = (
   if (selectEvent === Events.つり輪) {
     let strengthCount = 0;
     newRoutine = routine.map((element) => {
-      if (isElementTypeIncluded(element.element_type, ElementType.つり輪_力技制限1を切れる技)) {
+      if (
+        isElementTypeIncluded(
+          element.element_type,
+          ElementType.つり輪_力技制限1を切れる技
+        )
+      ) {
         strengthCount = 0;
       }
-      if (element.element_group === ElementGroup.EG2 || element.element_group === ElementGroup.EG3) {
+      if (
+        element.element_group === ElementGroup.EG2 ||
+        element.element_group === ElementGroup.EG3
+      ) {
         strengthCount++;
       }
       if (strengthCount >= 4 && element.is_qualified === true) {
@@ -200,9 +244,7 @@ export const updateElementGroupScoreInRoutine = (
   });
 
   // 各グループで最高得点を持つelementを取得する
-  let maxScores = new Array(
-    Object.keys(ElementGroup).length / 2 // keyとvalueをカウントしてしまうため2で割る
-  ).fill(0);
+  let maxScores = new Array(4).fill(0);
   newRoutineWithAllScore.forEach((element) => {
     if (element.element_group_score! > maxScores[element.element_group - 1]) {
       maxScores[element.element_group - 1] = element.element_group_score!;
@@ -210,9 +252,7 @@ export const updateElementGroupScoreInRoutine = (
   });
 
   // 各グループで最高のグループ得点を持つ最初のelementのみ適用する
-  const updateFlgs = new Array(
-    Object.keys(ElementGroup).length / 2 // keyとvalueをカウントしてしまうため2で割る
-  ).fill(false);
+  const updateFlgs = new Array(4).fill(false);
   let newRoutine = newRoutineWithAllScore.map((element) => {
     if (
       !updateFlgs[element.element_group - 1] && // まだ適用していない
@@ -240,7 +280,9 @@ export const updateElementGroupScoreInRoutine = (
 
       if (element.element_group === ElementGroup.EG1) {
         // 終末技グループがEG1(跳躍技以外)の場合
-        const firstEG1Element = newRoutine.find((element) => element.element_group === ElementGroup.EG1);
+        const firstEG1Element = newRoutine.find(
+          (element) => element.element_group === ElementGroup.EG1
+        );
         if (firstEG1Element === element) {
           // 終末技グループがEG1の場合 && 最初のEG1の場合 は 0.5点
           return { ...element, element_group_score: 0.5 };
@@ -348,7 +390,10 @@ export const updateConnectionInRoutine = (
         const previousElement = routine[index - 1];
         // ひねりを伴う1回宙同士の組み合わせ → null
         if (
-          isElementTypeIncluded(previousElement.element_type, ElementType.ひねりを伴う1回宙) &&
+          isElementTypeIncluded(
+            previousElement.element_type,
+            ElementType.ひねりを伴う1回宙
+          ) &&
           isElementTypeIncluded(element.element_type, ElementType.ひねりを伴う1回宙)
         ) {
           element.connection_value = null;
@@ -385,7 +430,10 @@ export const updateConnectionInRoutine = (
       if (
         nextElement &&
         isElementTypeIncluded(element.element_type, ElementType.つり輪_ヤマワキ系) &&
-        isElementTypeIncluded(nextElement.element_type, ElementType.つり輪_後ろ振り上がり倒立)
+        isElementTypeIncluded(
+          nextElement.element_type,
+          ElementType.つり輪_後ろ振り上がり倒立
+        )
       ) {
         if (nextElement.is_connected) {
           //ヤマワキ系の難度点0.1加算
@@ -429,11 +477,18 @@ export const calculateTotalScore = (routine: RoutineElement[]): number => {
 };
 
 // ニュートラルディダクションを計算
-export const calculateNeutralDeduction = (selectEvent: Events, routine: RoutineElement[]): number => {
+export const calculateNeutralDeduction = (
+  selectEvent: Events,
+  routine: RoutineElement[]
+): number => {
   if (selectEvent === Events.床) {
-    return calculateElementCountDeduction(routine) + calculateMultipleSaltoShortage(routine);
+    return (
+      calculateElementCountDeduction(routine) + calculateMultipleSaltoShortage(routine)
+    );
   } else if (selectEvent === Events.つり輪) {
-    return calculateElementCountDeduction(routine) + calculateSwingHandstandShortage(routine);
+    return (
+      calculateElementCountDeduction(routine) + calculateSwingHandstandShortage(routine)
+    );
   }
 
   return calculateElementCountDeduction(routine);
@@ -442,7 +497,9 @@ export const calculateNeutralDeduction = (selectEvent: Events, routine: RoutineE
 // 技数減点を計算
 export const calculateElementCountDeduction = (routine: RoutineElement[]): number => {
   const elementCountDeduction =
-    routine.length < ELEMENT_COUNT_DEDUCTIONS.length ? ELEMENT_COUNT_DEDUCTIONS[routine.length] : 0;
+    routine.length < ELEMENT_COUNT_DEDUCTIONS.length
+      ? ELEMENT_COUNT_DEDUCTIONS[routine.length]
+      : 0;
 
   return elementCountDeduction;
 };
@@ -453,7 +510,10 @@ export const calculateTotalElementGroupScore = (routine: RoutineElement[]) => {
   routine
     .filter((element) => element.is_qualified)
     .forEach((element) => {
-      if (element.element_group_score === undefined || element.element_group_score === null) {
+      if (
+        element.element_group_score === undefined ||
+        element.element_group_score === null
+      ) {
         // routineのレンダリングタイミングによってundefinedのままの場合を想定
         return;
       }
