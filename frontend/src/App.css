@@ -252,6 +252,8 @@ html {
     overflow: scroll;
 
     .elements__row {
+      padding: 0 1rem 0 0;
+      width: fit-content;
       display: flex;
       flex-wrap: nowrap;
 

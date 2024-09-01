@@ -17,6 +17,7 @@ import Elements from "./components/organisms/Elements";
 import Routine from "./components/organisms/Routine";
 import { checkPrime } from "crypto";
 
+// const url = "http://54.250.128.188:8000/api/elements"; // iPadで見る用
 const url = "http://localhost:8000/api/elements";
 
 const App: React.FC = () => {
