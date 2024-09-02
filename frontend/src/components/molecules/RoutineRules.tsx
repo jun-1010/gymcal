@@ -20,7 +20,7 @@ import {
   getPHTongFeiLimitCodes,
   getPHTravelLimitCodes,
   getPHTravelSpindleLimitCodes,
-} from "../../utilities/RoutinePHUtils";
+} from "../../utilities/RoutinePHUtil";
 import {
   calculateSwingHandstandShortage,
   getSRStrengthLimit1Codes,

@@ -19,7 +19,7 @@ export enum Events {
 
 export const hasCVEvents = (event: Events) => {
   return event === Events.床 || event === Events.平行棒 || event === Events.鉄棒;
-}
+};
 
 export enum ElementGroup {
   EG1 = 1,

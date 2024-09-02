@@ -19,11 +19,11 @@ import {
   isPHTongFeiLimit,
   isPHTravelLimit,
   isPHTravelSpindleLimit,
-} from "./RoutinePHUtils";
+} from "./RoutinePHUtil";
 import {
   calculateSwingHandstandShortage,
   countSequenceStrengths,
-  getElementStatusLimited,
+  getSRElementStatusLimited,
   hasStrengtElement,
   isSRStrengthLimit1,
 } from "./RoutineSRUtil";
@@ -159,7 +159,7 @@ export const getElementStatus = (
     if (isSRStrengthLimit1(routine, targetElement)) {
       return ElementStatus.つり輪_力技制限1;
     } else if (hasStrengtElement(routine)) {
-      return getElementStatusLimited(routine, targetElement); // 力技制限2
+      return getSRElementStatusLimited(routine, targetElement); // 力技制限2
     }
   }
   // 固有ルールの表示[跳馬]

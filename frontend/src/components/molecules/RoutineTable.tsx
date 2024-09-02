@@ -23,7 +23,12 @@ interface RoutineTableProps {
   setRoutineOpen: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen }: RoutineTableProps) => {
+const RoutineTable = ({
+  selectEvent,
+  routine,
+  setRoutine,
+  setRoutineOpen,
+}: RoutineTableProps) => {
   const [deleteMenuOpen, setDeleteMenuOpen] = useState(false);
   const deleteMenuRef = useRef<HTMLDivElement>(null);
 
@@ -54,7 +59,10 @@ const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen }: Rout
               <div className="routine__delete-menu">
                 <p className="routine__delete-title">演技構成をリセットしますか？</p>
                 <div className="routine__detete-textbox">
-                  <div className="routine__delete-button" onClick={() => setDeleteMenuOpen(false)}>
+                  <div
+                    className="routine__delete-button"
+                    onClick={() => setDeleteMenuOpen(false)}
+                  >
                     キャンセル
                   </div>
                   <div
@@ -77,13 +85,29 @@ const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen }: Rout
       <div className="routine__table">
         {routine.length ? (
           <div className="routine__elements">
-            <div className={`routine__element routine__element--header ${hasCVEvents(selectEvent) && "routine__element--with-cv"}`}>
+            <div
+              className={`routine__element routine__element--header ${
+                hasCVEvents(selectEvent) && "routine__element--with-cv"
+              }`}
+            >
               <span className={`routine__item`}>No.</span>
               <span></span>
               <span className={`routine__item`}>名前</span>
-              <span className={`routine__item ${selectEvent === Events.跳馬 ? "routine__item--hidden" : ""}`}>EG</span>
+              <span
+                className={`routine__item ${
+                  selectEvent === Events.跳馬 ? "routine__item--hidden" : ""
+                }`}
+              >
+                EG
+              </span>
               <span className="routine__item routine__item--center">難度</span>
-              <span className={`routine__item ${!hasCVEvents(selectEvent) &&"routine__item--hidden"}`}>CV</span>
+              <span
+                className={`routine__item ${
+                  !hasCVEvents(selectEvent) && "routine__item--hidden"
+                }`}
+              >
+                CV
+              </span>
             </div>
             {routine.map((element, index) => (
               <RoutineTableElement
@@ -100,7 +124,9 @@ const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen }: Rout
           <div className="routine__empty-box">
             <div className="routine__empty-message-box">
               <p className="routine__empty-message--bold">まだ技を選択していません。</p>
-              <p className="routine__empty-message--small">難度表から技を選択しましょう！</p>
+              <p className="routine__empty-message--small">
+                難度表から技を選択しましょう！
+              </p>
             </div>
             <div
               className="routine__empty-button"
