@@ -50,6 +50,7 @@ import {
 import RoutineRule from "../atoms/RoutineRule";
 import { spawn } from "child_process";
 import { calculateVTScore } from "../../utilities/RoutineVTUtil";
+import { getPBSaltoLimitCodes } from "../../utilities/RoutinePBUtil";
 
 // 同一枠の技を持つ技のコードを取得
 const getSameSlotCodes = (
@@ -150,6 +151,8 @@ export const RoutineRules = ({
     selectEvent === Events.つり輪 ? getSRStrengthLimit1Codes(routine) : [];
   const srStrengthLimit2Codes =
     selectEvent === Events.つり輪 ? getSRStrengthLimit2Codes(routine) : [];
+  const pbSaltoLimitCodes =
+    selectEvent === Events.平行棒 ? getPBSaltoLimitCodes(routine) : [];
 
   return (
     <>
@@ -529,12 +532,12 @@ export const RoutineRules = ({
 
                 {sameSlotCodes.length > 0 ? (
                   <div className="rules__summary-labels">
-                    {sameSlotCodes.slice(0, 4).map((e, index) => (
+                    {sameSlotCodes.slice(0, 3).map((e, index) => (
                       <p key={index} className="common__label ">
                         {e}
                       </p>
                     ))}
-                    {sameSlotCodes.length > 4 && <p className="common__label ">...</p>}
+                    {sameSlotCodes.length > 3 && <p className="common__label ">...</p>}
                   </div>
                 ) : null}
               </span>
@@ -1311,6 +1314,126 @@ export const RoutineRules = ({
               </div>
             }
             show={selectEvent === Events.跳馬}
+          />
+
+          {/* 平行棒_宙返り技制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.平行棒_宙返り技制限)}
+                {pbSaltoLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {pbSaltoLimitCodes.slice(0, 3).map((row, index) => (
+                      <p key={index} className="common__label ">
+                        {row.code}
+                      </p>
+                    ))}
+                    {pbSaltoLimitCodes.length > 3 && (
+                      <p className="common__label ">...</p>
+                    )}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>以下の種類の宙返り技を選択中(制限中)です。</p>
+                <div className="rules__description-label-box">
+                  <p className="rules__description-labels">
+                    {pbSaltoLimitCodes.length > 0 ? (
+                      pbSaltoLimitCodes.map((row, index) => (
+                        <span key={index} className="common__label ">
+                          {row.code}.{row.typeName}
+                        </span>
+                      ))
+                    ) : (
+                      <span>選択していません</span>
+                    )}
+                  </p>
+                </div>
+                <p className="rules__section-line" />
+                <p>同じ種類の宙返り技は1演技に1つまで使用できます。</p>
+                <p>
+                  <span style={{ fontWeight: "bold" }}>同じEG</span>の
+                  <span style={{ fontWeight: "bold" }}>異なる姿勢</span>または
+                  <span style={{ fontWeight: "bold" }}>異なる受け方</span>
+                  の技が同じ種類と判断されます。
+                </p>
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--17rem rules__table-cell--left">
+                        異なる姿勢：抱え込み / 屈身 / 伸身 / 開脚
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td
+                        className={`rules__table-cell rules__table-cell--17rem rules__table-cell--left`}
+                      >
+                        異なる受け方：腕支持 / 支持 / 直接懸垂
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p>NG例:</p>
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--12rem rules__table-cell--left">
+                        II47.モリスエ
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td
+                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
+                      >
+                        II48.屈身モリスエ
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--12rem rules__table-cell--left">
+                        III59.ベーレ
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td
+                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
+                      >
+                        III60.屈身ベーレ
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--12rem rules__table-cell--left">
+                        II106.爆弾カット腕支持
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td
+                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
+                      >
+                        II107.爆弾カット支持
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td
+                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
+                      >
+                        II111.爆弾カット直接懸垂
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            }
+            show={selectEvent === Events.平行棒}
           />
         </div>
       </div>

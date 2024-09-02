@@ -161,19 +161,14 @@ export const getSRElementStatusLimited = (
     return ElementStatus.選択可能;
   }
 
-  // 判定
-  let isTargetLimited = false;
-  routine.forEach((element) => {
-    if (
-      isElementTypeIncluded(element.element_type, targetStrenghType) &&
-      targetElement.element_group === element.element_group
-    ) {
-      isTargetLimited = true;
-    }
-  });
-
-  // 制限状態の場合、該当のElementStatusを返す
-  if (isTargetLimited) {
+  // 対象の技と同じ力技タイプが演技構成に含まれている
+  if (
+    routine.some(
+      (element) =>
+        isElementTypeIncluded(element.element_type, targetStrenghType) &&
+        targetElement.element_group === element.element_group
+    )
+  ) {
     return getElementStatusFromElementType(targetStrenghType);
   }
 

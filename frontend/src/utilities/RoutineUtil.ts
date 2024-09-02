@@ -4,6 +4,7 @@ import {
   isFXCircleLimit,
   isFXStrengthLimit,
 } from "./RoutineFXUtil";
+import { getPBElementStatusLimited } from "./RoutinePBUtil";
 import {
   isPHBusnariLimit,
   isPHCombineLimit,
@@ -92,7 +93,7 @@ export const getElementStatus = (
   selectEvent: Events,
   routine: RoutineElement[],
   targetElement: Element
-): number => {
+): ElementStatus => {
   // 共通制限ルールを最優先表示
   if (routine.some((element) => element.id === targetElement.id)) {
     return ElementStatus.選択済み;
@@ -171,6 +172,11 @@ export const getElementStatus = (
     ) {
       return ElementStatus.跳馬_グループ制限;
     }
+  }
+  // 固有ルールの表示[平行棒]
+  if (selectEvent === Events.平行棒) {
+    const pbElementStatus = getPBElementStatusLimited(routine, targetElement);
+    return pbElementStatus;
   }
 
   return ElementStatus.選択可能;

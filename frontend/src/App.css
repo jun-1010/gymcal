@@ -635,12 +635,20 @@ html {
             width: 3rem;
           }
 
+          .rules__table-cell--5rem {
+            width: 5rem;
+          }
+
           .rules__table-cell--6rem {
             width: 6rem;
           }
 
           .rules__table-cell--12rem {
             width: 12rem;
+          }
+
+          .rules__table-cell--17rem {
+            width: 17rem;
           }
 
           .rules__table-cell--left {
@@ -652,7 +660,7 @@ html {
           width: 100%;
           height: 0.1rem;
           background-color: var(--gray);
-          margin: 1rem 0;
+          margin: 1rem auto;
         }
 
         .rules__description-label-box {
@@ -715,7 +723,9 @@ PC mode
 
   .main {
     margin: 0 1.5rem;
-    height: calc(100dvh - var(--header-height) - var(--header-margin-top-bottom-pc) - 3rem);
+    height: calc(
+      100dvh - var(--header-height) - var(--header-margin-top-bottom-pc) - 3rem
+    );
   }
   /********************************************
   種目ボタン
