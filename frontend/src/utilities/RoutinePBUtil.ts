@@ -98,15 +98,12 @@ export const isPBGiantSwingLimit = (
 
 // RoutineRules用 | 車輪系制限コード取得
 export const getPBGiantSwingLimitCodes = (routine: RoutineElement[]) => {
-  let codes: { code: string; aliasOrName: string }[] = [];
+  let codes: { id: number; code: string }[] = [];
   routine
     .filter((element) => element.is_qualified === true)
     .forEach((element) => {
       if (isElementTypeIncluded(element.element_type, ElementType.平行棒_車輪系)) {
-        codes.push({
-          code: element.code!,
-          aliasOrName: element.alias || element.name,
-        });
+        codes.push({ id: element.id!, code: element.code! });
       }
     });
 
@@ -133,13 +130,12 @@ export const isPBFelgeLimit = (routine: RoutineElement[], targetElement: Element
 
 // RoutineRules用 | 棒下宙返り系制限コード取得
 export const getPBFelgeLimitCodes = (routine: RoutineElement[]) => {
-  let codes: {id: number; code: string}[] = [];
+  let codes: { id: number; code: string }[] = [];
   routine
     .filter((element) => element.is_qualified === true)
     .forEach((element) => {
       if (isElementTypeIncluded(element.element_type, ElementType.平行棒_棒下宙返り系)) {
-        codes.push(
-          {id: element.id!, code: element.code!});
+        codes.push({ id: element.id!, code: element.code! });
       }
     });
 
@@ -159,7 +155,7 @@ export const getElementsByType = (
     Object.values(rowElements).filter(
       (element) =>
         "element_type" in element &&
-        isElementTypeIncluded(element.element_type, ElementType.平行棒_棒下宙返り系)
+        isElementTypeIncluded(element.element_type, targetElementType)
     )
   ) as Element[];
 

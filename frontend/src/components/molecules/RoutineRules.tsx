@@ -158,11 +158,23 @@ export const RoutineRules = ({
     selectEvent === Events.つり輪 ? getSRStrengthLimit2Codes(routine) : [];
   const pbSaltoLimitCodes =
     selectEvent === Events.平行棒 ? getPBSaltoLimitCodes(routine) : [];
+
+  // 平行棒_車輪系
   const pbGiantSwingLimitCodes =
     selectEvent === Events.平行棒 ? getPBGiantSwingLimitCodes(routine) : [];
+  const pbGiantSwingElements =
+    selectEvent === Events.平行棒
+      ? getElementsByType(
+          Events.平行棒,
+          ElementGroup.EG3,
+          ElementType.平行棒_車輪系,
+          categorizedElements
+        )
+      : [];
+
+  // 平行棒_棒下宙返り系
   const pbFelgeLimitCodes =
     selectEvent === Events.平行棒 ? getPBFelgeLimitCodes(routine) : [];
-  // 説明用
   const pbFelgeElements =
     selectEvent === Events.平行棒
       ? getElementsByType(
@@ -1442,9 +1454,9 @@ export const RoutineRules = ({
                 {RuleName(Rules.平行棒_車輪系制限)}
                 {pbGiantSwingLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
-                    {pbGiantSwingLimitCodes.map((row, index) => (
-                      <p key={index} className="common__label ">
-                        {row.code}
+                    {pbGiantSwingLimitCodes.map((item, index) => (
+                      <p key={index} className="common__label common__label--active">
+                        {item.code}
                       </p>
                     ))}
                   </div>
@@ -1453,59 +1465,23 @@ export const RoutineRules = ({
             }
             descriptionNode={
               <div className="rules__description">
-                <p>以下の車輪系の技を選択中(制限中)です。</p>
-                <div className="rules__description-label-box">
-                  <p className="rules__description-labels">
-                    {pbGiantSwingLimitCodes.length > 0 ? (
-                      pbGiantSwingLimitCodes.map((row, index) => (
-                        <span key={index} className="common__label ">
-                          {row.code}.{row.aliasOrName}
-                        </span>
-                      ))
-                    ) : (
-                      <span>選択していません</span>
-                    )}
-                  </p>
-                </div>
-                <p className="rules__section-line" />
-                <p>以下の車輪系のは1演技に2つまで使用できます。</p>
+                <p>車輪系の技は1演技に2つまで使用できます。</p>
+                <p>対象の技は以下のとおりです。</p>
                 <table className="rules__table-table">
                   <tbody>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--left">
-                        III21.ケンモツ / ウェルス
-                      </td>
-                    </tr>
-                    <tr className="rules__table-row">
-                      <td className={`rules__table-cell rules__table-cell--left`}>
-                        III22.ピアスキー
-                      </td>
-                    </tr>
-                    <tr className="rules__table-row">
-                      <td className={`rules__table-cell rules__table-cell--left`}>
-                        III29.車輪ディアミ
-                      </td>
-                    </tr>
-                    <tr className="rules__table-row">
-                      <td className={`rules__table-cell rules__table-cell--left`}>
-                        III30.後方車輪片腕支持5/4ひねり単棒横向き倒立
-                      </td>
-                    </tr>
-                    <tr className="rules__table-row">
-                      <td className={`rules__table-cell rules__table-cell--left`}>
-                        III42.車輪ディアミ単棒倒立
-                      </td>
-                    </tr>
-                    <tr className="rules__table-row">
-                      <td className={`rules__table-cell rules__table-cell--left`}>
-                        III46.ダウザー
-                      </td>
-                    </tr>
-                    <tr className="rules__table-row">
-                      <td className={`rules__table-cell rules__table-cell--left`}>
-                        III48.バウマン
-                      </td>
-                    </tr>
+                    {pbGiantSwingElements.map((element, index) => (
+                      <tr key={index} className="rules__table-row">
+                        {pbGiantSwingLimitCodes.find((item) => item.id === element.id) ? (
+                          <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
+                            {element.code}.{element.alias || element.name} (選択中)
+                          </td>
+                        ) : (
+                          <td className="rules__table-cell rules__table-cell--left">
+                            {element.code}.{element.alias || element.name}
+                          </td>
+                        )}
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
