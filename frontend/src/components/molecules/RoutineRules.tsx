@@ -1,5 +1,9 @@
 import React from "react";
-import { CategorizedElements, getGroupElements } from "../../utilities/ElementUtil";
+import {
+  CategorizedElements,
+  getGroupElements,
+  getElementsByType,
+} from "../../utilities/ElementUtil";
 import {
   calculateMultipleSaltoShortage,
   isFXCircleLimit,
@@ -36,6 +40,7 @@ import {
   calculateTotalScore,
   isGroupLimited,
   RoutineElement,
+  getRoutineElementsByType,
 } from "../../utilities/RoutineUtil";
 import {
   ELEMENT_COUNT_DEDUCTIONS,
@@ -50,13 +55,7 @@ import {
 } from "../../utilities/Type";
 import RoutineRule from "../atoms/RoutineRule";
 import { calculateVTScore } from "../../utilities/RoutineVTUtil";
-import {
-  getElementsByType,
-  getPBFelgeLimitCodes,
-  getPBFrontUpriseLimitCodes,
-  getPBGiantSwingLimitCodes,
-  getPBSaltoLimitCodes,
-} from "../../utilities/RoutinePBUtil";
+import { getPBSaltoLimitCodes } from "../../utilities/RoutinePBUtil";
 
 // 同一枠の技を持つ技のコードを取得
 const getSameSlotCodes = (routine: RoutineElement[], categorizedElements: CategorizedElements) => {
@@ -146,7 +145,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
 
   // 平行棒_車輪系
   const pbGiantSwingLimitCodes =
-    selectEvent === Events.平行棒 ? getPBGiantSwingLimitCodes(routine) : [];
+    selectEvent === Events.平行棒
+      ? getRoutineElementsByType(routine, ElementType.平行棒_車輪系)
+      : [];
   const pbGiantSwingElements =
     selectEvent === Events.平行棒
       ? getElementsByType(
@@ -158,7 +159,10 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
       : [];
 
   // 平行棒_棒下宙返り系
-  const pbFelgeLimitCodes = selectEvent === Events.平行棒 ? getPBFelgeLimitCodes(routine) : [];
+  const pbFelgeLimitCodes =
+    selectEvent === Events.平行棒
+      ? getRoutineElementsByType(routine, ElementType.平行棒_棒下宙返り系)
+      : [];
   const pbFelgeElements =
     selectEvent === Events.平行棒
       ? getElementsByType(
@@ -171,7 +175,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
 
   // 平行棒_アーム倒立系
   const pbFrontUpriseLimitCodes =
-    selectEvent === Events.平行棒 ? getPBFrontUpriseLimitCodes(routine) : [];
+    selectEvent === Events.平行棒
+      ? getRoutineElementsByType(routine, ElementType.平行棒_アーム倒立系)
+      : [];
   const pbFrontUpriseElements =
     selectEvent === Events.平行棒
       ? getElementsByType(

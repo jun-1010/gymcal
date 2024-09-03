@@ -179,6 +179,20 @@ export const getElementStatus = (
   return ElementStatus.選択可能;
 };
 
+// RoutineRules用 | 演技構成に含まれる指定タイプの技を取得(idとcode)
+export const getRoutineElementsByType = (routine: RoutineElement[], type: ElementType) => {
+  let targetRoutineElements: RoutineElement[] = [];
+  routine
+    .filter((element) => element.is_qualified === true)
+    .forEach((element) => {
+      if (isElementTypeIncluded(element.element_type, type)) {
+        targetRoutineElements.push(element);
+      }
+    });
+
+  return targetRoutineElements;
+};
+
 /***************************************************************
  * ユーザーアクションに応じてroutineを更新する関数
  * ************************************************************/
