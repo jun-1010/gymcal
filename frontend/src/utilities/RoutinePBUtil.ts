@@ -29,10 +29,7 @@ const saltoTypes = [
 ];
 
 // ElementTile用 | 対象の技と同じ宙返りタイプが演技構成に含まれている場合、そのタイプを返す
-export const getPBSaltoStatusLimited = (
-  routine: RoutineElement[],
-  targetElement: Element
-) => {
+export const getPBSaltoStatusLimited = (routine: RoutineElement[], targetElement: Element) => {
   const targetSaltoType = saltoTypes.find((type) =>
     isElementTypeIncluded(targetElement.element_type, type)
   ) as ElementType;
@@ -77,25 +74,6 @@ export const getPBSaltoLimitCodes = (routine: RoutineElement[]) => {
   return codes;
 };
 
-// ElementTile用 | 車輪系制限チェック
-export const isPBGiantSwingLimit = (
-  routine: RoutineElement[],
-  targetElement: Element
-) => {
-  // 対象が車輪系でない場合、false
-  if (!isElementTypeIncluded(targetElement.element_type, ElementType.平行棒_車輪系)) {
-    return false;
-  }
-  // 車輪系が2つ以上選択済みである場合、true
-  let count = 0;
-  routine.forEach((element) => {
-    if (isElementTypeIncluded(element.element_type, ElementType.平行棒_車輪系)) {
-      count++;
-    }
-  });
-  return count >= 2;
-};
-
 // RoutineRules用 | 車輪系制限コード取得
 export const getPBGiantSwingLimitCodes = (routine: RoutineElement[]) => {
   let codes: { id: number; code: string }[] = [];
@@ -108,24 +86,6 @@ export const getPBGiantSwingLimitCodes = (routine: RoutineElement[]) => {
     });
 
   return codes;
-};
-
-// ElementTile用 | 棒下宙返り系制限チェック
-export const isPBFelgeLimit = (routine: RoutineElement[], targetElement: Element) => {
-  // 対象が棒下宙返り系でない場合、false
-  if (
-    !isElementTypeIncluded(targetElement.element_type, ElementType.平行棒_棒下宙返り系)
-  ) {
-    return false;
-  }
-  // 棒下宙返り系が2つ以上選択済みである場合、true
-  let count = 0;
-  routine.forEach((element) => {
-    if (isElementTypeIncluded(element.element_type, ElementType.平行棒_棒下宙返り系)) {
-      count++;
-    }
-  });
-  return count >= 2;
 };
 
 // RoutineRules用 | 棒下宙返り系制限コード取得
@@ -154,19 +114,23 @@ export const getElementsByType = (
   const felgeElements = Object.values(groupElements).flatMap((rowElements) =>
     Object.values(rowElements).filter(
       (element) =>
-        "element_type" in element &&
-        isElementTypeIncluded(element.element_type, targetElementType)
+        "element_type" in element && isElementTypeIncluded(element.element_type, targetElementType)
     )
   ) as Element[];
 
   // 技のコードを昇順に並べる
-  return felgeElements.sort((a, b) => {
-    if (a.code! < b.code!) {
-      return -1;
-    }
-    if (a.code! > b.code!) {
-      return 1;
-    }
-    return 0;
-  });
+  return felgeElements.sort((a, b) => a.id - b.id);
+};
+
+// RoutineRules用 | アーム倒立系制限技を取得
+export const getPBFrontUpriseLimitCodes = (routine: RoutineElement[]) => {
+  let codes: { id: number; code: string }[] = [];
+  routine
+    .filter((element) => element.is_qualified === true)
+    .forEach((element) => {
+      if (isElementTypeIncluded(element.element_type, ElementType.平行棒_アーム倒立系)) {
+        codes.push({ id: element.id!, code: element.code! });
+      }
+    });
+  return codes.sort((a, b) => a.id - b.id);
 };

@@ -141,6 +141,7 @@ export enum ElementType {
   平行棒_宙返り技制限_テハダ系 = 49,
   平行棒_車輪系 = 50,
   平行棒_棒下宙返り系 = 51,
+  平行棒_アーム倒立系 = 52,
 }
 
 // ElementTypeの末尾のブロックを取得(つり輪_力技制限2_脚前挙→脚前挙)
@@ -210,6 +211,7 @@ export enum ElementStatus {
   平行棒_宙返り技制限_テハダ系 = 49,
   平行棒_車輪系制限 = 50,
   平行棒_棒下宙返り系制限 = 51,
+  平行棒_アーム倒立系制限 = 52,
 }
 
 // elementTypeに対応するelementStatusを返す
@@ -339,6 +341,9 @@ export const getElementStatusFromElementType = (
     
     case ElementType.平行棒_棒下宙返り系:
       return ElementStatus.平行棒_棒下宙返り系制限;
+    
+    case ElementType.平行棒_アーム倒立系:
+      return ElementStatus.平行棒_アーム倒立系制限;
 
     default:
       return ElementStatus.選択可能;
@@ -409,6 +414,7 @@ export enum Rules {
   平行棒_宙返り技制限 = 35,
   平行棒_車輪系制限 = 36,
   平行棒_棒下宙返り系制限 = 37,
+  平行棒_アーム倒立系制限 = 38,
 }
 
 export const RuleKey = (ruleKey: number): string => {
