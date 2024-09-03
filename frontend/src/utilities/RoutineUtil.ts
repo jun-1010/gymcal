@@ -4,7 +4,7 @@ import {
   isFXCircleLimit,
   isFXStrengthLimit,
 } from "./RoutineFXUtil";
-import { getPBSaltoStatusLimited, isPBGiantSwingLimit } from "./RoutinePBUtil";
+import { getPBSaltoStatusLimited, isPBFelgeLimit, isPBGiantSwingLimit } from "./RoutinePBUtil";
 import {
   isPHBusnariLimit,
   isPHCombineLimit,
@@ -180,6 +180,8 @@ export const getElementStatus = (
       return pbSaltoStatus;
     } else if (isPBGiantSwingLimit(routine, targetElement)) {
       return ElementStatus.平行棒_車輪系制限;
+    } else if (isPBFelgeLimit(routine, targetElement)) {
+      return ElementStatus.平行棒_棒下宙返り系制限;
     }
   }
 

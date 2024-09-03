@@ -627,7 +627,7 @@ html {
           }
 
           .rules__table-cell--active {
-            background-color: var(--light-orange);
+            width: 100%;
             color: var(--dark-orange);
           }
 

@@ -1,9 +1,15 @@
-import { Element, isElementTypeIncluded } from "./ElementUtil";
+import {
+  CategorizedElements,
+  Element,
+  getGroupElements,
+  isElementTypeIncluded,
+} from "./ElementUtil";
 import { RoutineElement } from "./RoutineUtil";
 import {
   ElementGroup,
   ElementStatus,
   ElementType,
+  Events,
   getElementStatusFromElementType,
   getElementTypeName,
 } from "./Type";
@@ -72,7 +78,10 @@ export const getPBSaltoLimitCodes = (routine: RoutineElement[]) => {
 };
 
 // ElementTile用 | 車輪系制限チェック
-export const isPBGiantSwingLimit = (routine: RoutineElement[], targetElement: Element) => {
+export const isPBGiantSwingLimit = (
+  routine: RoutineElement[],
+  targetElement: Element
+) => {
   // 対象が車輪系でない場合、false
   if (!isElementTypeIncluded(targetElement.element_type, ElementType.平行棒_車輪系)) {
     return false;
@@ -85,7 +94,7 @@ export const isPBGiantSwingLimit = (routine: RoutineElement[], targetElement: El
     }
   });
   return count >= 2;
-}
+};
 
 // RoutineRules用 | 車輪系制限コード取得
 export const getPBGiantSwingLimitCodes = (routine: RoutineElement[]) => {
@@ -102,4 +111,66 @@ export const getPBGiantSwingLimitCodes = (routine: RoutineElement[]) => {
     });
 
   return codes;
+};
+
+// ElementTile用 | 棒下宙返り系制限チェック
+export const isPBFelgeLimit = (routine: RoutineElement[], targetElement: Element) => {
+  // 対象が棒下宙返り系でない場合、false
+  if (
+    !isElementTypeIncluded(targetElement.element_type, ElementType.平行棒_棒下宙返り系)
+  ) {
+    return false;
+  }
+  // 棒下宙返り系が2つ以上選択済みである場合、true
+  let count = 0;
+  routine.forEach((element) => {
+    if (isElementTypeIncluded(element.element_type, ElementType.平行棒_棒下宙返り系)) {
+      count++;
+    }
+  });
+  return count >= 2;
+};
+
+// RoutineRules用 | 棒下宙返り系制限コード取得
+export const getPBFelgeLimitCodes = (routine: RoutineElement[]) => {
+  let codes: {id: number; code: string}[] = [];
+  routine
+    .filter((element) => element.is_qualified === true)
+    .forEach((element) => {
+      if (isElementTypeIncluded(element.element_type, ElementType.平行棒_棒下宙返り系)) {
+        codes.push(
+          {id: element.id!, code: element.code!});
+      }
+    });
+
+  return codes;
+};
+
+// RoutineRules用 | 棒下宙返り系の技を取得
+export const getElementsByType = (
+  selectEvent: Events,
+  selectGroup: ElementGroup,
+  targetElementType: ElementType,
+  categorizedElements: CategorizedElements
+): Element[] => {
+  const groupElements = getGroupElements(categorizedElements, selectEvent, selectGroup);
+
+  const felgeElements = Object.values(groupElements).flatMap((rowElements) =>
+    Object.values(rowElements).filter(
+      (element) =>
+        "element_type" in element &&
+        isElementTypeIncluded(element.element_type, ElementType.平行棒_棒下宙返り系)
+    )
+  ) as Element[];
+
+  // 技のコードを昇順に並べる
+  return felgeElements.sort((a, b) => {
+    if (a.code! < b.code!) {
+      return -1;
+    }
+    if (a.code! > b.code!) {
+      return 1;
+    }
+    return 0;
+  });
 };

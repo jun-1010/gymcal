@@ -40,6 +40,7 @@ import {
 import {
   ELEMENT_COUNT_DEDUCTIONS,
   ElementGroup,
+  ElementType,
   Events,
   RuleKey,
   RuleName,
@@ -50,6 +51,8 @@ import {
 import RoutineRule from "../atoms/RoutineRule";
 import { calculateVTScore } from "../../utilities/RoutineVTUtil";
 import {
+  getElementsByType,
+  getPBFelgeLimitCodes,
   getPBGiantSwingLimitCodes,
   getPBSaltoLimitCodes,
 } from "../../utilities/RoutinePBUtil";
@@ -157,7 +160,18 @@ export const RoutineRules = ({
     selectEvent === Events.平行棒 ? getPBSaltoLimitCodes(routine) : [];
   const pbGiantSwingLimitCodes =
     selectEvent === Events.平行棒 ? getPBGiantSwingLimitCodes(routine) : [];
-
+  const pbFelgeLimitCodes =
+    selectEvent === Events.平行棒 ? getPBFelgeLimitCodes(routine) : [];
+  // 説明用
+  const pbFelgeElements =
+    selectEvent === Events.平行棒
+      ? getElementsByType(
+          Events.平行棒,
+          ElementGroup.EG3,
+          ElementType.平行棒_棒下宙返り系,
+          categorizedElements
+        )
+      : [];
   return (
     <>
       <div className="routine__title-box">
@@ -1463,47 +1477,78 @@ export const RoutineRules = ({
                       </td>
                     </tr>
                     <tr className="rules__table-row">
-                      <td
-                        className={`rules__table-cell rules__table-cell--left`}
-                      >
+                      <td className={`rules__table-cell rules__table-cell--left`}>
                         III22.ピアスキー
                       </td>
                     </tr>
                     <tr className="rules__table-row">
-                      <td
-                        className={`rules__table-cell rules__table-cell--left`}
-                      >
+                      <td className={`rules__table-cell rules__table-cell--left`}>
                         III29.車輪ディアミ
                       </td>
                     </tr>
                     <tr className="rules__table-row">
-                      <td
-                        className={`rules__table-cell rules__table-cell--left`}
-                      >
+                      <td className={`rules__table-cell rules__table-cell--left`}>
                         III30.後方車輪片腕支持5/4ひねり単棒横向き倒立
                       </td>
                     </tr>
                     <tr className="rules__table-row">
-                      <td
-                        className={`rules__table-cell rules__table-cell--left`}
-                      >
+                      <td className={`rules__table-cell rules__table-cell--left`}>
                         III42.車輪ディアミ単棒倒立
                       </td>
                     </tr>
                     <tr className="rules__table-row">
-                      <td
-                        className={`rules__table-cell rules__table-cell--left`}
-                      >
+                      <td className={`rules__table-cell rules__table-cell--left`}>
                         III46.ダウザー
                       </td>
                     </tr>
                     <tr className="rules__table-row">
-                      <td
-                        className={`rules__table-cell rules__table-cell--left`}
-                      >
+                      <td className={`rules__table-cell rules__table-cell--left`}>
                         III48.バウマン
                       </td>
                     </tr>
+                  </tbody>
+                </table>
+              </div>
+            }
+            show={selectEvent === Events.平行棒}
+          />
+
+          {/* 平行棒_棒下宙返り系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.平行棒_棒下宙返り系制限)}
+                {pbFelgeLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {pbFelgeLimitCodes.map((item, index) => (
+                      <p key={index} className="common__label common__label--active">
+                        {item.code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>棒下宙返り倒立系は1演技に2つまで使用できます。</p>
+                <p>対象の技は以下のとおりです。</p>
+
+                <table className="rules__table-table">
+                  <tbody>
+                    {pbFelgeElements.map((element, index) => (
+                      <tr key={index} className="rules__table-row">
+                        {pbFelgeLimitCodes.find((item) => item.id === element.id) ? (
+                          <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
+                            {element.code}.{element.alias || element.name} (選択中)
+                          </td>
+                        ) : (
+                          <td className="rules__table-cell rules__table-cell--left">
+                            {element.code}.{element.alias || element.name}
+                          </td>
+                        )}
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
