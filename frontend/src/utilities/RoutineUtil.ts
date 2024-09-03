@@ -4,7 +4,7 @@ import {
   isFXCircleLimit,
   isFXStrengthLimit,
 } from "./RoutineFXUtil";
-import { getPBElementStatusLimited } from "./RoutinePBUtil";
+import { getPBSaltoStatusLimited, isPBGiantSwingLimit } from "./RoutinePBUtil";
 import {
   isPHBusnariLimit,
   isPHCombineLimit,
@@ -175,8 +175,12 @@ export const getElementStatus = (
   }
   // 固有ルールの表示[平行棒]
   if (selectEvent === Events.平行棒) {
-    const pbElementStatus = getPBElementStatusLimited(routine, targetElement);
-    return pbElementStatus;
+    const pbSaltoStatus = getPBSaltoStatusLimited(routine, targetElement);
+    if (pbSaltoStatus !== ElementStatus.選択可能) {
+      return pbSaltoStatus;
+    } else if (isPBGiantSwingLimit(routine, targetElement)) {
+      return ElementStatus.平行棒_車輪系制限;
+    }
   }
 
   return ElementStatus.選択可能;

@@ -22,8 +22,8 @@ const saltoTypes = [
   ElementType.平行棒_宙返り技制限_テハダ系,
 ];
 
-// 対象の技と同じ宙返りタイプが演技構成に含まれている場合、そのタイプを返す
-export const getPBElementStatusLimited = (
+// ElementTile用 | 対象の技と同じ宙返りタイプが演技構成に含まれている場合、そのタイプを返す
+export const getPBSaltoStatusLimited = (
   routine: RoutineElement[],
   targetElement: Element
 ) => {
@@ -49,6 +49,7 @@ export const getPBElementStatusLimited = (
   return ElementStatus.選択可能;
 };
 
+// RoutineRules用 | 宙返り技制限コード取得
 export const getPBSaltoLimitCodes = (routine: RoutineElement[]) => {
   let codes: { code: string; typeName: string; elementGroup: ElementGroup }[] = [];
   routine
@@ -63,6 +64,39 @@ export const getPBSaltoLimitCodes = (routine: RoutineElement[]) => {
           code: element.code!,
           typeName: getElementTypeName(targetSaltoType),
           elementGroup: element.element_group,
+        });
+      }
+    });
+
+  return codes;
+};
+
+// ElementTile用 | 車輪系制限チェック
+export const isPBGiantSwingLimit = (routine: RoutineElement[], targetElement: Element) => {
+  // 対象が車輪系でない場合、false
+  if (!isElementTypeIncluded(targetElement.element_type, ElementType.平行棒_車輪系)) {
+    return false;
+  }
+  // 車輪系が2つ以上選択済みである場合、true
+  let count = 0;
+  routine.forEach((element) => {
+    if (isElementTypeIncluded(element.element_type, ElementType.平行棒_車輪系)) {
+      count++;
+    }
+  });
+  return count >= 2;
+}
+
+// RoutineRules用 | 車輪系制限コード取得
+export const getPBGiantSwingLimitCodes = (routine: RoutineElement[]) => {
+  let codes: { code: string; aliasOrName: string }[] = [];
+  routine
+    .filter((element) => element.is_qualified === true)
+    .forEach((element) => {
+      if (isElementTypeIncluded(element.element_type, ElementType.平行棒_車輪系)) {
+        codes.push({
+          code: element.code!,
+          aliasOrName: element.alias || element.name,
         });
       }
     });

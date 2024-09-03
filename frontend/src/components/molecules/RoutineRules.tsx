@@ -48,9 +48,11 @@ import {
   getGroupName,
 } from "../../utilities/Type";
 import RoutineRule from "../atoms/RoutineRule";
-import { spawn } from "child_process";
 import { calculateVTScore } from "../../utilities/RoutineVTUtil";
-import { getPBSaltoLimitCodes } from "../../utilities/RoutinePBUtil";
+import {
+  getPBGiantSwingLimitCodes,
+  getPBSaltoLimitCodes,
+} from "../../utilities/RoutinePBUtil";
 
 // 同一枠の技を持つ技のコードを取得
 const getSameSlotCodes = (
@@ -153,6 +155,8 @@ export const RoutineRules = ({
     selectEvent === Events.つり輪 ? getSRStrengthLimit2Codes(routine) : [];
   const pbSaltoLimitCodes =
     selectEvent === Events.平行棒 ? getPBSaltoLimitCodes(routine) : [];
+  const pbGiantSwingLimitCodes =
+    selectEvent === Events.平行棒 ? getPBGiantSwingLimitCodes(routine) : [];
 
   return (
     <>
@@ -440,7 +444,7 @@ export const RoutineRules = ({
                         {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
                           <td
                             key={index}
-                            className={`rules__table-cell ${
+                            className={`rules__table-cell rules__table-cell--1-5rem ${
                               routine.length === index ? "rules__table-cell--active" : ""
                             }`}
                           >
@@ -455,7 +459,7 @@ export const RoutineRules = ({
                         {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
                           <td
                             key={index}
-                            className={`rules__table-cell ${
+                            className={`rules__table-cell rules__table-cell--1-5rem ${
                               routine.length === index ? "rules__table-cell--active" : ""
                             }`}
                           >
@@ -1076,30 +1080,6 @@ export const RoutineRules = ({
             descriptionNode={
               <div className="rules__description">
                 <p>以下の力技を連続で選択中です。</p>
-                {/* <div className="rules__description-label-box">
-                  {srStrengthLimit1CodesList.map((codes, outerIndex) => (
-                    <>
-                      {codes.length > 0 ? (
-                        <span key={outerIndex} className="rules__description-labels">
-                          {codes.map((code, innerIndex) => (
-                            <React.Fragment key={innerIndex}>
-                              <span className="common__label">{code}</span>
-                              {innerIndex < codes.length - 1 && <span>→</span>}
-                            </React.Fragment>
-                          ))}
-                        </span>
-                      ) : (
-                        <>
-                          {outerIndex === 0 && (
-                            <span key={outerIndex} className="rules__description-labels">
-                              選択していません
-                            </span>
-                          )}
-                        </>
-                      )}
-                    </>
-                  ))}
-                </div> */}
                 <div className="rules__description-label-box">
                   {srStrengthLimit1CodesList.map((codes, outerIndex) =>
                     codes.length > 0 ? (
@@ -1162,24 +1142,29 @@ export const RoutineRules = ({
                 <div className="rules__description-label-box">
                   {([ElementGroup.EG2, ElementGroup.EG3] as ElementGroup[]).map(
                     (group) => (
-                      <div key={group}>
-                        <p>{getGroupName(selectEvent, group)}</p>
-                        <p className="rules__description-labels">
-                          {srStrengthLimit2Codes.filter(
-                            (row) => row.elementGroup === group
-                          ).length > 0 ? (
-                            srStrengthLimit2Codes
-                              .filter((row) => row.elementGroup === group)
-                              .map((row, index) => (
-                                <span key={index} className="common__label ">
-                                  {row.code}.{row.typeName}
-                                </span>
-                              ))
-                          ) : (
-                            <span>選択していません</span>
-                          )}
-                        </p>
-                      </div>
+                      <React.Fragment key={group}>
+                        <div key={group}>
+                          <p>{getGroupName(selectEvent, group)}</p>
+                          <p className="rules__description-labels">
+                            {srStrengthLimit2Codes.filter(
+                              (row) => row.elementGroup === group
+                            ).length > 0 ? (
+                              srStrengthLimit2Codes
+                                .filter((row) => row.elementGroup === group)
+                                .map((row, index) => (
+                                  <span key={index} className="common__label ">
+                                    {row.code}.{row.typeName}
+                                  </span>
+                                ))
+                            ) : (
+                              <span>選択していません</span>
+                            )}
+                          </p>
+                        </div>
+                        {group !== ElementGroup.EG3 && (
+                          <p className="rules__section-line--without-margin" />
+                        )}
+                      </React.Fragment>
                     )
                   )}
                 </div>
@@ -1427,6 +1412,96 @@ export const RoutineRules = ({
                         className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
                       >
                         II111.爆弾カット直接懸垂
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            }
+            show={selectEvent === Events.平行棒}
+          />
+
+          {/* 平行棒_車輪系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.平行棒_車輪系制限)}
+                {pbGiantSwingLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {pbGiantSwingLimitCodes.map((row, index) => (
+                      <p key={index} className="common__label ">
+                        {row.code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>以下の車輪系の技を選択中(制限中)です。</p>
+                <div className="rules__description-label-box">
+                  <p className="rules__description-labels">
+                    {pbGiantSwingLimitCodes.length > 0 ? (
+                      pbGiantSwingLimitCodes.map((row, index) => (
+                        <span key={index} className="common__label ">
+                          {row.code}.{row.aliasOrName}
+                        </span>
+                      ))
+                    ) : (
+                      <span>選択していません</span>
+                    )}
+                  </p>
+                </div>
+                <p className="rules__section-line" />
+                <p>以下の車輪系のは1演技に2つまで使用できます。</p>
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--left">
+                        III21.ケンモツ / ウェルス
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td
+                        className={`rules__table-cell rules__table-cell--left`}
+                      >
+                        III22.ピアスキー
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td
+                        className={`rules__table-cell rules__table-cell--left`}
+                      >
+                        III29.車輪ディアミ
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td
+                        className={`rules__table-cell rules__table-cell--left`}
+                      >
+                        III30.後方車輪片腕支持5/4ひねり単棒横向き倒立
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td
+                        className={`rules__table-cell rules__table-cell--left`}
+                      >
+                        III42.車輪ディアミ単棒倒立
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td
+                        className={`rules__table-cell rules__table-cell--left`}
+                      >
+                        III46.ダウザー
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td
+                        className={`rules__table-cell rules__table-cell--left`}
+                      >
+                        III48.バウマン
                       </td>
                     </tr>
                   </tbody>
