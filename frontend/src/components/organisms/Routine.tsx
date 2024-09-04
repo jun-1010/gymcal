@@ -27,8 +27,17 @@ const Routine = ({
         routineOpen === 1 ? "routine--side" : ""
       } ${routineOpen === 2 ? "routine--full" : ""}`}
     >
-      <RoutineTable selectEvent={selectEvent} routine={routine} setRoutine={setRoutine}  setRoutineOpen={setRoutineOpen}/>
-      <RoutineRules selectEvent={selectEvent} routine={routine} categorizedElements={categorizedElements} />
+      <RoutineTable
+        selectEvent={selectEvent}
+        routine={routine}
+        setRoutine={setRoutine}
+        setRoutineOpen={setRoutineOpen}
+      />
+      <RoutineRules
+        selectEvent={selectEvent}
+        routine={routine}
+        categorizedElements={categorizedElements}
+      />
     </div>
   );
 };

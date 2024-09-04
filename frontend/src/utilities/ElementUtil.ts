@@ -1,4 +1,4 @@
-import { difficulties, getEventKey, getGroupKey } from "./Type";
+import { difficulties, ElementGroup, ElementType, Events, getEventKey, getGroupKey } from "./Type";
 
 export interface Element {
   id: number;
@@ -123,4 +123,30 @@ export const isElementTypeIncluded = (elementTypes: string | null, elementTypeTo
     return false;
   }
   return elementTypes.split("-").includes(elementTypeToCheck.toString());
+};
+
+// 指定のtypeに該当するElementを取得
+export const getElementsByType = (
+  selectEvent: Events,
+  selectGroups: ElementGroup[],
+  targetElementType: ElementType,
+  categorizedElements: CategorizedElements
+): Element[] => {
+  let targetElements = [] as Element[];
+  selectGroups.forEach((selectGroup) => {
+    const groupElements = getGroupElements(categorizedElements, selectEvent, selectGroup);
+
+    const targetGroupElements = Object.values(groupElements).flatMap((rowElements) =>
+      Object.values(rowElements).filter(
+        (element) =>
+          "element_type" in element &&
+          isElementTypeIncluded(element.element_type, targetElementType)
+      )
+    ) as Element[];
+
+    targetElements = [...targetElements, ...targetGroupElements];
+  });
+
+  // 技のコードを昇順に並べる
+  return targetElements.sort((a, b) => a.id - b.id);
 };

@@ -6,7 +6,7 @@ SP mode(初期スタイル)
 :root {
   --black: #333;
   --dark-gray: #999;
-  --gray: #ddd;
+  --gray: #d9d9d9;
   --light-gray: #f6f6f6;
   --white: #fff;
 
@@ -432,8 +432,8 @@ html {
       .routine__element {
         padding: 0.2rem;
         display: grid;
-        /* No. Connection, Name, EG, 難度, CV, 削除 */
-        grid-template-columns: 1rem 1rem 1fr 3rem 2rem 2rem 1rem;
+        /* No. Connection, Name, EG, 難度, 削除 */
+        grid-template-columns: 1rem 1rem 1fr 3rem 2rem 1rem;
         column-gap: 0.3rem;
 
         .routine__item {
@@ -445,6 +445,10 @@ html {
 
         .routine__item--center {
           justify-content: center;
+        }
+
+        .routine__item--hidden {
+          display: none;
         }
 
         .routine__icon {
@@ -461,6 +465,11 @@ html {
         .routine__icon--active {
           opacity: 1;
         }
+      }
+
+      .routine__element--with-cv {
+        /* No. Connection, Name, EG, 難度, CV, 削除 */
+        grid-template-columns: 1rem 1rem 1fr 3rem 2rem 2rem 1rem;
       }
 
       .routine__element--unqualified {
@@ -593,7 +602,7 @@ html {
 
         .rules__table-table {
           margin: 1rem 0;
-          font-size: 0.9rem;
+          font-size: 0.8rem;
           font-weight: bold;
           background-color: var(--light-gray);
           padding: 0 0.5rem;
@@ -613,17 +622,30 @@ html {
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 1.5rem;
+            width: min(fit-content, 100%);
             height: 100%;
           }
 
           .rules__table-cell--active {
-            background-color: var(--light-orange);
+            width: 100%;
             color: var(--dark-orange);
+          }
+
+          .rules__table-cell--limit {
+            width: 100%;
+            color: var(--dark-gray);
+          }
+
+          .rules__table-cell--1-5rem {
+            width: 1.5rem;
           }
 
           .rules__table-cell--3rem {
             width: 3rem;
+          }
+
+          .rules__table-cell--5rem {
+            width: 5rem;
           }
 
           .rules__table-cell--6rem {
@@ -632,6 +654,10 @@ html {
 
           .rules__table-cell--12rem {
             width: 12rem;
+          }
+
+          .rules__table-cell--17rem {
+            width: 17rem;
           }
 
           .rules__table-cell--left {
@@ -643,7 +669,14 @@ html {
           width: 100%;
           height: 0.1rem;
           background-color: var(--gray);
-          margin: 1rem 0;
+          margin: 1rem auto;
+        }
+
+        .rules__section-line--without-margin {
+          width: 100%;
+          height: 0.1rem;
+          background-color: var(--gray);
+          margin: 0;
         }
 
         .rules__description-label-box {
@@ -656,7 +689,7 @@ html {
           background-color: var(--light-gray);
           padding: 1rem;
           border-radius: 0.5rem;
-          font-size: 0.9rem;
+          font-size: 0.85rem;
           width: fit-content;
         }
 
@@ -706,7 +739,9 @@ PC mode
 
   .main {
     margin: 0 1.5rem;
-    height: calc(100dvh - var(--header-height) - var(--header-margin-top-bottom-pc) - 3rem);
+    height: calc(
+      100dvh - var(--header-height) - var(--header-margin-top-bottom-pc) - 3rem
+    );
   }
   /********************************************
   種目ボタン

@@ -3,10 +3,15 @@ import { RoutineElement } from "./RoutineUtil";
 import { ElementType } from "./Type";
 
 // 床の力技制限判定
-export const isFXStrengthLimit = (routine: Element[], targetElement: Element): boolean => {
+export const isFXStrengthLimit = (
+  routine: Element[],
+  targetElement: Element
+): boolean => {
   return (
     isElementTypeIncluded(targetElement.element_type, ElementType.床_力技) &&
-    routine.some((element) => isElementTypeIncluded(element.element_type, ElementType.床_力技))
+    routine.some((element) =>
+      isElementTypeIncluded(element.element_type, ElementType.床_力技)
+    )
   );
 };
 
@@ -14,7 +19,9 @@ export const isFXStrengthLimit = (routine: Element[], targetElement: Element): b
 export const isFXCircleLimit = (routine: Element[], targetElement: Element): boolean => {
   return (
     isElementTypeIncluded(targetElement.element_type, ElementType.床_旋回) &&
-    routine.some((element) => isElementTypeIncluded(element.element_type, ElementType.床_旋回))
+    routine.some((element) =>
+      isElementTypeIncluded(element.element_type, ElementType.床_旋回)
+    )
   );
 };
 

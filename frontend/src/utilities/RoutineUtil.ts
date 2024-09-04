@@ -1,22 +1,17 @@
 import { Element, isElementTypeIncluded } from "./ElementUtil";
-import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "./RoutineFXUtil";
 import {
-  isPHBusnariLimit,
-  isPHCombineLimit,
-  isPHFlairLimit,
-  isPHFlopLimit,
-  isPHHandstandLimit,
-  isPHNinReyesLimit,
-  isPHRussianLimit,
-  isPHRussianTravelLimit1,
-  isPHRussianTravelLimit2,
-  isPHSohnBezugoLimit,
-  isPHSpindleLimit,
-  isPHTongFeiLimit,
-  isPHTravelLimit,
-  isPHTravelSpindleLimit,
-} from "./RoutinePHUtils";
-import { calculateSwingHandstandShortage, countSequenceStrengths, getElementStatusLimited, hasStrengtElement, isSRStrengthLimit1 } from "./RoutineSRUtil";
+  calculateMultipleSaltoShortage,
+  isFXCircleLimit,
+  isFXStrengthLimit,
+} from "./RoutineFXUtil";
+import { checkOneRailBeginLimit, getPBSaltoStatusLimited } from "./RoutinePBUtil";
+import { isPHRussianLimit } from "./RoutinePHUtil";
+import {
+  calculateSwingHandstandShortage,
+  getSRElementStatusLimited,
+  hasStrengtElement,
+  isSRStrengthLimit1,
+} from "./RoutineSRUtil";
 import { ELEMENT_COUNT_DEDUCTIONS, ElementGroup, ElementStatus, ElementType, Events } from "./Type";
 
 // 6種目分のroutine
@@ -68,20 +63,45 @@ export const isGroupLimited = (routine: RoutineElement[], targetElement: Element
   return count == limit;
 };
 
+// シンプルな技数制限を確認する共通関数(1演技に2つまで等)
+export const checkTypeCount = (
+  routine: RoutineElement[],
+  targetElement: Element,
+  targetType: ElementType,
+  limit: number
+) => {
+  // targetElementが判定対象のtypeではない場合、選択不可にしない
+  if (!isElementTypeIncluded(targetElement.element_type, targetType)) {
+    return false;
+  }
+  // 演技構成に含まれているtargetTypeに該当する技をカウントする
+  const count = routine.filter(
+    (element) => element.is_qualified && isElementTypeIncluded(element.element_type, targetType)
+  ).length;
+
+  return count >= limit;
+};
+
 // 表示Elementの状態を取得
-export const getElementStatus = (selectEvent: Events, routine: RoutineElement[], targetElement: Element): number => {
+export const getElementStatus = (
+  selectEvent: Events,
+  routine: RoutineElement[],
+  targetElement: Element
+): ElementStatus => {
   // 共通制限ルールを最優先表示
   if (routine.some((element) => element.id === targetElement.id)) {
     return ElementStatus.選択済み;
-  } else if (routine.some((element) => element.code !== "" && element.code === targetElement.code)) {
+  } else if (
+    routine.some((element) => element.code !== "" && element.code === targetElement.code)
+  ) {
     return ElementStatus.同一枠選択済み;
   } else if (isGroupLimited(routine, targetElement)) {
     return ElementStatus.技数制限_グループ;
   } else if (routine.filter((element) => element.is_qualified).length >= 8) {
     return ElementStatus.技数制限_全体;
   }
-  // 固有ルールの表示[床・鉄棒以外]
-  if (selectEvent !== Events.床 && selectEvent !== Events.鉄棒) {
+  // 固有ルールの表示[床以外]
+  if (selectEvent !== Events.床) {
     if (routine.length > 0 && routine[routine.length - 1].element_group === ElementGroup.EG4) {
       return ElementStatus.終末技制限;
     }
@@ -96,48 +116,83 @@ export const getElementStatus = (selectEvent: Events, routine: RoutineElement[],
   }
   // 固有ルールの表示[あん馬]
   if (selectEvent === Events.あん馬) {
-    if (isPHTravelLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_縦向き移動技制限; // 2
+    if (checkTypeCount(routine, targetElement, ElementType.あん馬_縦向き移動技, 2)) {
+      return ElementStatus.あん馬_縦向き移動技制限;
     } else if (isPHRussianLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_ロシアン転向技制限; // 2 with dismount
-    } else if (isPHHandstandLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_倒立技制限; // 2 w/o dismount
-    } else if (isPHRussianTravelLimit1(routine, targetElement)) {
-      return ElementStatus.あん馬_ロシアン転向移動技1; // 2
-    } else if (isPHTravelSpindleLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_移動ひねり技制限; // 2
-    } else if (isPHSpindleLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_ひねり技制限; // 2
-    } else if (isPHSohnBezugoLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_ショーンべズゴ系; // 2
-    } else if (isPHFlairLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_開脚旋回技制限; // 4 w/o dismount
-    } else if (isPHBusnariLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_ブスナリ系制限; // 1
-    } else if (isPHRussianTravelLimit2(routine, targetElement)) {
-      return ElementStatus.あん馬_ロシアン転向移動技2; // 1
-    } else if (isPHTongFeiLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_トンフェイ系制限; // 1
-    } else if (isPHNinReyesLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_ニンレイエス系制限; // 1
-    } else if (isPHFlopLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_フロップ系制限; // 1
-    } else if (isPHCombineLimit(routine, targetElement)) {
-      return ElementStatus.あん馬_コンバイン系制限; // 1
+      return ElementStatus.あん馬_ロシアン転向技制限; // 複数種類ある
+    } else if (checkTypeCount(routine, targetElement, ElementType.あん馬_倒立技, 2)) {
+      return ElementStatus.あん馬_倒立技制限;
+    } else if (checkTypeCount(routine, targetElement, ElementType.あん馬_ロシアン転向移動技1, 2)) {
+      return ElementStatus.あん馬_ロシアン転向移動技1;
+    } else if (checkTypeCount(routine, targetElement, ElementType.あん馬_移動ひねり技, 2)) {
+      return ElementStatus.あん馬_移動ひねり技制限;
+    } else if (checkTypeCount(routine, targetElement, ElementType.あん馬_ひねり技, 2)) {
+      return ElementStatus.あん馬_ひねり技制限;
+    } else if (checkTypeCount(routine, targetElement, ElementType.あん馬_ショーンべズゴ系, 2)) {
+      return ElementStatus.あん馬_ショーンべズゴ系;
+    } else if (checkTypeCount(routine, targetElement, ElementType.あん馬_開脚旋回技, 4)) {
+      return ElementStatus.あん馬_開脚旋回技制限;
+    } else if (checkTypeCount(routine, targetElement, ElementType.あん馬_ブスナリ系, 1)) {
+      return ElementStatus.あん馬_ブスナリ系制限;
+    } else if (checkTypeCount(routine, targetElement, ElementType.あん馬_ロシアン転向移動技2, 1)) {
+      return ElementStatus.あん馬_ロシアン転向移動技2;
+    } else if (checkTypeCount(routine, targetElement, ElementType.あん馬_トンフェイ系, 1)) {
+      return ElementStatus.あん馬_トンフェイ系制限;
+    } else if (checkTypeCount(routine, targetElement, ElementType.あん馬_ニンレイエス系, 1)) {
+      return ElementStatus.あん馬_ニンレイエス系制限;
+    } else if (checkTypeCount(routine, targetElement, ElementType.あん馬_フロップ系, 1)) {
+      return ElementStatus.あん馬_フロップ系制限;
+    } else if (checkTypeCount(routine, targetElement, ElementType.あん馬_コンバイン系, 1)) {
+      return ElementStatus.あん馬_コンバイン系制限;
     }
   }
   // 固有ルールの表示[つり輪]
   if (selectEvent === Events.つり輪) {
     if (isSRStrengthLimit1(routine, targetElement)) {
       return ElementStatus.つり輪_力技制限1;
+    } else if (hasStrengtElement(routine)) {
+      return getSRElementStatusLimited(routine, targetElement); // 力技制限2
     }
-    // 力技制限2
-    if (hasStrengtElement(routine)) {
-      return getElementStatusLimited(routine, targetElement);
+  }
+  // 固有ルールの表示[跳馬]
+  if (selectEvent === Events.跳馬) {
+    if (routine.length === 2) {
+      return ElementStatus.跳馬_2技制限;
+    } else if (routine.some((element) => element.element_group === targetElement.element_group)) {
+      return ElementStatus.跳馬_グループ制限;
+    }
+  }
+  // 固有ルールの表示[平行棒]
+  if (selectEvent === Events.平行棒) {
+    const pbSaltoStatus = getPBSaltoStatusLimited(routine, targetElement);
+    if (pbSaltoStatus !== ElementStatus.選択可能) {
+      return pbSaltoStatus;
+    } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_車輪系, 2)) {
+      return ElementStatus.平行棒_車輪系制限;
+    } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_棒下宙返り系, 2)) {
+      return ElementStatus.平行棒_棒下宙返り系制限;
+    } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_アーム倒立系, 2)) {
+      return ElementStatus.平行棒_アーム倒立系制限;
+    } else if (checkOneRailBeginLimit(routine, targetElement)) {
+      return ElementStatus.平行棒_単棒倒立系制限;
     }
   }
 
   return ElementStatus.選択可能;
+};
+
+// RoutineRules用 | 演技構成に含まれる指定タイプの技を取得(idとcode)
+export const getRoutineElementsByType = (routine: RoutineElement[], types: ElementType[]) => {
+  let targetRoutineElements: RoutineElement[] = [];
+  routine.forEach((element) => {
+    types.forEach((type) => {
+      if (isElementTypeIncluded(element.element_type, type)) {
+        targetRoutineElements.push(element);
+      }
+    });
+  });
+
+  return targetRoutineElements;
 };
 
 /***************************************************************
@@ -158,11 +213,58 @@ export const updateRoutineForValidation = (
       if (isElementTypeIncluded(element.element_type, ElementType.つり輪_力技制限1を切れる技)) {
         strengthCount = 0;
       }
-      if (element.element_group === ElementGroup.EG2 || element.element_group === ElementGroup.EG3) {
+      if (
+        element.element_group === ElementGroup.EG2 ||
+        element.element_group === ElementGroup.EG3
+      ) {
         strengthCount++;
       }
       if (strengthCount >= 4 && element.is_qualified === true) {
         element.is_qualified = false;
+      }
+      return element;
+    });
+  }
+
+  // 平行棒
+  if (selectEvent === Events.平行棒) {
+    newRoutine = routine.map((element, index) => {
+      // 単棒終了技について
+      if (isElementTypeIncluded(element.element_type, ElementType.平行棒_単棒終了技)) {
+        if (index === routine.length - 1) {
+          // 単棒終了技が最後の技の場合は無効にする
+          return { ...element, is_qualified: false };
+        }
+        if (
+          !isElementTypeIncluded(routine[index + 1].element_type, ElementType.平行棒_単棒開始技)
+        ) {
+          // 単棒終了技が単棒開始技に繋がっていない場合は無効にする
+          return { ...element, is_qualified: false };
+        }
+      }
+      // 単棒開始技について
+      if (isElementTypeIncluded(element.element_type, ElementType.平行棒_単棒開始技)) {
+        if (index === 0) {
+          // 単棒開始技が1技目の場合は無効にする
+          return { ...element, is_qualified: false };
+        }
+        if (
+          !isElementTypeIncluded(routine[index - 1].element_type, ElementType.平行棒_単棒終了技)
+        ) {
+          // 単棒開始技が単棒終了技に繋がっていない場合は無効にする
+          return { ...element, is_qualified: false };
+        }
+      }
+      // 有効化
+      if (element.is_qualified === false) {
+        // 単棒終了技→単棒開始技になっていれば有効にする
+        if (
+          isElementTypeIncluded(element.element_type, ElementType.平行棒_単棒終了技) &&
+          index < routine.length - 1 &&
+          isElementTypeIncluded(routine[index + 1].element_type, ElementType.平行棒_単棒開始技)
+        ) {
+          return { ...element, is_qualified: true };
+        }
       }
       return element;
     });
@@ -200,9 +302,7 @@ export const updateElementGroupScoreInRoutine = (
   });
 
   // 各グループで最高得点を持つelementを取得する
-  let maxScores = new Array(
-    Object.keys(ElementGroup).length / 2 // keyとvalueをカウントしてしまうため2で割る
-  ).fill(0);
+  let maxScores = new Array(4).fill(0);
   newRoutineWithAllScore.forEach((element) => {
     if (element.element_group_score! > maxScores[element.element_group - 1]) {
       maxScores[element.element_group - 1] = element.element_group_score!;
@@ -210,9 +310,7 @@ export const updateElementGroupScoreInRoutine = (
   });
 
   // 各グループで最高のグループ得点を持つ最初のelementのみ適用する
-  const updateFlgs = new Array(
-    Object.keys(ElementGroup).length / 2 // keyとvalueをカウントしてしまうため2で割る
-  ).fill(false);
+  const updateFlgs = new Array(4).fill(false);
   let newRoutine = newRoutineWithAllScore.map((element) => {
     if (
       !updateFlgs[element.element_group - 1] && // まだ適用していない
@@ -240,7 +338,9 @@ export const updateElementGroupScoreInRoutine = (
 
       if (element.element_group === ElementGroup.EG1) {
         // 終末技グループがEG1(跳躍技以外)の場合
-        const firstEG1Element = newRoutine.find((element) => element.element_group === ElementGroup.EG1);
+        const firstEG1Element = newRoutine.find(
+          (element) => element.element_group === ElementGroup.EG1
+        );
         if (firstEG1Element === element) {
           // 終末技グループがEG1の場合 && 最初のEG1の場合 は 0.5点
           return { ...element, element_group_score: 0.5 };
@@ -429,7 +529,10 @@ export const calculateTotalScore = (routine: RoutineElement[]): number => {
 };
 
 // ニュートラルディダクションを計算
-export const calculateNeutralDeduction = (selectEvent: Events, routine: RoutineElement[]): number => {
+export const calculateNeutralDeduction = (
+  selectEvent: Events,
+  routine: RoutineElement[]
+): number => {
   if (selectEvent === Events.床) {
     return calculateElementCountDeduction(routine) + calculateMultipleSaltoShortage(routine);
   } else if (selectEvent === Events.つり輪) {

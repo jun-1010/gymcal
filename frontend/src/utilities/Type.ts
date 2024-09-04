@@ -17,11 +17,16 @@ export enum Events {
   // 女子床 = 10,
 }
 
+export const hasCVEvents = (event: Events) => {
+  return event === Events.床 || event === Events.平行棒 || event === Events.鉄棒;
+};
+
 export enum ElementGroup {
   EG1 = 1,
   EG2 = 2,
   EG3 = 3,
   EG4 = 4,
+  EG5 = 5,
 }
 
 export const getEventKey = (event: number): string => {
@@ -59,6 +64,19 @@ export const GroupNames: { [key: number]: { [key: number]: string } } = {
     [ElementGroup.EG1]: "振動技",
     [ElementGroup.EG2]: "力静止技",
     [ElementGroup.EG3]: "振動力静止技",
+    [ElementGroup.EG4]: "終末技",
+  },
+  [Events.跳馬]: {
+    [ElementGroup.EG1]: "1回宙返りひねり技",
+    [ElementGroup.EG2]: "前方技",
+    [ElementGroup.EG3]: "側方技",
+    [ElementGroup.EG4]: "ロンダート入りひねり技",
+    [ElementGroup.EG5]: "ロンダート入り技",
+  },
+  [Events.平行棒]: {
+    [ElementGroup.EG1]: "腕支持振動技",
+    [ElementGroup.EG2]: "両棒での支持技",
+    [ElementGroup.EG3]: "懸垂振動技",
     [ElementGroup.EG4]: "終末技",
   },
   // 他の種目も追加する
@@ -110,8 +128,25 @@ export enum ElementType {
   つり輪_力技制限2_倒立 = 36,
   つり輪_ヤマワキ系 = 37,
   つり輪_後ろ振り上がり倒立 = 38,
+  平行棒_宙返り技制限_ドミトリエンコ系 = 39,
+  平行棒_宙返り技制限_ハラダ系 = 40,
+  平行棒_宙返り技制限_パフニュク系 = 41,
+  平行棒_宙返り技制限_モリスエ系 = 42,
+  平行棒_宙返り技制限_爆弾カット系 = 43,
+  平行棒_宙返り技制限_前方ダブル腕支持系 = 44,
+  平行棒_宙返り技制限_ベーレ系 = 45,
+  平行棒_宙返り技制限_フォキン系 = 46,
+  平行棒_宙返り技制限_タナカ系 = 47,
+  平行棒_宙返り技制限_ギャニオン系 = 48,
+  平行棒_宙返り技制限_テハダ系 = 49,
+  平行棒_車輪系 = 50,
+  平行棒_棒下宙返り系 = 51,
+  平行棒_アーム倒立系 = 52,
+  平行棒_単棒終了技 = 53,
+  平行棒_単棒開始技 = 54,
 }
 
+// ElementTypeの末尾のブロックを取得(つり輪_力技制限2_脚前挙→脚前挙)
 export const getElementTypeName = (targetElementType: number): string => {
   let elementTypeKey = "";
   for (const key in ElementType) {
@@ -163,9 +198,26 @@ export enum ElementStatus {
   // つり輪_力技制限2_脚前挙十字懸垂 = 34,
   // つり輪_力技制限2_脚上挙十字懸垂  = 35,
   つり輪_力技制限2_倒立 = 36,
+  跳馬_グループ制限 = 37,
+  跳馬_2技制限 = 38,
+  平行棒_宙返り技制限_ドミトリエンコ系 = 39,
+  平行棒_宙返り技制限_ハラダ系 = 40,
+  平行棒_宙返り技制限_パフニュク系 = 41,
+  平行棒_宙返り技制限_モリスエ系 = 42,
+  平行棒_宙返り技制限_爆弾カット系 = 43,
+  平行棒_宙返り技制限_前方ダブル腕支持系 = 44,
+  平行棒_宙返り技制限_ベーレ系 = 45,
+  平行棒_宙返り技制限_フォキン系 = 46,
+  平行棒_宙返り技制限_タナカ系 = 47,
+  平行棒_宙返り技制限_ギャニオン系 = 48,
+  平行棒_宙返り技制限_テハダ系 = 49,
+  平行棒_車輪系制限 = 50,
+  平行棒_棒下宙返り系制限 = 51,
+  平行棒_アーム倒立系制限 = 52,
+  平行棒_単棒倒立系制限 = 53,
 }
 
-// elementTypeに対応するelementStatusを返す
+// ElementTile用 | elementTypeに対応するelementStatusを返す
 export const getElementStatusFromElementType = (elementType: ElementType): ElementStatus => {
   switch (elementType) {
     case ElementType.床_力技:
@@ -252,6 +304,52 @@ export const getElementStatusFromElementType = (elementType: ElementType): Eleme
     case ElementType.つり輪_力技制限2_倒立:
       return ElementStatus.つり輪_力技制限2_倒立;
 
+    case ElementType.平行棒_宙返り技制限_ドミトリエンコ系:
+      return ElementStatus.平行棒_宙返り技制限_ドミトリエンコ系;
+
+    case ElementType.平行棒_宙返り技制限_ハラダ系:
+      return ElementStatus.平行棒_宙返り技制限_ハラダ系;
+
+    case ElementType.平行棒_宙返り技制限_パフニュク系:
+      return ElementStatus.平行棒_宙返り技制限_パフニュク系;
+
+    case ElementType.平行棒_宙返り技制限_モリスエ系:
+      return ElementStatus.平行棒_宙返り技制限_モリスエ系;
+
+    case ElementType.平行棒_宙返り技制限_爆弾カット系:
+      return ElementStatus.平行棒_宙返り技制限_爆弾カット系;
+
+    case ElementType.平行棒_宙返り技制限_前方ダブル腕支持系:
+      return ElementStatus.平行棒_宙返り技制限_前方ダブル腕支持系;
+
+    case ElementType.平行棒_宙返り技制限_ベーレ系:
+      return ElementStatus.平行棒_宙返り技制限_ベーレ系;
+
+    case ElementType.平行棒_宙返り技制限_フォキン系:
+      return ElementStatus.平行棒_宙返り技制限_フォキン系;
+
+    case ElementType.平行棒_宙返り技制限_タナカ系:
+      return ElementStatus.平行棒_宙返り技制限_タナカ系;
+
+    case ElementType.平行棒_宙返り技制限_ギャニオン系:
+      return ElementStatus.平行棒_宙返り技制限_ギャニオン系;
+
+    case ElementType.平行棒_宙返り技制限_テハダ系:
+      return ElementStatus.平行棒_宙返り技制限_テハダ系;
+
+    case ElementType.平行棒_車輪系:
+      return ElementStatus.平行棒_車輪系制限;
+
+    case ElementType.平行棒_棒下宙返り系:
+      return ElementStatus.平行棒_棒下宙返り系制限;
+
+    case ElementType.平行棒_アーム倒立系:
+      return ElementStatus.平行棒_アーム倒立系制限;
+
+    case ElementType.平行棒_単棒終了技:
+    case ElementType.平行棒_単棒開始技:
+      return ElementStatus.平行棒_単棒倒立系制限;
+
     default:
       return ElementStatus.選択可能;
   }
@@ -271,10 +369,10 @@ export const getElementStatusName = (targetElementStatus: number): string => {
 };
 
 // active, selected, disabledの3つで十分
-export const statusClass = (status: number) => {
-  if (status === 1) {
+export const statusClass = (status: ElementStatus) => {
+  if (status === ElementStatus.選択可能) {
     return "elements__tile--active";
-  } else if (status === 2) {
+  } else if (status === ElementStatus.選択済み) {
     return "elements__tile--selected";
   } else if (3 <= status) {
     return "elements__tile--disabled";
@@ -316,6 +414,13 @@ export enum Rules {
   つり輪_力技制限1 = 30,
   つり輪_力技制限2 = 31,
   つり輪_組み合わせ加点 = 32,
+  跳馬_グループ制限 = 33,
+  跳馬_2技制限 = 34,
+  平行棒_宙返り技制限 = 35,
+  平行棒_車輪系制限 = 36,
+  平行棒_棒下宙返り系制限 = 37,
+  平行棒_アーム倒立系制限 = 38,
+  平行棒_単棒倒立系制限 = 39,
 }
 
 export const RuleKey = (ruleKey: number): string => {
