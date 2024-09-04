@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { categorizeElements, getGroupElements, GroupElements } from "./utilities/ElementUtil";
+import {
+  categorizeElements,
+  getGroupElements,
+  GroupElements,
+} from "./utilities/ElementUtil";
 import "./App.css";
 import { Events, ElementGroup } from "./utilities/Type";
 
@@ -52,7 +56,12 @@ const App: React.FC = () => {
     const storedRoutineOpen = localStorage.getItem("routineOpen");
     const storedRoutines = localStorage.getItem("routines");
     // localStorageに値がない(= 初アクセス)場合は何もしない
-    if (!storedSelectEvent || !storedSelectGroup || !storedRoutineOpen || !storedRoutines) {
+    if (
+      !storedSelectEvent ||
+      !storedSelectGroup ||
+      !storedRoutineOpen ||
+      !storedRoutines
+    ) {
       return;
     }
     const parsedSelectEvent = parseInt(storedSelectEvent);
@@ -60,7 +69,9 @@ const App: React.FC = () => {
     const parsedRoutineOpen = parseInt(storedRoutineOpen);
     const parsedRoutines = JSON.parse(storedRoutines) as Routines;
     // すべての要素が空の配列かどうかをチェック
-    const isEmpty = Object.values(parsedRoutines).every((routine) => Array.isArray(routine) && routine.length === 0);
+    const isEmpty = Object.values(parsedRoutines).every(
+      (routine) => Array.isArray(routine) && routine.length === 0
+    );
     if (
       selectEvent === parsedSelectEvent &&
       selectGroup === parsedSelectGroup &&
@@ -91,7 +102,12 @@ const App: React.FC = () => {
     const storedRoutines = localStorage.getItem("routines");
 
     // selectEventとselectGroupが存在しない = 初アクセス
-    if (!storedSelectEvent || !storedSelectGroup || !storedRoutineOpen || !storedRoutines) {
+    if (
+      !storedSelectEvent ||
+      !storedSelectGroup ||
+      !storedRoutineOpen ||
+      !storedRoutines
+    ) {
       localStorage.setItem("selectEvent", Events.床.toString());
       localStorage.setItem("selectGroup", ElementGroup.EG1.toString());
       localStorage.setItem("routineOpen", "0");
@@ -107,7 +123,9 @@ const App: React.FC = () => {
 
     const parsedRoutines = JSON.parse(storedRoutines);
     // すべての要素が空の配列かどうかをチェック
-    const isEmpty = Object.values(parsedRoutines).every((routine) => Array.isArray(routine) && routine.length === 0);
+    const isEmpty = Object.values(parsedRoutines).every(
+      (routine) => Array.isArray(routine) && routine.length === 0
+    );
     if (isEmpty) {
       return;
     }

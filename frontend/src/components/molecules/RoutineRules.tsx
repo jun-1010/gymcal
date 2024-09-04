@@ -1,5 +1,9 @@
 import React from "react";
-import { CategorizedElements, getGroupElements } from "../../utilities/ElementUtil";
+import {
+  CategorizedElements,
+  getGroupElements,
+  getElementsByType,
+} from "../../utilities/ElementUtil";
 import {
   calculateMultipleSaltoShortage,
   isFXCircleLimit,
@@ -20,7 +24,7 @@ import {
   getPHTongFeiLimitCodes,
   getPHTravelLimitCodes,
   getPHTravelSpindleLimitCodes,
-} from "../../utilities/RoutinePHUtils";
+} from "../../utilities/RoutinePHUtil";
 import {
   calculateSwingHandstandShortage,
   getSRStrengthLimit1Codes,
@@ -36,10 +40,12 @@ import {
   calculateTotalScore,
   isGroupLimited,
   RoutineElement,
+  getRoutineElementsByType,
 } from "../../utilities/RoutineUtil";
 import {
   ELEMENT_COUNT_DEDUCTIONS,
   ElementGroup,
+  ElementType,
   Events,
   RuleKey,
   RuleName,
@@ -48,14 +54,11 @@ import {
   getGroupName,
 } from "../../utilities/Type";
 import RoutineRule from "../atoms/RoutineRule";
-import { spawn } from "child_process";
 import { calculateVTScore } from "../../utilities/RoutineVTUtil";
+import { checkOneRailBeginLimit, getPBSaltoLimitCodes } from "../../utilities/RoutinePBUtil";
 
 // 同一枠の技を持つ技のコードを取得
-const getSameSlotCodes = (
-  routine: RoutineElement[],
-  categorizedElements: CategorizedElements
-) => {
+const getSameSlotCodes = (routine: RoutineElement[], categorizedElements: CategorizedElements) => {
   // 同一枠制限
   let sameSlotCodes: string[] = [];
 
@@ -103,11 +106,7 @@ interface RoutineRulesProps {
   categorizedElements: CategorizedElements;
 }
 
-export const RoutineRules = ({
-  selectEvent,
-  routine,
-  categorizedElements,
-}: RoutineRulesProps) => {
+export const RoutineRules = ({ selectEvent, routine, categorizedElements }: RoutineRulesProps) => {
   const sameSlotCodes = getSameSlotCodes(routine, categorizedElements);
   const limitedGroups = getLimitedGroups(routine);
   const fxStrengthLimitCode =
@@ -118,38 +117,103 @@ export const RoutineRules = ({
     (selectEvent === Events.床 &&
       routine.find((element) => isFXCircleLimit(routine, element))?.code) ||
     "";
-  const phTravelLimitCodes =
-    selectEvent === Events.あん馬 ? getPHTravelLimitCodes(routine) : [];
-  const phRussianLimitCodes =
-    selectEvent === Events.あん馬 ? getPHRussianLimitCodes(routine) : [];
+  const phTravelLimitCodes = selectEvent === Events.あん馬 ? getPHTravelLimitCodes(routine) : [];
+  const phRussianLimitCodes = selectEvent === Events.あん馬 ? getPHRussianLimitCodes(routine) : [];
   const phHandstandLimitCodes =
     selectEvent === Events.あん馬 ? getPHHandstandLimitCodes(routine) : [];
   const phRussianTranveLimit1Codes =
     selectEvent === Events.あん馬 ? getPHRussianTravelLimit1Codes(routine) : [];
   const phTranveSpindleLimitCodes =
     selectEvent === Events.あん馬 ? getPHTravelSpindleLimitCodes(routine) : [];
-  const phSpindleLimitCodes =
-    selectEvent === Events.あん馬 ? getPHSpindleLimitCodes(routine) : [];
+  const phSpindleLimitCodes = selectEvent === Events.あん馬 ? getPHSpindleLimitCodes(routine) : [];
   const phSohnBezugoLimitCodes =
     selectEvent === Events.あん馬 ? getPHSohnBezugoLimitCodes(routine) : [];
-  const phFlairLimitCodes =
-    selectEvent === Events.あん馬 ? getPHFlairLimitCodes(routine) : [];
-  const phBusnariLimitCodes =
-    selectEvent === Events.あん馬 ? getPHBusnariLimitCodes(routine) : [];
+  const phFlairLimitCodes = selectEvent === Events.あん馬 ? getPHFlairLimitCodes(routine) : [];
+  const phBusnariLimitCodes = selectEvent === Events.あん馬 ? getPHBusnariLimitCodes(routine) : [];
   const phRussianTranveLimit2Codes =
     selectEvent === Events.あん馬 ? getPHRussianTravelLimit2Codes(routine) : [];
-  const phTongFeiLimitCodes =
-    selectEvent === Events.あん馬 ? getPHTongFeiLimitCodes(routine) : [];
+  const phTongFeiLimitCodes = selectEvent === Events.あん馬 ? getPHTongFeiLimitCodes(routine) : [];
   const phNinReyesLimitCodes =
     selectEvent === Events.あん馬 ? getPHNinReyesLimitCodes(routine) : [];
-  const phFlopLimitCodes =
-    selectEvent === Events.あん馬 ? getPHFlopLimitCodes(routine) : [];
-  const phCombineLimitCodes =
-    selectEvent === Events.あん馬 ? getPHCombineLimitCodes(routine) : [];
+  const phFlopLimitCodes = selectEvent === Events.あん馬 ? getPHFlopLimitCodes(routine) : [];
+  const phCombineLimitCodes = selectEvent === Events.あん馬 ? getPHCombineLimitCodes(routine) : [];
   const srStrengthLimit1CodesList =
     selectEvent === Events.つり輪 ? getSRStrengthLimit1Codes(routine) : [];
   const srStrengthLimit2Codes =
     selectEvent === Events.つり輪 ? getSRStrengthLimit2Codes(routine) : [];
+  const pbSaltoLimitCodes = selectEvent === Events.平行棒 ? getPBSaltoLimitCodes(routine) : [];
+
+  // 平行棒_車輪系
+  const pbGiantSwingLimitCodes =
+    selectEvent === Events.平行棒
+      ? getRoutineElementsByType(routine, [ElementType.平行棒_車輪系])
+      : [];
+  const pbGiantSwingElements =
+    selectEvent === Events.平行棒
+      ? getElementsByType(
+          Events.平行棒,
+          [ElementGroup.EG3],
+          ElementType.平行棒_車輪系,
+          categorizedElements
+        )
+      : [];
+
+  // 平行棒_棒下宙返り系
+  const pbFelgeLimitCodes =
+    selectEvent === Events.平行棒
+      ? getRoutineElementsByType(routine, [ElementType.平行棒_棒下宙返り系])
+      : [];
+  const pbFelgeElements =
+    selectEvent === Events.平行棒
+      ? getElementsByType(
+          Events.平行棒,
+          [ElementGroup.EG3],
+          ElementType.平行棒_棒下宙返り系,
+          categorizedElements
+        )
+      : [];
+
+  // 平行棒_アーム倒立系
+  const pbFrontUpriseLimitCodes =
+    selectEvent === Events.平行棒
+      ? getRoutineElementsByType(routine, [ElementType.平行棒_アーム倒立系])
+      : [];
+  const pbFrontUpriseElements =
+    selectEvent === Events.平行棒
+      ? getElementsByType(
+          Events.平行棒,
+          [ElementGroup.EG1],
+          ElementType.平行棒_アーム倒立系,
+          categorizedElements
+        )
+      : [];
+
+  // 平行棒_単棒倒立系
+  const pbOneRailLimitCodes =
+    selectEvent === Events.平行棒
+      ? getRoutineElementsByType(routine, [
+          ElementType.平行棒_単棒終了技,
+          ElementType.平行棒_単棒開始技,
+        ])
+      : [];
+  const pbOneRailEndElements =
+    selectEvent === Events.平行棒
+      ? getElementsByType(
+          Events.平行棒,
+          [ElementGroup.EG1, ElementGroup.EG2, ElementGroup.EG3],
+          ElementType.平行棒_単棒終了技,
+          categorizedElements
+        )
+      : [];
+  const pbOneRailBeginElements =
+    selectEvent === Events.平行棒
+      ? getElementsByType(
+          Events.平行棒,
+          [ElementGroup.EG2],
+          ElementType.平行棒_単棒開始技,
+          categorizedElements
+        )
+      : [];
 
   return (
     <>
@@ -160,9 +224,7 @@ export const RoutineRules = ({
         <div className="rules__section">
           <div className="rules__section-header">
             <p className="rules__section-title">加算ルール</p>
-            <p className="rules__section-description">
-              条件を満たした場合に加算されるルール
-            </p>
+            <p className="rules__section-description">条件を満たした場合に加算されるルール</p>
           </div>
 
           {/* Dスコア */}
@@ -196,8 +258,7 @@ export const RoutineRules = ({
                 Dスコア
                 {calculateVTScore(routine) > 0 ? (
                   <p className="common__label common__label--active ">
-                    {routine.length === 2 && "平均"}Dスコア:{" "}
-                    {calculateVTScore(routine).toFixed(1)}
+                    {routine.length === 2 && "平均"}Dスコア: {calculateVTScore(routine).toFixed(1)}
                   </p>
                 ) : null}
               </span>
@@ -215,8 +276,7 @@ export const RoutineRules = ({
                   <span>・1跳躍目: D5.6 + E9.0 = 14.4</span>
                   <span>・2跳躍目: D5.2 + E9.2 = 14.2</span>
                   <span>
-                    ・決定点：{" "}
-                    <span style={{ fontWeight: "bold" }}>(14.4 + 14.2) / 2 = 14.3</span>
+                    ・決定点： <span style={{ fontWeight: "bold" }}>(14.4 + 14.2) / 2 = 14.3</span>
                   </span>
                 </div>
               </div>
@@ -252,9 +312,7 @@ export const RoutineRules = ({
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--3rem">難度</td>
                       <td className={`rules__table-cell rules__table-cell--3rem`}>A~C</td>
-                      <td className={`rules__table-cell rules__table-cell--3rem`}>
-                        D以上
-                      </td>
+                      <td className={`rules__table-cell rules__table-cell--3rem`}>D以上</td>
                     </tr>
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--3rem">加点</td>
@@ -318,15 +376,9 @@ export const RoutineRules = ({
                 <table className="rules__table-table">
                   <tbody>
                     <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--6rem">
-                        組み合わせ
-                      </td>
-                      <td className={`rules__table-cell  rules__table-cell--6rem`}>
-                        D以上+BorC
-                      </td>
-                      <td className={`rules__table-cell  rules__table-cell--6rem`}>
-                        D以上+D以上
-                      </td>
+                      <td className="rules__table-cell rules__table-cell--6rem">組み合わせ</td>
+                      <td className={`rules__table-cell  rules__table-cell--6rem`}>D以上+BorC</td>
+                      <td className={`rules__table-cell  rules__table-cell--6rem`}>D以上+D以上</td>
                     </tr>
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--6rem">加点</td>
@@ -377,9 +429,7 @@ export const RoutineRules = ({
           <div className="rules__section">
             <div className="rules__section-header">
               <p className="rules__section-title">減点ルール</p>
-              <p className="rules__section-description">
-                条件を満たさない場合に減点されるルール
-              </p>
+              <p className="rules__section-description">条件を満たさない場合に減点されるルール</p>
             </div>
 
             {/* ニュートラルディダクション */}
@@ -431,13 +481,11 @@ export const RoutineRules = ({
                   <table className="rules__table-table">
                     <tbody>
                       <tr className="rules__table-row">
-                        <td className="rules__table-cell rules__table-cell--3rem">
-                          技数
-                        </td>
+                        <td className="rules__table-cell rules__table-cell--3rem">技数</td>
                         {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
                           <td
                             key={index}
-                            className={`rules__table-cell ${
+                            className={`rules__table-cell rules__table-cell--1-5rem ${
                               routine.length === index ? "rules__table-cell--active" : ""
                             }`}
                           >
@@ -446,13 +494,11 @@ export const RoutineRules = ({
                         ))}
                       </tr>
                       <tr className="rules__table-row">
-                        <td className="rules__table-cell rules__table-cell--3rem">
-                          減点
-                        </td>
+                        <td className="rules__table-cell rules__table-cell--3rem">減点</td>
                         {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
                           <td
                             key={index}
-                            className={`rules__table-cell ${
+                            className={`rules__table-cell rules__table-cell--1-5rem ${
                               routine.length === index ? "rules__table-cell--active" : ""
                             }`}
                           >
@@ -516,9 +562,7 @@ export const RoutineRules = ({
         <div className="rules__section">
           <div className="rules__section-header">
             <p className="rules__section-title">制限ルール</p>
-            <p className="rules__section-description">
-              条件を満たした技に選択制限がかかるルール
-            </p>
+            <p className="rules__section-description">条件を満たした技に選択制限がかかるルール</p>
           </div>
 
           {/* 同一枠制限 */}
@@ -529,12 +573,12 @@ export const RoutineRules = ({
 
                 {sameSlotCodes.length > 0 ? (
                   <div className="rules__summary-labels">
-                    {sameSlotCodes.slice(0, 4).map((e, index) => (
+                    {sameSlotCodes.slice(0, 3).map((e, index) => (
                       <p key={index} className="common__label ">
                         {e}
                       </p>
                     ))}
-                    {sameSlotCodes.length > 4 && <p className="common__label ">...</p>}
+                    {sameSlotCodes.length > 3 && <p className="common__label ">...</p>}
                   </div>
                 ) : null}
               </span>
@@ -655,9 +699,7 @@ export const RoutineRules = ({
             summaryNode={
               <span className="rules__summary-title">
                 {RuleName(Rules.床_旋回制限)}
-                {fxCircleLimitCode ? (
-                  <p className="common__label ">{fxCircleLimitCode}</p>
-                ) : null}
+                {fxCircleLimitCode ? <p className="common__label ">{fxCircleLimitCode}</p> : null}
               </span>
             }
             descriptionNode={
@@ -714,9 +756,7 @@ export const RoutineRules = ({
                 <p>また、同じ場所でのロシアン転向技は1つまで使用できます。</p>
                 <p>例）</p>
                 <p>・馬端馬背ロシアン1080°転向～ロシアン720°転向下り：不認定+B難度</p>
-                <p>
-                  ・あん部馬背ロシアン720°転向～あん部馬背ロシアン1080°転向：不認定+E難度
-                </p>
+                <p>・あん部馬背ロシアン720°転向～あん部馬背ロシアン1080°転向：不認定+E難度</p>
                 <p>
                   ・あん部馬背ロシアン360°
                   ～馬端馬背ロシアン1080°転向～ロシアン360°転向下り：C難度+不認定+A難度
@@ -801,9 +841,7 @@ export const RoutineRules = ({
                 <p>以下のひねりを伴う3/3移動技は1演技中2つまで使用できます。</p>
                 <p>・III17 正面横移動ひねり、背面横移動ひねり（馬端～馬端）</p>
                 <p>・III22 縦向き1/3前移動直ちに縦向き2/3移動ひねり（ニン・レイエス）</p>
-                <p>
-                  ・III23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）
-                </p>
+                <p>・III23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）</p>
                 <p>
                   ・III29
                   開脚旋回縦向き3/3移動1回ひねり（2回以内の旋回で）（ウルジカ2/ブルクハルト）
@@ -834,9 +872,7 @@ export const RoutineRules = ({
                 <p>以下の1回ひねりを伴う技は1演技中2つまで使用できます。</p>
                 <p>・II28 一把手を挟んで横向き旋回1回ひねり（2回以内の旋回で） </p>
                 <p>・II29 横向き旋回1回ひねり移動（2回以内の旋回で）（アイヒホルン） </p>
-                <p>
-                  ・II30 両把手を挟んで横向き旋回1回ひねり（2回以内の旋回で）（ケイハ）
-                </p>
+                <p>・II30 両把手を挟んで横向き旋回1回ひねり（2回以内の旋回で）（ケイハ）</p>
                 <p>
                   ・II30
                   馬端外向き縦向き支持から両把手を越えて縦向き旋回1回ひねり（2回以内の旋回で）（ケイハ5）
@@ -894,9 +930,7 @@ export const RoutineRules = ({
             }
             descriptionNode={
               <div className="rules__description">
-                <p>
-                  開脚旋回で実施される技は終末技は含まずに1演技中4つまで使用できます。
-                </p>
+                <p>開脚旋回で実施される技は終末技は含まずに1演技中4つまで使用できます。</p>
               </div>
             }
             show={selectEvent === Events.あん馬}
@@ -1000,9 +1034,7 @@ export const RoutineRules = ({
               <div className="rules__description">
                 <p>以下のニン・レイエス系の移動技は1演技中1つまで使用できます。</p>
                 <p>・III22 縦向き1/3前移動直ちに縦向き2/3移動ひねり（ニン・レイエス）</p>
-                <p>
-                  ・III23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）
-                </p>
+                <p>・III23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）</p>
               </div>
             }
             show={selectEvent === Events.あん馬}
@@ -1062,8 +1094,7 @@ export const RoutineRules = ({
               <span className="rules__summary-title">
                 {RuleName(Rules.つり輪_力技制限1)}
                 {srStrengthLimit1CodesList.length > 0 &&
-                srStrengthLimit1CodesList[srStrengthLimit1CodesList.length - 1].length >=
-                  3 ? (
+                srStrengthLimit1CodesList[srStrengthLimit1CodesList.length - 1].length >= 3 ? (
                   <div className="rules__summary-labels">
                     <p className="common__label">✔️</p>
                   </div>
@@ -1073,30 +1104,6 @@ export const RoutineRules = ({
             descriptionNode={
               <div className="rules__description">
                 <p>以下の力技を連続で選択中です。</p>
-                {/* <div className="rules__description-label-box">
-                  {srStrengthLimit1CodesList.map((codes, outerIndex) => (
-                    <>
-                      {codes.length > 0 ? (
-                        <span key={outerIndex} className="rules__description-labels">
-                          {codes.map((code, innerIndex) => (
-                            <React.Fragment key={innerIndex}>
-                              <span className="common__label">{code}</span>
-                              {innerIndex < codes.length - 1 && <span>→</span>}
-                            </React.Fragment>
-                          ))}
-                        </span>
-                      ) : (
-                        <>
-                          {outerIndex === 0 && (
-                            <span key={outerIndex} className="rules__description-labels">
-                              選択していません
-                            </span>
-                          )}
-                        </>
-                      )}
-                    </>
-                  ))}
-                </div> */}
                 <div className="rules__description-label-box">
                   {srStrengthLimit1CodesList.map((codes, outerIndex) =>
                     codes.length > 0 ? (
@@ -1146,9 +1153,7 @@ export const RoutineRules = ({
                         {row.code}
                       </p>
                     ))}
-                    {srStrengthLimit2Codes.length > 3 && (
-                      <p className="common__label ">...</p>
-                    )}
+                    {srStrengthLimit2Codes.length > 3 && <p className="common__label ">...</p>}
                   </div>
                 ) : null}
               </span>
@@ -1157,14 +1162,13 @@ export const RoutineRules = ({
               <div className="rules__description">
                 <p>以下の力技を選択中(制限中)です。</p>
                 <div className="rules__description-label-box">
-                  {([ElementGroup.EG2, ElementGroup.EG3] as ElementGroup[]).map(
-                    (group) => (
+                  {([ElementGroup.EG2, ElementGroup.EG3] as ElementGroup[]).map((group) => (
+                    <React.Fragment key={group}>
                       <div key={group}>
                         <p>{getGroupName(selectEvent, group)}</p>
                         <p className="rules__description-labels">
-                          {srStrengthLimit2Codes.filter(
-                            (row) => row.elementGroup === group
-                          ).length > 0 ? (
+                          {srStrengthLimit2Codes.filter((row) => row.elementGroup === group)
+                            .length > 0 ? (
                             srStrengthLimit2Codes
                               .filter((row) => row.elementGroup === group)
                               .map((row, index) => (
@@ -1177,8 +1181,11 @@ export const RoutineRules = ({
                           )}
                         </p>
                       </div>
-                    )
-                  )}
+                      {group !== ElementGroup.EG3 && (
+                        <p className="rules__section-line--without-margin" />
+                      )}
+                    </React.Fragment>
+                  ))}
                 </div>
                 <p className="rules__section-line" />
                 <p>
@@ -1276,8 +1283,7 @@ export const RoutineRules = ({
                         {/* {Object.entries(ElementGroup).find(([key, value]) => value === element.element_group) || ""} */}
                         {Object.keys(ElementGroup).find(
                           (key) =>
-                            ElementGroup[key as keyof typeof ElementGroup] ===
-                            element.element_group
+                            ElementGroup[key as keyof typeof ElementGroup] === element.element_group
                         ) || ""}
                       </p>
                     ))}
@@ -1311,6 +1317,343 @@ export const RoutineRules = ({
               </div>
             }
             show={selectEvent === Events.跳馬}
+          />
+
+          {/* 平行棒_宙返り技制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.平行棒_宙返り技制限)}
+                {pbSaltoLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {pbSaltoLimitCodes.slice(0, 3).map((row, index) => (
+                      <p key={index} className="common__label">
+                        {row.code}
+                      </p>
+                    ))}
+                    {pbSaltoLimitCodes.length > 3 && <p className="common__label">...</p>}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>以下の種類の宙返り技を選択中(制限中)です。</p>
+                <div className="rules__description-label-box">
+                  <p className="rules__description-labels">
+                    {pbSaltoLimitCodes.length > 0 ? (
+                      pbSaltoLimitCodes.map((row, index) => (
+                        <span key={index} className="common__label ">
+                          {row.code}.{row.typeName}
+                        </span>
+                      ))
+                    ) : (
+                      <span>選択していません</span>
+                    )}
+                  </p>
+                </div>
+                <p className="rules__section-line" />
+                <p>同じ種類の宙返り技は1演技に1つまで使用できます。</p>
+                <p>
+                  <span style={{ fontWeight: "bold" }}>同じEG</span>の
+                  <span style={{ fontWeight: "bold" }}>異なる姿勢</span>または
+                  <span style={{ fontWeight: "bold" }}>異なる受け方</span>
+                  の技が同じ種類と判断されます。
+                </p>
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--17rem rules__table-cell--left">
+                        異なる姿勢：抱え込み / 屈身 / 伸身 / 開脚
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td
+                        className={`rules__table-cell rules__table-cell--17rem rules__table-cell--left`}
+                      >
+                        異なる受け方：腕支持 / 支持 / 直接懸垂
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p>NG例:</p>
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--12rem rules__table-cell--left">
+                        II47.モリスエ
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td
+                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
+                      >
+                        II48.屈身モリスエ
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--12rem rules__table-cell--left">
+                        III59.ベーレ
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td
+                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
+                      >
+                        III60.屈身ベーレ
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--12rem rules__table-cell--left">
+                        II106.爆弾カット腕支持
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td
+                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
+                      >
+                        II107.爆弾カット支持
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td
+                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
+                      >
+                        II111.爆弾カット直接懸垂
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            }
+            show={selectEvent === Events.平行棒}
+          />
+
+          {/* 平行棒_車輪系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.平行棒_車輪系制限)}
+                {pbGiantSwingLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {pbGiantSwingLimitCodes.map((routineElement, index) => (
+                      <p key={index} className="common__label">
+                        {routineElement.code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>車輪系の技は1演技に2つまで使用できます。</p>
+                <p>対象の技は以下のとおりです。</p>
+                <table className="rules__table-table">
+                  <tbody>
+                    {pbGiantSwingElements.map((element, index) => (
+                      <tr key={index} className="rules__table-row">
+                        {pbGiantSwingLimitCodes.find(
+                          (routineElement) => routineElement.id === element.id
+                        ) ? (
+                          <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
+                            {element.code}.{element.alias || element.name} (選択中)
+                          </td>
+                        ) : (
+                          <td className="rules__table-cell rules__table-cell--left">
+                            {element.code}.{element.alias || element.name}
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            }
+            show={selectEvent === Events.平行棒}
+          />
+
+          {/* 平行棒_棒下宙返り系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.平行棒_棒下宙返り系制限)}
+                {pbFelgeLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {pbFelgeLimitCodes.map((routineElement, index) => (
+                      <p key={index} className="common__label">
+                        {routineElement.code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>棒下宙返り倒立系は1演技に2つまで使用できます。</p>
+                <p>対象の技は以下のとおりです。</p>
+
+                <table className="rules__table-table">
+                  <tbody>
+                    {pbFelgeElements.map((element, index) => (
+                      <tr key={index} className="rules__table-row">
+                        {pbFelgeLimitCodes.find(
+                          (routineElement) => routineElement.id === element.id
+                        ) ? (
+                          <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
+                            {element.code}.{element.alias || element.name} (選択中)
+                          </td>
+                        ) : (
+                          <td className="rules__table-cell rules__table-cell--left">
+                            {element.code}.{element.alias || element.name}
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            }
+            show={selectEvent === Events.平行棒}
+          />
+
+          {/* 平行棒_アーム倒立系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.平行棒_アーム倒立系制限)}
+                {pbFrontUpriseLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {pbFrontUpriseLimitCodes.map((routineElement, index) => (
+                      <p key={index} className="common__label">
+                        {routineElement.code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>棒下宙返り倒立系は1演技に2つまで使用できます。</p>
+                <p>対象の技は以下のとおりです。</p>
+
+                <table className="rules__table-table">
+                  <tbody>
+                    {pbFrontUpriseElements.map((element, index) => (
+                      <tr key={index} className="rules__table-row">
+                        {pbFrontUpriseLimitCodes.find(
+                          (routineElement) => routineElement.id === element.id
+                        ) ? (
+                          <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
+                            {element.code}.{element.alias || element.name} (選択中)
+                          </td>
+                        ) : (
+                          <td className="rules__table-cell rules__table-cell--left">
+                            {element.code}.{element.alias || element.name}
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            }
+            show={selectEvent === Events.平行棒}
+          />
+
+          {/* 平行棒_単棒倒立系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.平行棒_単棒倒立系制限)}
+                {/* {pbOneRailLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    <p className="common__label">✔️</p>
+                  </div>
+                ) : null} */}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>
+                  単棒倒立で終わる振動技は、単棒倒立で始まるヒーリー系に繋げない場合無効になります。
+                </p>
+                <p>
+                  単棒から始まるヒーリー系は 単棒倒立で終了する振動技にのみ繋げることができます。
+                </p>
+                <p>対象の技は以下のとおりです。</p>
+                <p className="rules__section-line" />
+                <p>単棒倒立で終わる技</p>
+                <table className="rules__table-table">
+                  <tbody>
+                    {pbOneRailEndElements.map((element, index) => {
+                      const foundElement = pbOneRailLimitCodes.find(
+                        (routineElement) => routineElement.id === element.id
+                      );
+
+                      return (
+                        <tr key={index} className="rules__table-row">
+                          <td
+                            className={`rules__table-cell rules__table-cell--left ${
+                              foundElement && "rules__table-cell--active"
+                            }
+                            ${
+                              foundElement &&
+                              foundElement.is_qualified === false &&
+                              "rules__table-cell--limit"
+                            }`}
+                          >
+                            {element.code}.{element.alias || element.name}
+                            {foundElement &&
+                              (foundElement.is_qualified ? " (選択中 / 有効)" : " (選択中 / 無効)")}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                <p>単棒倒立から始まるヒーリー系</p>
+                <table className="rules__table-table">
+                  <tbody>
+                    {pbOneRailBeginElements.map((element, index) => (
+                      <tr key={index} className="rules__table-row">
+                        {pbOneRailLimitCodes.find(
+                          (routineElement) =>
+                            routineElement.id === element.id && routineElement.is_qualified
+                        ) ? (
+                          <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
+                            {element.code}.{element.alias || element.name} (選択中)
+                          </td>
+                        ) : (
+                          <React.Fragment>
+                            {checkOneRailBeginLimit(routine, element) ? (
+                              <td className="rules__table-cell rules__table-cell--left rules__table-cell--limit">
+                                {element.code}.{element.alias || element.name} (選択不可)
+                              </td>
+                            ) : (
+                              <td className="rules__table-cell rules__table-cell--left">
+                                {element.code}.{element.alias || element.name} (選択可能)
+                              </td>
+                            )}
+                          </React.Fragment>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            }
+            show={selectEvent === Events.平行棒}
           />
         </div>
       </div>
