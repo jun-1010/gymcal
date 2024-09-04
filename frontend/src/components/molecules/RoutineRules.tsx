@@ -1327,11 +1327,11 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {pbSaltoLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {pbSaltoLimitCodes.slice(0, 3).map((row, index) => (
-                      <p key={index} className="common__label ">
+                      <p key={index} className="common__label">
                         {row.code}
                       </p>
                     ))}
-                    {pbSaltoLimitCodes.length > 3 && <p className="common__label ">...</p>}
+                    {pbSaltoLimitCodes.length > 3 && <p className="common__label">...</p>}
                   </div>
                 ) : null}
               </span>
@@ -1445,7 +1445,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {pbGiantSwingLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {pbGiantSwingLimitCodes.map((routineElement, index) => (
-                      <p key={index} className="common__label common__label--active">
+                      <p key={index} className="common__label">
                         {routineElement.code}
                       </p>
                     ))}
@@ -1489,7 +1489,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {pbFelgeLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {pbFelgeLimitCodes.map((routineElement, index) => (
-                      <p key={index} className="common__label common__label--active">
+                      <p key={index} className="common__label">
                         {routineElement.code}
                       </p>
                     ))}
@@ -1534,7 +1534,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {pbFrontUpriseLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
                     {pbFrontUpriseLimitCodes.map((routineElement, index) => (
-                      <p key={index} className="common__label common__label--active">
+                      <p key={index} className="common__label">
                         {routineElement.code}
                       </p>
                     ))}
@@ -1576,15 +1576,11 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             summaryNode={
               <span className="rules__summary-title">
                 {RuleName(Rules.平行棒_単棒倒立系制限)}
-                {pbOneRailLimitCodes.length > 0 ? (
+                {/* {pbOneRailLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
-                    {pbOneRailLimitCodes.map((routineElement, index) => (
-                      <p key={index} className="common__label common__label--active">
-                        {routineElement.code}
-                      </p>
-                    ))}
+                    <p className="common__label">✔️</p>
                   </div>
-                ) : null}
+                ) : null} */}
               </span>
             }
             descriptionNode={
