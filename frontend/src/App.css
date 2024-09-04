@@ -631,6 +631,11 @@ html {
             color: var(--dark-orange);
           }
 
+          .rules__table-cell--limit {
+            width: 100%;
+            color: var(--dark-gray);
+          }
+
           .rules__table-cell--1-5rem {
             width: 1.5rem;
           }

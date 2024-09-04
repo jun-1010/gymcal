@@ -4,7 +4,7 @@ import {
   isFXCircleLimit,
   isFXStrengthLimit,
 } from "./RoutineFXUtil";
-import { getPBSaltoStatusLimited } from "./RoutinePBUtil";
+import { checkOneRailBeginLimit, getPBSaltoStatusLimited } from "./RoutinePBUtil";
 import { isPHRussianLimit } from "./RoutinePHUtil";
 import {
   calculateSwingHandstandShortage,
@@ -173,6 +173,8 @@ export const getElementStatus = (
       return ElementStatus.平行棒_棒下宙返り系制限;
     } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_アーム倒立系, 2)) {
       return ElementStatus.平行棒_アーム倒立系制限;
+    } else if (checkOneRailBeginLimit(routine, targetElement)) {
+      return ElementStatus.平行棒_単棒倒立系制限;
     }
   }
 
@@ -180,15 +182,15 @@ export const getElementStatus = (
 };
 
 // RoutineRules用 | 演技構成に含まれる指定タイプの技を取得(idとcode)
-export const getRoutineElementsByType = (routine: RoutineElement[], type: ElementType) => {
+export const getRoutineElementsByType = (routine: RoutineElement[], types: ElementType[]) => {
   let targetRoutineElements: RoutineElement[] = [];
-  routine
-    .filter((element) => element.is_qualified === true)
-    .forEach((element) => {
+  routine.forEach((element) => {
+    types.forEach((type) => {
       if (isElementTypeIncluded(element.element_type, type)) {
         targetRoutineElements.push(element);
       }
     });
+  });
 
   return targetRoutineElements;
 };
@@ -219,6 +221,50 @@ export const updateRoutineForValidation = (
       }
       if (strengthCount >= 4 && element.is_qualified === true) {
         element.is_qualified = false;
+      }
+      return element;
+    });
+  }
+
+  // 平行棒
+  if (selectEvent === Events.平行棒) {
+    newRoutine = routine.map((element, index) => {
+      // 単棒終了技について
+      if (isElementTypeIncluded(element.element_type, ElementType.平行棒_単棒終了技)) {
+        if (index === routine.length - 1) {
+          // 単棒終了技が最後の技の場合は無効にする
+          return { ...element, is_qualified: false };
+        }
+        if (
+          !isElementTypeIncluded(routine[index + 1].element_type, ElementType.平行棒_単棒開始技)
+        ) {
+          // 単棒終了技が単棒開始技に繋がっていない場合は無効にする
+          return { ...element, is_qualified: false };
+        }
+      }
+      // 単棒開始技について
+      if (isElementTypeIncluded(element.element_type, ElementType.平行棒_単棒開始技)) {
+        if (index === 0) {
+          // 単棒開始技が1技目の場合は無効にする
+          return { ...element, is_qualified: false };
+        }
+        if (
+          !isElementTypeIncluded(routine[index - 1].element_type, ElementType.平行棒_単棒終了技)
+        ) {
+          // 単棒開始技が単棒終了技に繋がっていない場合は無効にする
+          return { ...element, is_qualified: false };
+        }
+      }
+      // 有効化
+      if (element.is_qualified === false) {
+        // 単棒終了技→単棒開始技になっていれば有効にする
+        if (
+          isElementTypeIncluded(element.element_type, ElementType.平行棒_単棒終了技) &&
+          index < routine.length - 1 &&
+          isElementTypeIncluded(routine[index + 1].element_type, ElementType.平行棒_単棒開始技)
+        ) {
+          return { ...element, is_qualified: true };
+        }
       }
       return element;
     });

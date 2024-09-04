@@ -128,19 +128,25 @@ export const isElementTypeIncluded = (elementTypes: string | null, elementTypeTo
 // 指定のtypeに該当するElementを取得
 export const getElementsByType = (
   selectEvent: Events,
-  selectGroup: ElementGroup,
+  selectGroups: ElementGroup[],
   targetElementType: ElementType,
   categorizedElements: CategorizedElements
 ): Element[] => {
-  const groupElements = getGroupElements(categorizedElements, selectEvent, selectGroup);
+  let targetElements = [] as Element[];
+  selectGroups.forEach((selectGroup) => {
+    const groupElements = getGroupElements(categorizedElements, selectEvent, selectGroup);
 
-  const felgeElements = Object.values(groupElements).flatMap((rowElements) =>
-    Object.values(rowElements).filter(
-      (element) =>
-        "element_type" in element && isElementTypeIncluded(element.element_type, targetElementType)
-    )
-  ) as Element[];
+    const targetGroupElements = Object.values(groupElements).flatMap((rowElements) =>
+      Object.values(rowElements).filter(
+        (element) =>
+          "element_type" in element &&
+          isElementTypeIncluded(element.element_type, targetElementType)
+      )
+    ) as Element[];
+
+    targetElements = [...targetElements, ...targetGroupElements];
+  });
 
   // 技のコードを昇順に並べる
-  return felgeElements.sort((a, b) => a.id - b.id);
+  return targetElements.sort((a, b) => a.id - b.id);
 };

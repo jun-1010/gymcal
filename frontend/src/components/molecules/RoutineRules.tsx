@@ -55,7 +55,7 @@ import {
 } from "../../utilities/Type";
 import RoutineRule from "../atoms/RoutineRule";
 import { calculateVTScore } from "../../utilities/RoutineVTUtil";
-import { getPBSaltoLimitCodes } from "../../utilities/RoutinePBUtil";
+import { checkOneRailBeginLimit, getPBSaltoLimitCodes } from "../../utilities/RoutinePBUtil";
 
 // 同一枠の技を持つ技のコードを取得
 const getSameSlotCodes = (routine: RoutineElement[], categorizedElements: CategorizedElements) => {
@@ -146,13 +146,13 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
   // 平行棒_車輪系
   const pbGiantSwingLimitCodes =
     selectEvent === Events.平行棒
-      ? getRoutineElementsByType(routine, ElementType.平行棒_車輪系)
+      ? getRoutineElementsByType(routine, [ElementType.平行棒_車輪系])
       : [];
   const pbGiantSwingElements =
     selectEvent === Events.平行棒
       ? getElementsByType(
           Events.平行棒,
-          ElementGroup.EG3,
+          [ElementGroup.EG3],
           ElementType.平行棒_車輪系,
           categorizedElements
         )
@@ -161,13 +161,13 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
   // 平行棒_棒下宙返り系
   const pbFelgeLimitCodes =
     selectEvent === Events.平行棒
-      ? getRoutineElementsByType(routine, ElementType.平行棒_棒下宙返り系)
+      ? getRoutineElementsByType(routine, [ElementType.平行棒_棒下宙返り系])
       : [];
   const pbFelgeElements =
     selectEvent === Events.平行棒
       ? getElementsByType(
           Events.平行棒,
-          ElementGroup.EG3,
+          [ElementGroup.EG3],
           ElementType.平行棒_棒下宙返り系,
           categorizedElements
         )
@@ -176,14 +176,41 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
   // 平行棒_アーム倒立系
   const pbFrontUpriseLimitCodes =
     selectEvent === Events.平行棒
-      ? getRoutineElementsByType(routine, ElementType.平行棒_アーム倒立系)
+      ? getRoutineElementsByType(routine, [ElementType.平行棒_アーム倒立系])
       : [];
   const pbFrontUpriseElements =
     selectEvent === Events.平行棒
       ? getElementsByType(
           Events.平行棒,
-          ElementGroup.EG1,
+          [ElementGroup.EG1],
           ElementType.平行棒_アーム倒立系,
+          categorizedElements
+        )
+      : [];
+
+  // 平行棒_単棒倒立系
+  const pbOneRailLimitCodes =
+    selectEvent === Events.平行棒
+      ? getRoutineElementsByType(routine, [
+          ElementType.平行棒_単棒終了技,
+          ElementType.平行棒_単棒開始技,
+        ])
+      : [];
+  const pbOneRailEndElements =
+    selectEvent === Events.平行棒
+      ? getElementsByType(
+          Events.平行棒,
+          [ElementGroup.EG1, ElementGroup.EG2, ElementGroup.EG3],
+          ElementType.平行棒_単棒終了技,
+          categorizedElements
+        )
+      : [];
+  const pbOneRailBeginElements =
+    selectEvent === Events.平行棒
+      ? getElementsByType(
+          Events.平行棒,
+          [ElementGroup.EG2],
+          ElementType.平行棒_単棒開始技,
           categorizedElements
         )
       : [];
@@ -1417,9 +1444,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {RuleName(Rules.平行棒_車輪系制限)}
                 {pbGiantSwingLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
-                    {pbGiantSwingLimitCodes.map((item, index) => (
+                    {pbGiantSwingLimitCodes.map((routineElement, index) => (
                       <p key={index} className="common__label common__label--active">
-                        {item.code}
+                        {routineElement.code}
                       </p>
                     ))}
                   </div>
@@ -1434,7 +1461,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                   <tbody>
                     {pbGiantSwingElements.map((element, index) => (
                       <tr key={index} className="rules__table-row">
-                        {pbGiantSwingLimitCodes.find((item) => item.id === element.id) ? (
+                        {pbGiantSwingLimitCodes.find(
+                          (routineElement) => routineElement.id === element.id
+                        ) ? (
                           <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
                             {element.code}.{element.alias || element.name} (選択中)
                           </td>
@@ -1459,9 +1488,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {RuleName(Rules.平行棒_棒下宙返り系制限)}
                 {pbFelgeLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
-                    {pbFelgeLimitCodes.map((item, index) => (
+                    {pbFelgeLimitCodes.map((routineElement, index) => (
                       <p key={index} className="common__label common__label--active">
-                        {item.code}
+                        {routineElement.code}
                       </p>
                     ))}
                   </div>
@@ -1477,7 +1506,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                   <tbody>
                     {pbFelgeElements.map((element, index) => (
                       <tr key={index} className="rules__table-row">
-                        {pbFelgeLimitCodes.find((item) => item.id === element.id) ? (
+                        {pbFelgeLimitCodes.find(
+                          (routineElement) => routineElement.id === element.id
+                        ) ? (
                           <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
                             {element.code}.{element.alias || element.name} (選択中)
                           </td>
@@ -1502,9 +1533,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {RuleName(Rules.平行棒_アーム倒立系制限)}
                 {pbFrontUpriseLimitCodes.length > 0 ? (
                   <div className="rules__summary-labels">
-                    {pbFrontUpriseLimitCodes.map((item, index) => (
+                    {pbFrontUpriseLimitCodes.map((routineElement, index) => (
                       <p key={index} className="common__label common__label--active">
-                        {item.code}
+                        {routineElement.code}
                       </p>
                     ))}
                   </div>
@@ -1520,7 +1551,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                   <tbody>
                     {pbFrontUpriseElements.map((element, index) => (
                       <tr key={index} className="rules__table-row">
-                        {pbFrontUpriseLimitCodes.find((item) => item.id === element.id) ? (
+                        {pbFrontUpriseLimitCodes.find(
+                          (routineElement) => routineElement.id === element.id
+                        ) ? (
                           <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
                             {element.code}.{element.alias || element.name} (選択中)
                           </td>
@@ -1528,6 +1561,95 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                           <td className="rules__table-cell rules__table-cell--left">
                             {element.code}.{element.alias || element.name}
                           </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            }
+            show={selectEvent === Events.平行棒}
+          />
+
+          {/* 平行棒_単棒倒立系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.平行棒_単棒倒立系制限)}
+                {pbOneRailLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {pbOneRailLimitCodes.map((routineElement, index) => (
+                      <p key={index} className="common__label common__label--active">
+                        {routineElement.code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>
+                  単棒倒立で終わる振動技は、単棒倒立で始まるヒーリー系に繋げない場合無効になります。
+                </p>
+                <p>
+                  単棒から始まるヒーリー系は 単棒倒立で終了する振動技にのみ繋げることができます。
+                </p>
+                <p>対象の技は以下のとおりです。</p>
+                <p className="rules__section-line" />
+                <p>単棒倒立で終わる技</p>
+                <table className="rules__table-table">
+                  <tbody>
+                    {pbOneRailEndElements.map((element, index) => {
+                      const foundElement = pbOneRailLimitCodes.find(
+                        (routineElement) => routineElement.id === element.id
+                      );
+
+                      return (
+                        <tr key={index} className="rules__table-row">
+                          <td
+                            className={`rules__table-cell rules__table-cell--left ${
+                              foundElement && "rules__table-cell--active"
+                            }
+                            ${
+                              foundElement &&
+                              foundElement.is_qualified === false &&
+                              "rules__table-cell--limit"
+                            }`}
+                          >
+                            {element.code}.{element.alias || element.name}
+                            {foundElement &&
+                              (foundElement.is_qualified ? " (選択中 / 有効)" : " (選択中 / 無効)")}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                <p>単棒倒立から始まるヒーリー系</p>
+                <table className="rules__table-table">
+                  <tbody>
+                    {pbOneRailBeginElements.map((element, index) => (
+                      <tr key={index} className="rules__table-row">
+                        {pbOneRailLimitCodes.find(
+                          (routineElement) =>
+                            routineElement.id === element.id && routineElement.is_qualified
+                        ) ? (
+                          <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
+                            {element.code}.{element.alias || element.name} (選択中)
+                          </td>
+                        ) : (
+                          <React.Fragment>
+                            {checkOneRailBeginLimit(routine, element) ? (
+                              <td className="rules__table-cell rules__table-cell--left rules__table-cell--limit">
+                                {element.code}.{element.alias || element.name} (選択不可)
+                              </td>
+                            ) : (
+                              <td className="rules__table-cell rules__table-cell--left">
+                                {element.code}.{element.alias || element.name} (選択可能)
+                              </td>
+                            )}
+                          </React.Fragment>
                         )}
                       </tr>
                     ))}
