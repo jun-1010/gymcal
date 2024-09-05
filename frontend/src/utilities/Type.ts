@@ -150,6 +150,17 @@ export enum ElementType {
   平行棒_アーム倒立系 = 52,
   平行棒_単棒終了技 = 53,
   平行棒_単棒開始技 = 54,
+  鉄棒_手放し技制限_トカチェフ系 = 55,
+  鉄棒_手放し技制限_コバチ系 = 56,
+  鉄棒_手放し技制限_ギンガー系 = 57,
+  鉄棒_手放し技制限_イェーガー系 = 58,
+  鉄棒_手放し技制限_マルケロフ系 = 59,
+  鉄棒_手放し技制限_ゲイロード系 = 60,
+  鉄棒_アドラー系 = 61,
+  鉄棒_ひねり技制限_ヒーリー系 = 62,
+  鉄棒_ひねり技制限_リバルコ系 = 63,
+  鉄棒_ひねり技制限_シュタルダーリバルコ系 = 64,
+  鉄棒_ひねり技制限_キンテロ系 = 65,
 }
 
 // ElementTypeの末尾のブロックを取得(つり輪_力技制限2_脚前挙→脚前挙)
@@ -221,6 +232,17 @@ export enum ElementStatus {
   平行棒_棒下宙返り系制限 = 51,
   平行棒_アーム倒立系制限 = 52,
   平行棒_単棒倒立系制限 = 53,
+  鉄棒_手放し技制限_トカチェフ系 = 54,
+  鉄棒_手放し技制限_コバチ系 = 55,
+  鉄棒_手放し技制限_ギンガー系 = 56,
+  鉄棒_手放し技制限_イェーガー系 = 57,
+  鉄棒_手放し技制限_マルケロフ系 = 58,
+  鉄棒_手放し技制限_ゲイロード系 = 59,
+  鉄棒_アドラー系制限 = 60,
+  鉄棒_ひねり技制限_ヒーリー系 = 61,
+  鉄棒_ひねり技制限_リバルコ系 = 62,
+  鉄棒_ひねり技制限_シュタルダーリバルコ系 = 63,
+  鉄棒_ひねり技制限_キンテロ系 = 64,
 }
 
 // ElementTile用 | elementTypeに対応するelementStatusを返す
@@ -356,6 +378,39 @@ export const getElementStatusFromElementType = (elementType: ElementType): Eleme
     case ElementType.平行棒_単棒開始技:
       return ElementStatus.平行棒_単棒倒立系制限;
 
+    case ElementType.鉄棒_手放し技制限_トカチェフ系:
+      return ElementStatus.鉄棒_手放し技制限_トカチェフ系;
+
+    case ElementType.鉄棒_手放し技制限_コバチ系:
+      return ElementStatus.鉄棒_手放し技制限_コバチ系;
+
+    case ElementType.鉄棒_手放し技制限_ギンガー系:
+      return ElementStatus.鉄棒_手放し技制限_ギンガー系;
+
+    case ElementType.鉄棒_手放し技制限_イェーガー系:
+      return ElementStatus.鉄棒_手放し技制限_イェーガー系;
+
+    case ElementType.鉄棒_手放し技制限_マルケロフ系:
+      return ElementStatus.鉄棒_手放し技制限_マルケロフ系;
+
+    case ElementType.鉄棒_手放し技制限_ゲイロード系:
+      return ElementStatus.鉄棒_手放し技制限_ゲイロード系;
+
+    case ElementType.鉄棒_アドラー系:
+      return ElementStatus.鉄棒_アドラー系制限;
+
+    case ElementType.鉄棒_ひねり技制限_ヒーリー系:
+      return ElementStatus.鉄棒_ひねり技制限_ヒーリー系;
+
+    case ElementType.鉄棒_ひねり技制限_リバルコ系:
+      return ElementStatus.鉄棒_ひねり技制限_リバルコ系;
+
+    case ElementType.鉄棒_ひねり技制限_シュタルダーリバルコ系:
+      return ElementStatus.鉄棒_ひねり技制限_シュタルダーリバルコ系;
+
+    case ElementType.鉄棒_ひねり技制限_キンテロ系:
+      return ElementStatus.鉄棒_ひねり技制限_キンテロ系;
+
     default:
       return ElementStatus.選択可能;
   }
@@ -427,6 +482,9 @@ export enum Rules {
   平行棒_棒下宙返り系制限 = 37,
   平行棒_アーム倒立系制限 = 38,
   平行棒_単棒倒立系制限 = 39,
+  鉄棒_手放し技制限 = 40,
+  鉄棒_アドラー系制限 = 41,
+  鉄棒_ひねり技制限 = 42,
 }
 
 export const RuleKey = (ruleKey: number): string => {

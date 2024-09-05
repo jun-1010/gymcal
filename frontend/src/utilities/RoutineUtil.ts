@@ -177,6 +177,12 @@ export const getElementStatus = (
       return ElementStatus.平行棒_単棒倒立系制限;
     }
   }
+  // 固有ルールの表示[鉄棒]
+  if (selectEvent === Events.鉄棒) {
+    if (checkTypeCount(routine, targetElement, ElementType.鉄棒_アドラー系, 2)) {
+      return ElementStatus.鉄棒_アドラー系制限;
+    }
+  }
 
   return ElementStatus.選択可能;
 };

@@ -215,6 +215,21 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
         )
       : [];
 
+  // 鉄棒_アドラー系
+  const hbAdlerLimitCodes =
+    selectEvent === Events.鉄棒
+      ? getRoutineElementsByType(routine, [ElementType.鉄棒_アドラー系])
+      : [];
+  const hbAdlerElements =
+    selectEvent === Events.鉄棒
+      ? getElementsByType(
+          Events.鉄棒,
+          [ElementGroup.EG3],
+          ElementType.鉄棒_アドラー系,
+          categorizedElements
+        )
+      : [];
+
   return (
     <>
       <div className="routine__title-box">
@@ -1654,6 +1669,51 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               </div>
             }
             show={selectEvent === Events.平行棒}
+          />
+
+          {/* 鉄棒_アドラー系制限 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                {RuleName(Rules.鉄棒_アドラー系制限)}
+                {hbAdlerLimitCodes.length > 0 ? (
+                  <div className="rules__summary-labels">
+                    {hbAdlerLimitCodes.map((routineElement, index) => (
+                      <p key={index} className="common__label">
+                        {routineElement.code}
+                      </p>
+                    ))}
+                  </div>
+                ) : null}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>アドラー系は1演技に2つまで使用できます。</p>
+                <p>対象の技は以下のとおりです。</p>
+
+                <table className="rules__table-table">
+                  <tbody>
+                    {hbAdlerElements.map((element, index) => (
+                      <tr key={index} className="rules__table-row">
+                        {hbAdlerLimitCodes.find(
+                          (routineElement) => routineElement.id === element.id
+                        ) ? (
+                          <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
+                            {element.code}.{element.alias || element.name} (選択中)
+                          </td>
+                        ) : (
+                          <td className="rules__table-cell rules__table-cell--left">
+                            {element.code}.{element.alias || element.name}
+                          </td>
+                        )}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            }
+            show={selectEvent === Events.鉄棒}
           />
         </div>
       </div>
