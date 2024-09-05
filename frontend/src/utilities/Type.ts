@@ -79,6 +79,12 @@ export const GroupNames: { [key: number]: { [key: number]: string } } = {
     [ElementGroup.EG3]: "懸垂振動技",
     [ElementGroup.EG4]: "終末技",
   },
+  [Events.鉄棒]: {
+    [ElementGroup.EG1]: "懸垂振動技",
+    [ElementGroup.EG2]: "手放し技",
+    [ElementGroup.EG3]: "バーに近い技",
+    [ElementGroup.EG4]: "終末技",
+  },
   // 他の種目も追加する
 };
 

@@ -26,3 +26,5 @@ Welcome to the gymcal wiki!
 [跳馬機能](/docs/機能/04_機能_跳馬.md)
 
 [平行棒機能](/docs/機能/05_機能_平行棒.md)
+
+[鉄棒機能](/docs/機能/06_機能_鉄棒.md)
