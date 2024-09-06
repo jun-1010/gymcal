@@ -1,6 +1,6 @@
 import { Element, isElementTypeIncluded } from "./ElementUtil";
 import { calculateMultipleSaltoShortage, isFXCircleLimit, isFXStrengthLimit } from "./RoutineFXUtil";
-import { checkOneRailBeginLimit, getPBSaltoStatusLimited } from "./RoutinePBUtil";
+import { checkOneRailBeginLimit } from "./RoutinePBUtil";
 import { isPHRussianLimit } from "./RoutinePHUtil";
 import {
   calculateSwingHandstandShortage,
@@ -158,9 +158,30 @@ export const getElementStatus = (
   }
   // 固有ルールの表示[平行棒]
   if (selectEvent === Events.平行棒) {
-    const pbSaltoStatus = getPBSaltoStatusLimited(routine, targetElement);
-    if (pbSaltoStatus !== ElementStatus.選択可能) {
-      return pbSaltoStatus;
+    if (checkTypeCount(routine, targetElement, ElementType.平行棒_宙返り技制限_ドミトリエンコ系, 1)) {
+      return ElementStatus.平行棒_宙返り技制限_ドミトリエンコ系;
+    } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_宙返り技制限_ハラダ系, 1)) {
+      return ElementStatus.平行棒_宙返り技制限_ハラダ系;
+    } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_宙返り技制限_ハラダ系, 1)) {
+      return ElementStatus.平行棒_宙返り技制限_ハラダ系;
+    } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_宙返り技制限_パフニュク系, 1)) {
+      return ElementStatus.平行棒_宙返り技制限_パフニュク系;
+    } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_宙返り技制限_モリスエ系, 1)) {
+      return ElementStatus.平行棒_宙返り技制限_モリスエ系;
+    } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_宙返り技制限_爆弾カット系, 1)) {
+      return ElementStatus.平行棒_宙返り技制限_爆弾カット系;
+    } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_宙返り技制限_前方ダブル腕支持系, 1)) {
+      return ElementStatus.平行棒_宙返り技制限_前方ダブル腕支持系;
+    } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_宙返り技制限_ベーレ系, 1)) {
+      return ElementStatus.平行棒_宙返り技制限_ベーレ系;
+    } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_宙返り技制限_フォキン系, 1)) {
+      return ElementStatus.平行棒_宙返り技制限_フォキン系;
+    } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_宙返り技制限_タナカ系, 1)) {
+      return ElementStatus.平行棒_宙返り技制限_タナカ系;
+    } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_宙返り技制限_ギャニオン系, 1)) {
+      return ElementStatus.平行棒_宙返り技制限_ギャニオン系;
+    } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_宙返り技制限_テハダ系, 1)) {
+      return ElementStatus.平行棒_宙返り技制限_テハダ系;
     } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_車輪系, 2)) {
       return ElementStatus.平行棒_車輪系制限;
     } else if (checkTypeCount(routine, targetElement, ElementType.平行棒_棒下宙返り系, 2)) {

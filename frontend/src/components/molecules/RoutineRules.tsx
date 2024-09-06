@@ -32,7 +32,7 @@ import {
 } from "../../utilities/Type";
 import RoutineRule from "../atoms/RoutineRule";
 import { calculateVTScore } from "../../utilities/RoutineVTUtil";
-import { checkOneRailBeginLimit, getPBSaltoLimitCodes } from "../../utilities/RoutinePBUtil";
+import { checkOneRailBeginLimit } from "../../utilities/RoutinePBUtil";
 import SimpleTypeCountRule from "../quarks/SimpleTypeCountRule";
 
 // 同一枠の技を持つ技のコードを取得
