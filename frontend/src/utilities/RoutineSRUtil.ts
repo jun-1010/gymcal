@@ -43,28 +43,6 @@ export const calculateSwingHandstandShortage = (routine: RoutineElement[]): numb
   return hasSwingHandstand ? 0 : 0.3;
 };
 
-// 連続した力技をカウント
-export const countSequenceStrengths = (routine: RoutineElement[]): number => {
-  // B難度以上の振動技で切れない力技が3技選択されていたらtrue
-  let count = 0;
-  routine.forEach((element) => {
-    // リセット
-    if (
-      isElementTypeIncluded(element.element_type, ElementType.つり輪_力技制限1を切れる技)
-    ) {
-      count = 0;
-    }
-    if (
-      element.element_group === ElementGroup.EG2 ||
-      element.element_group === ElementGroup.EG3
-    ) {
-      count++;
-    }
-  });
-
-  return count;
-};
-
 // ElementTile用 | 力技制限1
 export const isSRStrengthLimit1 = (
   routine: Element[],
@@ -94,30 +72,6 @@ export const isSRStrengthLimit1 = (
   });
   return count >= 3;
 };
-
-// RoutineRules用 | 力技制限1に関する技コード
-// export const getSRStrengthLimit1Codes = (routine: RoutineElement[]): string[] => {
-//   const hasStrengthLimitedElement = routine.some((element) => {
-//     return element.is_qualified === false;
-//   });
-
-//   // is_qualified===falseがある → is_qualified===falseの技
-//   if (hasStrengthLimitedElement) {
-//     return routine.filter((element) => element.is_qualified === false).map((element) => element.code!);
-//   }
-//   // is_qualified===falseがない & 制限状態 → 制限状態の3技
-//   let codes: string[] = [];
-//   console.log("getSRStrengthLimit1Codes", routine);
-//   routine.forEach((element) => {
-//     if (isElementTypeIncluded(element.element_type, ElementType.つり輪_力技制限1を切れる技)) {
-//       codes = [];
-//     }
-//     if (element.element_group === ElementGroup.EG2 || element.element_group === ElementGroup.EG3) {
-//       codes.push(element.code!);
-//     }
-//   });
-//   return codes.length >= 3 ? codes : [];
-// };
 
 // B以上の振動技で区切られた技コード
 export const getSRStrengthLimit1Codes = (routine: RoutineElement[]): string[][] => {
