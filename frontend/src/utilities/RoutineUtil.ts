@@ -42,12 +42,22 @@ export interface RoutineElement extends Element {
 // EG技数制限(鉄棒手放し技のみ条件付きで5技)
 export const isGroupLimited = (routine: RoutineElement[], targetElement: Element): boolean => {
   let limit = 4;
-  // if (
-  //   targetElement.event === Events.鉄棒 &&
-  //   targetElement.element_group === ElementGroup.EG2
-  // ) {
-  //   limit = 5;
-  // }
+  // 鉄棒で手放し技同士の組み合わせ加点が得られている時は5技選択できる
+  if (targetElement.event === Events.鉄棒 && targetElement.element_group === ElementGroup.EG2) {
+    let hasConnectionValue = false;
+    routine
+      .filter((element) => element.is_qualified)
+      .forEach((element) => {
+        if (element.element_group === ElementGroup.EG2) {
+          if (element.connection_value && element.connection_value > 0) {
+            hasConnectionValue = true;
+          }
+        }
+      });
+    if (hasConnectionValue) {
+      limit = 5;
+    }
+  }
   let count = 0;
   routine
     .filter((element) => element.is_qualified)
@@ -304,9 +314,41 @@ export const updateRoutineForValidation = (
     });
   }
 
-  // 変更がある場合のみ setRoutine を呼び出す(useEffectの無限ループ対策)
-  if (JSON.stringify(newRoutine) !== JSON.stringify(routine)) {
-    setRoutine(newRoutine);
+  // 鉄棒
+  if (selectEvent === Events.鉄棒) {
+    const flightElementsCount = routine.filter((e) => e.element_group === ElementGroup.EG2).length;
+    // 手放し技同士の組み合わせの有無を取得
+    const hasFlightConnection = routine.some((element, index) => {
+      const previousElement = routine[index - 1];
+      return (
+        element.connection_value &&
+        element.connection_value > 0 &&
+        previousElement?.element_group === ElementGroup.EG2 &&
+        element.element_group === ElementGroup.EG2
+      );
+    });
+    // 手放し技が5技選択されており、かつ、手放し技同士の組み合わせが存在しない場合、5技目を無効にする
+    if (flightElementsCount === 5 && !hasFlightConnection) {
+      // 5番目の手放し技(EG2)を取得する
+      const fifthFlightElement = routine.filter((e) => e.element_group === ElementGroup.EG2)[4];
+      newRoutine = routine.map((element) => {
+        if (element === fifthFlightElement) {
+          return { ...element, is_qualified: false };
+        } else {
+          return { ...element, is_qualified: true };
+        }
+      });
+    } else {
+      newRoutine = routine.map((element) => {
+        console.log(element);
+        return { ...element, is_qualified: true };
+      });
+    }
+
+    // 変更がある場合のみ setRoutine を呼び出す(useEffectの無限ループ対策)
+    if (JSON.stringify(newRoutine) !== JSON.stringify(routine)) {
+      setRoutine(newRoutine);
+    }
   }
 };
 
@@ -481,8 +523,8 @@ export const updateConnectionInRoutine = (
     if (element.is_connected && isConnectable(selectEvent, routine, element, index)) {
       return { ...element, is_connected: true };
     } else {
-      // 組み合わせが無効 || 組み合わせが不適切 → 無効化
-      return { ...element, is_connected: false };
+      // 組み合わせが無効 || 組み合わせが不適切 → 無効化&CVリセット
+      return { ...element, is_connected: false, connection_value: null };
     }
   });
 
