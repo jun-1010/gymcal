@@ -341,7 +341,6 @@ export const updateRoutineForValidation = (
       });
     } else {
       newRoutine = routine.map((element) => {
-        console.log(element);
         return { ...element, is_qualified: true };
       });
     }

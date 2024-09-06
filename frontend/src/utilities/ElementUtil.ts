@@ -106,18 +106,6 @@ export const getGroupElements = (
   return groupElements;
 };
 
-// 技コードから技を取得する TODO:イシュー立てて実装（ContextAPI導入後...selectEventとselectGroupが使いたいため）
-// export const getElementNameByCode = (
-//   categorizedElements: CategorizedElements,
-//   code: string
-// ): string => {
-//   const elements = Object.values(categorizedElements).flat();
-//   console.log(elements);
-//   // return elements.find((element) => element.code === code) || {} as Element;
-//   // return
-//   return "hoge";
-// };
-
 export const isElementTypeIncluded = (elementTypes: string | null, elementTypeToCheck: number) => {
   if (elementTypes === null || typeof elementTypes !== "string") {
     return false;
