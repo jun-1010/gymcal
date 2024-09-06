@@ -303,6 +303,80 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             }
             show={selectEvent === Events.つり輪}
           />
+
+          {/* 鉄棒_組み合わせ加点 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                組み合わせ加点
+                {calculateTotalConnectionValue(routine) > 0 ? (
+                  <p className="common__label ">CV: {calculateTotalConnectionValue(routine).toFixed(1)}</p>
+                ) : (
+                  <></>
+                )}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>技を組み合わせると加点が付与されます。</p>
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">手放し技</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">手放し技</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">加点</td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">C 難度</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度以上</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">
+                        0.1（逆も可）
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">0.1</td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度以上</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">E 難度以上</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">
+                        0.2（逆も可）
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">
+                        手放し技以外
+                      </td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">手放し技</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">加点</td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度以上</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">
+                        0.1（逆も可）
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度以上</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">E 難度以上</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">
+                        0.2（逆も可）
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            }
+            show={selectEvent === Events.鉄棒}
+          />
         </div>
         {selectEvent !== Events.跳馬 && (
           <div className="rules__section">

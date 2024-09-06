@@ -450,8 +450,21 @@ export const isConnectable = (
 
     // 組み合わせは可能
     return true;
+  } else if (selectEvent === Events.鉄棒) {
+    // 技が[EG2&&C難度未満]もしくは[(EG1orEG3)&&D難度未満]の場合を無効化(start/end_directionがnull)
+    if (previousElement.end_direction?.toString() === "" || element.start_direction?.toString() === "") {
+      return false;
+    }
+    // 技の終わりと技の始まりが合わない組み合わせを無効化
+    if (previousElement.end_direction !== element.start_direction) {
+      return false;
+    }
+    // EG2以外の組み合わせを無効化
+    if (previousElement.element_group !== ElementGroup.EG2 && element.element_group !== ElementGroup.EG2) {
+      return false;
+    }
+    return true;
   } else {
-    // TODO: 床以外
     return true;
   }
 };
@@ -532,6 +545,58 @@ export const updateConnectionInRoutine = (
             // 計算済み
             element.difficulty -= 1;
             element.is_connection_value_calculated = false;
+          }
+        }
+      }
+    });
+  } else if (selectEvent === Events.鉄棒) {
+    newRoutine.forEach((element, index) => {
+      if (element.is_connected) {
+        const previousElement = routine[index - 1];
+        // 手放し技同士の組み合わせ
+        if (previousElement.element_group === ElementGroup.EG2 && element.element_group === ElementGroup.EG2) {
+          // C + D以上 || D以上 + C → 0.1
+          if (
+            (previousElement.difficulty === 3 && element.difficulty >= 4) ||
+            (previousElement.difficulty >= 4 && element.difficulty === 3)
+          ) {
+            element.connection_value = 0.1;
+            return;
+          }
+          // D + D → 0.1
+          if (previousElement.difficulty === 4 && element.difficulty === 4) {
+            element.connection_value = 0.1;
+            return;
+          }
+          // D + E以上 || E以上 + D → 0.2
+          if (
+            (previousElement.difficulty === 4 && element.difficulty >= 5) ||
+            (previousElement.difficulty >= 5 && element.difficulty === 4)
+          ) {
+            element.connection_value = 0.2;
+            return;
+          }
+        }
+        // 手放し技と手放し技以外の組み合わせ
+        if (
+          (previousElement.element_group === ElementGroup.EG2 && element.element_group !== ElementGroup.EG2) ||
+          (previousElement.element_group !== ElementGroup.EG2 && element.element_group === ElementGroup.EG2)
+        ) {
+          // D以上 + E以上 || E以上 + D以上 → 0.2
+          if (
+            (previousElement.difficulty >= 4 && element.difficulty >= 5) ||
+            (previousElement.difficulty >= 5 && element.difficulty >= 4)
+          ) {
+            element.connection_value = 0.2;
+            return;
+          }
+          // D + D以上 || D以上 + D → 0.1
+          if (
+            (previousElement.difficulty === 4 && element.difficulty >= 4) ||
+            (previousElement.difficulty >= 4 && element.difficulty === 4)
+          ) {
+            element.connection_value = 0.1;
+            return;
           }
         }
       }
