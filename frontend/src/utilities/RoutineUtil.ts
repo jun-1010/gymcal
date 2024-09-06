@@ -42,14 +42,15 @@ export interface RoutineElement extends Element {
 // EG技数制限(鉄棒手放し技のみ条件付きで5技)
 export const isGroupLimited = (routine: RoutineElement[], targetElement: Element): boolean => {
   let limit = 4;
-  // 鉄棒で手放し技同士の組み合わせ加点が得られている時は5技選択できる
+  // 鉄棒で手放し技同士の組み合わせがある時は5技選択できる(≠組み合わせ加点の有無)
   if (targetElement.event === Events.鉄棒 && targetElement.element_group === ElementGroup.EG2) {
     let hasConnectionValue = false;
     routine
       .filter((element) => element.is_qualified)
-      .forEach((element) => {
-        if (element.element_group === ElementGroup.EG2) {
-          if (element.connection_value && element.connection_value > 0) {
+      .forEach((element, index) => {
+        if (element.element_group === ElementGroup.EG2 && element.is_connected) {
+          const previousElement = routine[index - 1];
+          if (previousElement.element_group === ElementGroup.EG2 && element.element_group === ElementGroup.EG2) {
             hasConnectionValue = true;
           }
         }
@@ -493,10 +494,8 @@ export const isConnectable = (
     // 組み合わせは可能
     return true;
   } else if (selectEvent === Events.鉄棒) {
-    // 技が[EG2&&C難度未満]もしくは[(EG1orEG3)&&D難度未満]の場合を無効化(start/end_directionがnull)
-    if (previousElement.end_direction?.toString() === "" || element.start_direction?.toString() === "") {
-      return false;
-    }
+    // 加点が得られなくても組み合わせ自体は可能にする(EG2のグループ制限の関係上)
+
     // 技の終わりと技の始まりが合わない組み合わせを無効化
     if (previousElement.end_direction !== element.start_direction) {
       return false;

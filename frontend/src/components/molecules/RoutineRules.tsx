@@ -567,6 +567,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                   <span style={{ fontWeight: "bold" }}>4つの技</span>
                   を使用できます。
                 </p>
+                {selectEvent == Events.鉄棒 && (
+                  <p>手放し技同士の組み合わせがある場合、手放し技グループは5つ目の技を使用できます。</p>
+                )}
                 {/* 
           <p>鉄棒のEG2(手放し技)は、技を組み合わせることで5つ目の技を使用できるようになります。</p>
           */}
