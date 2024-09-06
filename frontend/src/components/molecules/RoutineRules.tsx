@@ -1,30 +1,7 @@
 import React from "react";
-import {
-  CategorizedElements,
-  getGroupElements,
-  getElementsByType,
-} from "../../utilities/ElementUtil";
-import {
-  calculateMultipleSaltoShortage,
-  isFXCircleLimit,
-  isFXStrengthLimit,
-} from "../../utilities/RoutineFXUtil";
-import {
-  getPHBusnariLimitCodes,
-  getPHCombineLimitCodes,
-  getPHFlairLimitCodes,
-  getPHFlopLimitCodes,
-  getPHHandstandLimitCodes,
-  getPHNinReyesLimitCodes,
-  getPHRussianLimitCodes,
-  getPHRussianTravelLimit1Codes,
-  getPHRussianTravelLimit2Codes,
-  getPHSohnBezugoLimitCodes,
-  getPHSpindleLimitCodes,
-  getPHTongFeiLimitCodes,
-  getPHTravelLimitCodes,
-  getPHTravelSpindleLimitCodes,
-} from "../../utilities/RoutinePHUtil";
+import { Element, CategorizedElements, getGroupElements, getElementsByType } from "../../utilities/ElementUtil";
+import { calculateMultipleSaltoShortage } from "../../utilities/RoutineFXUtil";
+import { getPHRussianLimitCodes } from "../../utilities/RoutinePHUtil";
 import {
   calculateSwingHandstandShortage,
   getSRStrengthLimit1Codes,
@@ -55,7 +32,8 @@ import {
 } from "../../utilities/Type";
 import RoutineRule from "../atoms/RoutineRule";
 import { calculateVTScore } from "../../utilities/RoutineVTUtil";
-import { checkOneRailBeginLimit, getPBSaltoLimitCodes } from "../../utilities/RoutinePBUtil";
+import { checkOneRailBeginLimit } from "../../utilities/RoutinePBUtil";
+import SimpleTypeCountRule from "../quarks/SimpleTypeCountRule";
 
 // 同一枠の技を持つ技のコードを取得
 const getSameSlotCodes = (routine: RoutineElement[], categorizedElements: CategorizedElements) => {
@@ -63,11 +41,7 @@ const getSameSlotCodes = (routine: RoutineElement[], categorizedElements: Catego
   let sameSlotCodes: string[] = [];
 
   routine.forEach((element) => {
-    const groupElements = getGroupElements(
-      categorizedElements,
-      element.event,
-      element.element_group
-    );
+    const groupElements = getGroupElements(categorizedElements, element.event, element.element_group);
 
     Object.values(groupElements).forEach((rowElements) => {
       Object.values(rowElements).forEach((groupElement) => {
@@ -109,110 +83,21 @@ interface RoutineRulesProps {
 export const RoutineRules = ({ selectEvent, routine, categorizedElements }: RoutineRulesProps) => {
   const sameSlotCodes = getSameSlotCodes(routine, categorizedElements);
   const limitedGroups = getLimitedGroups(routine);
-  const fxStrengthLimitCode =
-    (selectEvent === Events.床 &&
-      routine.find((element) => isFXStrengthLimit(routine, element))?.code) ||
-    "";
-  const fxCircleLimitCode =
-    (selectEvent === Events.床 &&
-      routine.find((element) => isFXCircleLimit(routine, element))?.code) ||
-    "";
-  const phTravelLimitCodes = selectEvent === Events.あん馬 ? getPHTravelLimitCodes(routine) : [];
   const phRussianLimitCodes = selectEvent === Events.あん馬 ? getPHRussianLimitCodes(routine) : [];
-  const phHandstandLimitCodes =
-    selectEvent === Events.あん馬 ? getPHHandstandLimitCodes(routine) : [];
-  const phRussianTranveLimit1Codes =
-    selectEvent === Events.あん馬 ? getPHRussianTravelLimit1Codes(routine) : [];
-  const phTranveSpindleLimitCodes =
-    selectEvent === Events.あん馬 ? getPHTravelSpindleLimitCodes(routine) : [];
-  const phSpindleLimitCodes = selectEvent === Events.あん馬 ? getPHSpindleLimitCodes(routine) : [];
-  const phSohnBezugoLimitCodes =
-    selectEvent === Events.あん馬 ? getPHSohnBezugoLimitCodes(routine) : [];
-  const phFlairLimitCodes = selectEvent === Events.あん馬 ? getPHFlairLimitCodes(routine) : [];
-  const phBusnariLimitCodes = selectEvent === Events.あん馬 ? getPHBusnariLimitCodes(routine) : [];
-  const phRussianTranveLimit2Codes =
-    selectEvent === Events.あん馬 ? getPHRussianTravelLimit2Codes(routine) : [];
-  const phTongFeiLimitCodes = selectEvent === Events.あん馬 ? getPHTongFeiLimitCodes(routine) : [];
-  const phNinReyesLimitCodes =
-    selectEvent === Events.あん馬 ? getPHNinReyesLimitCodes(routine) : [];
-  const phFlopLimitCodes = selectEvent === Events.あん馬 ? getPHFlopLimitCodes(routine) : [];
-  const phCombineLimitCodes = selectEvent === Events.あん馬 ? getPHCombineLimitCodes(routine) : [];
-  const srStrengthLimit1CodesList =
-    selectEvent === Events.つり輪 ? getSRStrengthLimit1Codes(routine) : [];
-  const srStrengthLimit2Codes =
-    selectEvent === Events.つり輪 ? getSRStrengthLimit2Codes(routine) : [];
-  const pbSaltoLimitCodes = selectEvent === Events.平行棒 ? getPBSaltoLimitCodes(routine) : [];
-
-  // 平行棒_車輪系
-  const pbGiantSwingLimitCodes =
-    selectEvent === Events.平行棒
-      ? getRoutineElementsByType(routine, [ElementType.平行棒_車輪系])
-      : [];
-  const pbGiantSwingElements =
-    selectEvent === Events.平行棒
-      ? getElementsByType(
-          Events.平行棒,
-          [ElementGroup.EG3],
-          ElementType.平行棒_車輪系,
-          categorizedElements
-        )
-      : [];
-
-  // 平行棒_棒下宙返り系
-  const pbFelgeLimitCodes =
-    selectEvent === Events.平行棒
-      ? getRoutineElementsByType(routine, [ElementType.平行棒_棒下宙返り系])
-      : [];
-  const pbFelgeElements =
-    selectEvent === Events.平行棒
-      ? getElementsByType(
-          Events.平行棒,
-          [ElementGroup.EG3],
-          ElementType.平行棒_棒下宙返り系,
-          categorizedElements
-        )
-      : [];
-
-  // 平行棒_アーム倒立系
-  const pbFrontUpriseLimitCodes =
-    selectEvent === Events.平行棒
-      ? getRoutineElementsByType(routine, [ElementType.平行棒_アーム倒立系])
-      : [];
-  const pbFrontUpriseElements =
-    selectEvent === Events.平行棒
-      ? getElementsByType(
-          Events.平行棒,
-          [ElementGroup.EG1],
-          ElementType.平行棒_アーム倒立系,
-          categorizedElements
-        )
-      : [];
-
+  const srStrengthLimit1CodesList = selectEvent === Events.つり輪 ? getSRStrengthLimit1Codes(routine) : [];
+  const srStrengthLimit2Codes = selectEvent === Events.つり輪 ? getSRStrengthLimit2Codes(routine) : [];
   // 平行棒_単棒倒立系
   const pbOneRailLimitCodes =
     selectEvent === Events.平行棒
-      ? getRoutineElementsByType(routine, [
-          ElementType.平行棒_単棒終了技,
-          ElementType.平行棒_単棒開始技,
-        ])
+      ? getRoutineElementsByType(routine, [ElementType.平行棒_単棒終了技, ElementType.平行棒_単棒開始技])
       : [];
   const pbOneRailEndElements =
     selectEvent === Events.平行棒
-      ? getElementsByType(
-          Events.平行棒,
-          [ElementGroup.EG1, ElementGroup.EG2, ElementGroup.EG3],
-          ElementType.平行棒_単棒終了技,
-          categorizedElements
-        )
+      ? getElementsByType(Events.平行棒, ElementType.平行棒_単棒終了技, categorizedElements)
       : [];
   const pbOneRailBeginElements =
     selectEvent === Events.平行棒
-      ? getElementsByType(
-          Events.平行棒,
-          [ElementGroup.EG2],
-          ElementType.平行棒_単棒開始技,
-          categorizedElements
-        )
+      ? getElementsByType(Events.平行棒, ElementType.平行棒_単棒開始技, categorizedElements)
       : [];
 
   return (
@@ -291,9 +176,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {RuleKey(Rules.グループ得点)}
 
                 {calculateTotalElementGroupScore(routine) > 0 ? (
-                  <p className="common__label ">
-                    EG: {calculateTotalElementGroupScore(routine).toFixed(1)}
-                  </p>
+                  <p className="common__label ">EG: {calculateTotalElementGroupScore(routine).toFixed(1)}</p>
                 ) : (
                   <></>
                 )}
@@ -339,9 +222,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {RuleKey(Rules.難度点)}
 
                 {calculateTotalDifficulty(routine) > 0 ? (
-                  <p className="common__label ">
-                    難度: {calculateTotalDifficulty(routine).toFixed(1)}
-                  </p>
+                  <p className="common__label ">難度: {calculateTotalDifficulty(routine).toFixed(1)}</p>
                 ) : (
                   <></>
                 )}
@@ -362,9 +243,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 {RuleName(Rules.床_組み合わせ加点)}
 
                 {calculateTotalConnectionValue(routine) > 0 ? (
-                  <p className="common__label ">
-                    CV: {calculateTotalConnectionValue(routine).toFixed(1)}
-                  </p>
+                  <p className="common__label ">CV: {calculateTotalConnectionValue(routine).toFixed(1)}</p>
                 ) : (
                   <></>
                 )}
@@ -424,6 +303,80 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             }
             show={selectEvent === Events.つり輪}
           />
+
+          {/* 鉄棒_組み合わせ加点 */}
+          <RoutineRule
+            summaryNode={
+              <span className="rules__summary-title">
+                組み合わせ加点
+                {calculateTotalConnectionValue(routine) > 0 ? (
+                  <p className="common__label ">CV: {calculateTotalConnectionValue(routine).toFixed(1)}</p>
+                ) : (
+                  <></>
+                )}
+              </span>
+            }
+            descriptionNode={
+              <div className="rules__description">
+                <p>技を組み合わせると加点が付与されます。</p>
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">手放し技</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">手放し技</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">加点</td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">C 難度</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度以上</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">
+                        0.1（逆も可）
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">0.1</td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度以上</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">E 難度以上</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">
+                        0.2（逆も可）
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <table className="rules__table-table">
+                  <tbody>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">
+                        手放し技以外
+                      </td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">手放し技</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">加点</td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度以上</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">
+                        0.1（逆も可）
+                      </td>
+                    </tr>
+                    <tr className="rules__table-row">
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度以上</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">E 難度以上</td>
+                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">
+                        0.2（逆も可）
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            }
+            show={selectEvent === Events.鉄棒}
+          />
         </div>
         {selectEvent !== Events.跳馬 && (
           <div className="rules__section">
@@ -450,12 +403,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <div className="rules__description">
                   <p>以下の要求を満たさない場合、減点が付与されます。</p>
                   <p>・6技以上による構成（技数減点）</p>
-                  {selectEvent === Events.床 && (
-                    <p>・終末技が2回もしくは3回宙返り技（ダブル系不足）</p>
-                  )}
-                  {selectEvent === Events.つり輪 && (
-                    <p>・振動倒立技を使用している（振動倒立技不足）</p>
-                  )}
+                  {selectEvent === Events.床 && <p>・終末技が2回もしくは3回宙返り技（ダブル系不足）</p>}
+                  {selectEvent === Events.つり輪 && <p>・振動倒立技を使用している（振動倒立技不足）</p>}
                 </div>
               }
               show={selectEvent !== Events.跳馬}
@@ -467,9 +416,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <span className="rules__summary-title">
                   {RuleKey(Rules.技数減点)}
                   {calculateElementCountDeduction(routine) > 0 ? (
-                    <p className="common__label ">
-                      技数減点:{calculateElementCountDeduction(routine).toFixed(1)}
-                    </p>
+                    <p className="common__label ">技数減点:{calculateElementCountDeduction(routine).toFixed(1)}</p>
                   ) : (
                     <></>
                   )}
@@ -519,9 +466,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <span className="rules__summary-title">
                   {RuleName(Rules.床_ダブル系不足)}
                   {calculateMultipleSaltoShortage(routine) > 0 ? (
-                    <p className="common__label ">
-                      ダブル系不足:{calculateMultipleSaltoShortage(routine).toFixed(1)}
-                    </p>
+                    <p className="common__label ">ダブル系不足:{calculateMultipleSaltoShortage(routine).toFixed(1)}</p>
                   ) : (
                     <></>
                   )}
@@ -564,7 +509,6 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             <p className="rules__section-title">制限ルール</p>
             <p className="rules__section-description">条件を満たした技に選択制限がかかるルール</p>
           </div>
-
           {/* 同一枠制限 */}
           <RoutineRule
             summaryNode={
@@ -599,7 +543,6 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             }
             show={selectEvent !== Events.跳馬}
           />
-
           {/* グループ技数制限 */}
           <RoutineRule
             summaryNode={
@@ -624,6 +567,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                   <span style={{ fontWeight: "bold" }}>4つの技</span>
                   を使用できます。
                 </p>
+                {selectEvent == Events.鉄棒 && (
+                  <p>手放し技同士の組み合わせがある場合、手放し技グループは5つ目の技を使用できます。</p>
+                )}
                 {/* 
           <p>鉄棒のEG2(手放し技)は、技を組み合わせることで5つ目の技を使用できるようになります。</p>
           */}
@@ -631,7 +577,6 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             }
             show={selectEvent !== Events.跳馬}
           />
-
           {/* 全体技数制限 */}
           <RoutineRule
             summaryNode={
@@ -651,14 +596,12 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             }
             show={selectEvent !== Events.跳馬}
           />
-
           {/* 終末技制限 */}
           <RoutineRule
             summaryNode={
               <span className="rules__summary-title">
                 {RuleKey(Rules.終末技制限)}
-                {routine.length > 0 &&
-                routine[routine.length - 1].element_group === ElementGroup.EG4 ? (
+                {routine.length > 0 && routine[routine.length - 1].element_group === ElementGroup.EG4 ? (
                   <p className="common__label ">{routine[routine.length - 1].code}</p>
                 ) : null}
               </span>
@@ -671,69 +614,33 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             }
             show={selectEvent !== Events.床 && selectEvent !== Events.跳馬}
           />
-
-          {/* 床_力技制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.床_力技制限)}
-                {fxStrengthLimitCode ? (
-                  <p className="common__label ">{fxStrengthLimitCode}</p>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>力技は1演技に1つまで使用できます。</p>
-                <p>力技は以下を除いたI1~I48です。</p>
-                <p>・I19 倒立(2秒)</p>
-                <p>・I31 倒立ひねりor倒立1回ひねり</p>
-                {/* TODO: getElementNameByCodeをElement.tsに作成 & selectEvent/selectGroupをContextAPIに保持（リファクタリング） */}
-              </div>
-            }
-            show={selectEvent === Events.床}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.床}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="力技制限"
+            targetElementType={ElementType.床_力技}
+            descriptionSentence="以下の力技は1演技に1つまで使用できます。"
           />
-
-          {/* 床_旋回制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.床_旋回制限)}
-                {fxCircleLimitCode ? <p className="common__label ">{fxCircleLimitCode}</p> : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>旋回技(I79~I105)は1演技に1つまで使用できます。</p>
-              </div>
-            }
-            show={selectEvent === Events.床}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.床}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="旋回制限"
+            targetElementType={ElementType.床_旋回}
+            descriptionSentence="以下の旋回技は1演技に1つまで使用できます。"
           />
-
-          {/* あん馬_縦向き移動技制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.あん馬_縦向き移動技制限)}
-                {phTravelLimitCodes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {phTravelLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label ">
-                        {code}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>縦向き3部分前及び後ろ移動技は1演技中2つまで使用できます。</p>
-              </div>
-            }
-            show={selectEvent === Events.あん馬}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.あん馬}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="縦向き移動技制限"
+            targetElementType={ElementType.あん馬_縦向き移動技}
+            descriptionSentence="以下の縦向き3部分前及び後ろ移動技は1演技中2つまで使用できます。"
           />
-
           {/* あん馬_ロシアン転向技制限 */}
           <RoutineRule
             summaryNode={
@@ -757,337 +664,119 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <p>例）</p>
                 <p>・馬端馬背ロシアン1080°転向～ロシアン720°転向下り：不認定+B難度</p>
                 <p>・あん部馬背ロシアン720°転向～あん部馬背ロシアン1080°転向：不認定+E難度</p>
-                <p>
-                  ・あん部馬背ロシアン360°
-                  ～馬端馬背ロシアン1080°転向～ロシアン360°転向下り：C難度+不認定+A難度
-                </p>
+                <p>・あん部馬背ロシアン360° ～馬端馬背ロシアン1080°転向～ロシアン360°転向下り：C難度+不認定+A難度</p>
               </div>
             }
             show={selectEvent === Events.あん馬}
           />
-
-          {/* あん馬_倒立技制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.あん馬_倒立技制限)}
-                {phHandstandLimitCodes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {phHandstandLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label ">
-                        {code}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>倒立する技は終末技を除いて1演技中2つまで使用できます。</p>
-              </div>
-            }
-            show={selectEvent === Events.あん馬}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.あん馬}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="倒立技制限"
+            targetElementType={ElementType.あん馬_倒立技}
+            descriptionSentence="以下の倒立する技は終末技を除いて1演技中2つまで使用できます。"
           />
-
-          {/* あん馬_ロシアン転向移動技制限1 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.あん馬_ロシアン転向移動技制限1)}
-                {phRussianTranveLimit1Codes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {phRussianTranveLimit1Codes.map((code, index) => (
-                      <p key={index} className="common__label ">
-                        {code}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>以下のロシアン転向移動技は1演技中2つまで使用できます。</p>
-                <p>・III57 下向き正転向移動(一把手～馬端)</p>
-                <p>・III58 トンフェイ</p>
-                <p>・III59 ヴァメン</p>
-                <p>・III64 下向き720°(以上)転向移動(一把手～馬端)</p>
-                <p>・III65 ウ・ヴォニアン</p>
-                <p>・III70 ロス</p>
-              </div>
-            }
-            show={selectEvent === Events.あん馬}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.あん馬}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="ロシアン転向移動技制限1"
+            targetElementType={ElementType.あん馬_ロシアン転向移動技1}
+            descriptionSentence="以下のロシアン転向移動技は1演技中2つまで使用できます。"
           />
-
-          {/* あん馬_移動ひねり技制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.あん馬_移動ひねり技制限)}
-                {phTranveSpindleLimitCodes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {phTranveSpindleLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label ">
-                        {code}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>以下のひねりを伴う3/3移動技は1演技中2つまで使用できます。</p>
-                <p>・III17 正面横移動ひねり、背面横移動ひねり（馬端～馬端）</p>
-                <p>・III22 縦向き1/3前移動直ちに縦向き2/3移動ひねり（ニン・レイエス）</p>
-                <p>・III23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）</p>
-                <p>
-                  ・III29
-                  開脚旋回縦向き3/3移動1回ひねり（2回以内の旋回で）（ウルジカ2/ブルクハルト）
-                </p>
-              </div>
-            }
-            show={selectEvent === Events.あん馬}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.あん馬}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="移動ひねり技制限"
+            targetElementType={ElementType.あん馬_移動ひねり技}
+            descriptionSentence="以下のひねりを伴う3/3移動技は1演技中2つまで使用できます。"
           />
-
-          {/* あん馬_ひねり技制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.あん馬_ひねり技制限)}
-                {phSpindleLimitCodes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {phSpindleLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label ">
-                        {code}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>以下の1回ひねりを伴う技は1演技中2つまで使用できます。</p>
-                <p>・II28 一把手を挟んで横向き旋回1回ひねり（2回以内の旋回で） </p>
-                <p>・II29 横向き旋回1回ひねり移動（2回以内の旋回で）（アイヒホルン） </p>
-                <p>・II30 両把手を挟んで横向き旋回1回ひねり（2回以内の旋回で）（ケイハ）</p>
-                <p>
-                  ・II30
-                  馬端外向き縦向き支持から両把手を越えて縦向き旋回1回ひねり（2回以内の旋回で）（ケイハ5）
-                </p>
-                <p>・II34 馬端旋回1回ひねり（2回以内の旋回で）（マジャール）</p>
-                <p>・II35 両把手上横向き旋回1回ひねり（2回以内の旋回で）（ベルキ）</p>
-                <p>・II36 あん部馬背縦向き旋回1回ひねり（2回以内の旋回で）</p>
-              </div>
-            }
-            show={selectEvent === Events.あん馬}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.あん馬}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="ひねり技制限"
+            targetElementType={ElementType.あん馬_ひねり技}
+            descriptionSentence="以下の1回ひねりを伴う技は1演技中2つまで使用できます。"
           />
-
-          {/* あん馬_ショーンべズゴ系制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.あん馬_ショーンべズゴ系制限)}
-                {phSohnBezugoLimitCodes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {phSohnBezugoLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label ">
-                        {code}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>
-                  ショーン系及びベズゴ系の技はフロップやコンバイン、倒立技を含め1演技中2つまで使用できます。
-                </p>
-                <p>それぞれ2回ずつではなくショーン系とべズゴ系合わせて2つまでです。 </p>
-              </div>
-            }
-            show={selectEvent === Events.あん馬}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.あん馬}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="ショーンべズゴ系制限"
+            targetElementType={ElementType.あん馬_ショーンべズゴ系}
+            descriptionSentence="以下のショーン系及びベズゴ系の技はフロップやコンバイン、倒立技を含め1演技中2つまで使用できます。"
           />
-
-          {/* あん馬_開脚旋回技制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.あん馬_開脚旋回技制限)}
-                {phFlairLimitCodes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {phFlairLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label ">
-                        {code}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>開脚旋回で実施される技は終末技は含まずに1演技中4つまで使用できます。</p>
-              </div>
-            }
-            show={selectEvent === Events.あん馬}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.あん馬}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="開脚旋回技制限"
+            targetElementType={ElementType.あん馬_開脚旋回技}
+            descriptionSentence="以下の開脚旋回で実施される技は終末技は含まずに1演技中4つまで使用できます。"
           />
-
-          {/* あん馬_ブスナリ系制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.あん馬_ブスナリ系制限)}
-                {phBusnariLimitCodes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {phBusnariLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label ">
-                        {code}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>ブスナリ系の技は1演技中1つまで使用できます。</p>
-              </div>
-            }
-            show={selectEvent === Events.あん馬}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.あん馬}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="ブスナリ系制限"
+            targetElementType={ElementType.あん馬_ブスナリ系}
+            descriptionSentence="以下のブスナリ系の技は1演技中1つまで使用できます。"
           />
-
-          {/* あん馬_ロシアン転向移動技制限2 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.あん馬_ロシアン転向移動技制限2)}
-                {phRussianTranveLimit2Codes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {phRussianTranveLimit2Codes.map((code, index) => (
-                      <p key={index} className="common__label ">
-                        {code}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>以下のロシアン転向移動技は1演技中1つまで使用できます。</p>
-                <p>・III64 下向き720°(以上)転向移動(一把手～馬端)</p>
-                <p>・III65 ウ・ヴォニアン</p>
-                <p>・III70 ロス</p>
-              </div>
-            }
-            show={selectEvent === Events.あん馬}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.あん馬}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="ロシアン転向移動技制限2"
+            targetElementType={ElementType.あん馬_ロシアン転向移動技2}
+            descriptionSentence="以下のロシアン転向移動技は1演技中1つまで使用できます。"
           />
-
-          {/* あん馬_トンフェイ系制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.あん馬_トンフェイ系制限)}
-                {phTongFeiLimitCodes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {phTongFeiLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label ">
-                        {code}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>以下のトン・フェイ系の移動技は1演技中1つまで使用できます。</p>
-                <p>・III57 下向き正転向移動(一把手～馬端)</p>
-                <p>・III58 トンフェイ</p>
-                <p>・III59 ヴァメン</p>
-              </div>
-            }
-            show={selectEvent === Events.あん馬}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.あん馬}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="トンフェイ系制限"
+            targetElementType={ElementType.あん馬_トンフェイ系}
+            descriptionSentence="以下のトン・フェイ系の移動技は1演技中1つまで使用できます。"
           />
-
-          {/* あん馬_ニンレイエス系制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.あん馬_ニンレイエス系制限)}
-                {phNinReyesLimitCodes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {phNinReyesLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label ">
-                        {code}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>以下のニン・レイエス系の移動技は1演技中1つまで使用できます。</p>
-                <p>・III22 縦向き1/3前移動直ちに縦向き2/3移動ひねり（ニン・レイエス）</p>
-                <p>・III23 両把手を越えて縦向き3/3前移動直ちに1/2ひねり（ニン・レイエス2）</p>
-              </div>
-            }
-            show={selectEvent === Events.あん馬}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.あん馬}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="ニンレイエス系制限"
+            targetElementType={ElementType.あん馬_ニンレイエス系}
+            descriptionSentence="以下のニン・レイエス系の移動技は1演技中1つまで使用できます。"
           />
-
-          {/* あん馬_フロップ系制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.あん馬_フロップ系制限)}
-                {phFlopLimitCodes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {phFlopLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label ">
-                        {code}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>フロップ系の技は1演技中1つまで使用できます。</p>
-              </div>
-            }
-            show={selectEvent === Events.あん馬}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.あん馬}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="フロップ系制限"
+            targetElementType={ElementType.あん馬_フロップ系}
+            descriptionSentence="以下のフロップ系の技は1演技中1つまで使用できます。"
           />
-
-          {/* あん馬_コンバイン系制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.あん馬_コンバイン系制限)}
-                {phCombineLimitCodes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {phCombineLimitCodes.map((code, index) => (
-                      <p key={index} className="common__label ">
-                        {code}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>コンバイン系の技は1演技中1つまで使用できます。</p>
-              </div>
-            }
-            show={selectEvent === Events.あん馬}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.あん馬}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="コンバイン系制限"
+            targetElementType={ElementType.あん馬_コンバイン系}
+            descriptionSentence="以下のコンバイン系の技は1演技中1つまで使用できます。"
           />
-
           {/* つり輪_力技制限1 */}
           <RoutineRule
             summaryNode={
@@ -1140,7 +829,6 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             }
             show={selectEvent === Events.つり輪}
           />
-
           {/* つり輪_力技制限2 */}
           <RoutineRule
             summaryNode={
@@ -1167,8 +855,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                       <div key={group}>
                         <p>{getGroupName(selectEvent, group)}</p>
                         <p className="rules__description-labels">
-                          {srStrengthLimit2Codes.filter((row) => row.elementGroup === group)
-                            .length > 0 ? (
+                          {srStrengthLimit2Codes.filter((row) => row.elementGroup === group).length > 0 ? (
                             srStrengthLimit2Codes
                               .filter((row) => row.elementGroup === group)
                               .map((row, index) => (
@@ -1181,9 +868,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                           )}
                         </p>
                       </div>
-                      {group !== ElementGroup.EG3 && (
-                        <p className="rules__section-line--without-margin" />
-                      )}
+                      {group !== ElementGroup.EG3 && <p className="rules__section-line--without-margin" />}
                     </React.Fragment>
                   ))}
                 </div>
@@ -1198,17 +883,13 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                   <tbody>
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--3rem">EG2</td>
-                      <td
-                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
-                      >
+                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
                         II52.アザリアン
                       </td>
                     </tr>
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
-                      <td
-                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
-                      >
+                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
                         III16.ホンマ十字懸垂
                       </td>
                     </tr>
@@ -1219,17 +900,13 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                   <tbody>
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
-                      <td
-                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
-                      >
+                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
                         III47.後方け上がり中水平
                       </td>
                     </tr>
                     <tr className="rules__table-row">
                       <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
-                      <td
-                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
-                      >
+                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
                         III71.後ろ振り上がり中水平
                       </td>
                     </tr>
@@ -1270,7 +947,6 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             }
             show={selectEvent === Events.つり輪}
           />
-
           {/* 跳馬_グループ制限 */}
           <RoutineRule
             summaryNode={
@@ -1282,8 +958,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                       <p key={index} className="common__label ">
                         {/* {Object.entries(ElementGroup).find(([key, value]) => value === element.element_group) || ""} */}
                         {Object.keys(ElementGroup).find(
-                          (key) =>
-                            ElementGroup[key as keyof typeof ElementGroup] === element.element_group
+                          (key) => ElementGroup[key as keyof typeof ElementGroup] === element.element_group
                         ) || ""}
                       </p>
                     ))}
@@ -1302,7 +977,6 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             }
             show={selectEvent === Events.跳馬}
           />
-
           {/* 跳馬_2技制限 */}
           <RoutineRule
             summaryNode={
@@ -1318,259 +992,132 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             }
             show={selectEvent === Events.跳馬}
           />
-
-          {/* 平行棒_宙返り技制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.平行棒_宙返り技制限)}
-                {pbSaltoLimitCodes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {pbSaltoLimitCodes.slice(0, 3).map((row, index) => (
-                      <p key={index} className="common__label">
-                        {row.code}
-                      </p>
-                    ))}
-                    {pbSaltoLimitCodes.length > 3 && <p className="common__label">...</p>}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>以下の種類の宙返り技を選択中(制限中)です。</p>
-                <div className="rules__description-label-box">
-                  <p className="rules__description-labels">
-                    {pbSaltoLimitCodes.length > 0 ? (
-                      pbSaltoLimitCodes.map((row, index) => (
-                        <span key={index} className="common__label ">
-                          {row.code}.{row.typeName}
-                        </span>
-                      ))
-                    ) : (
-                      <span>選択していません</span>
-                    )}
-                  </p>
-                </div>
-                <p className="rules__section-line" />
-                <p>同じ種類の宙返り技は1演技に1つまで使用できます。</p>
-                <p>
-                  <span style={{ fontWeight: "bold" }}>同じEG</span>の
-                  <span style={{ fontWeight: "bold" }}>異なる姿勢</span>または
-                  <span style={{ fontWeight: "bold" }}>異なる受け方</span>
-                  の技が同じ種類と判断されます。
-                </p>
-                <table className="rules__table-table">
-                  <tbody>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--17rem rules__table-cell--left">
-                        異なる姿勢：抱え込み / 屈身 / 伸身 / 開脚
-                      </td>
-                    </tr>
-                    <tr className="rules__table-row">
-                      <td
-                        className={`rules__table-cell rules__table-cell--17rem rules__table-cell--left`}
-                      >
-                        異なる受け方：腕支持 / 支持 / 直接懸垂
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <p>NG例:</p>
-                <table className="rules__table-table">
-                  <tbody>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--12rem rules__table-cell--left">
-                        II47.モリスエ
-                      </td>
-                    </tr>
-                    <tr className="rules__table-row">
-                      <td
-                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
-                      >
-                        II48.屈身モリスエ
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <table className="rules__table-table">
-                  <tbody>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--12rem rules__table-cell--left">
-                        III59.ベーレ
-                      </td>
-                    </tr>
-                    <tr className="rules__table-row">
-                      <td
-                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
-                      >
-                        III60.屈身ベーレ
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-                <table className="rules__table-table">
-                  <tbody>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--12rem rules__table-cell--left">
-                        II106.爆弾カット腕支持
-                      </td>
-                    </tr>
-                    <tr className="rules__table-row">
-                      <td
-                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
-                      >
-                        II107.爆弾カット支持
-                      </td>
-                    </tr>
-                    <tr className="rules__table-row">
-                      <td
-                        className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}
-                      >
-                        II111.爆弾カット直接懸垂
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            }
-            show={selectEvent === Events.平行棒}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.平行棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="宙返り技制限(ドミトリエンコ系)"
+            targetElementType={ElementType.平行棒_宙返り技制限_ドミトリエンコ系}
+            descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
           />
-
-          {/* 平行棒_車輪系制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.平行棒_車輪系制限)}
-                {pbGiantSwingLimitCodes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {pbGiantSwingLimitCodes.map((routineElement, index) => (
-                      <p key={index} className="common__label">
-                        {routineElement.code}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>車輪系の技は1演技に2つまで使用できます。</p>
-                <p>対象の技は以下のとおりです。</p>
-                <table className="rules__table-table">
-                  <tbody>
-                    {pbGiantSwingElements.map((element, index) => (
-                      <tr key={index} className="rules__table-row">
-                        {pbGiantSwingLimitCodes.find(
-                          (routineElement) => routineElement.id === element.id
-                        ) ? (
-                          <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
-                            {element.code}.{element.alias || element.name} (選択中)
-                          </td>
-                        ) : (
-                          <td className="rules__table-cell rules__table-cell--left">
-                            {element.code}.{element.alias || element.name}
-                          </td>
-                        )}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            }
-            show={selectEvent === Events.平行棒}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.平行棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="宙返り技制限(ハラダ系)"
+            targetElementType={ElementType.平行棒_宙返り技制限_ハラダ系}
+            descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
           />
-
-          {/* 平行棒_棒下宙返り系制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.平行棒_棒下宙返り系制限)}
-                {pbFelgeLimitCodes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {pbFelgeLimitCodes.map((routineElement, index) => (
-                      <p key={index} className="common__label">
-                        {routineElement.code}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>棒下宙返り倒立系は1演技に2つまで使用できます。</p>
-                <p>対象の技は以下のとおりです。</p>
-
-                <table className="rules__table-table">
-                  <tbody>
-                    {pbFelgeElements.map((element, index) => (
-                      <tr key={index} className="rules__table-row">
-                        {pbFelgeLimitCodes.find(
-                          (routineElement) => routineElement.id === element.id
-                        ) ? (
-                          <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
-                            {element.code}.{element.alias || element.name} (選択中)
-                          </td>
-                        ) : (
-                          <td className="rules__table-cell rules__table-cell--left">
-                            {element.code}.{element.alias || element.name}
-                          </td>
-                        )}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            }
-            show={selectEvent === Events.平行棒}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.平行棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="宙返り技制限(パフニュク系)"
+            targetElementType={ElementType.平行棒_宙返り技制限_パフニュク系}
+            descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
           />
-
-          {/* 平行棒_アーム倒立系制限 */}
-          <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.平行棒_アーム倒立系制限)}
-                {pbFrontUpriseLimitCodes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    {pbFrontUpriseLimitCodes.map((routineElement, index) => (
-                      <p key={index} className="common__label">
-                        {routineElement.code}
-                      </p>
-                    ))}
-                  </div>
-                ) : null}
-              </span>
-            }
-            descriptionNode={
-              <div className="rules__description">
-                <p>棒下宙返り倒立系は1演技に2つまで使用できます。</p>
-                <p>対象の技は以下のとおりです。</p>
-
-                <table className="rules__table-table">
-                  <tbody>
-                    {pbFrontUpriseElements.map((element, index) => (
-                      <tr key={index} className="rules__table-row">
-                        {pbFrontUpriseLimitCodes.find(
-                          (routineElement) => routineElement.id === element.id
-                        ) ? (
-                          <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
-                            {element.code}.{element.alias || element.name} (選択中)
-                          </td>
-                        ) : (
-                          <td className="rules__table-cell rules__table-cell--left">
-                            {element.code}.{element.alias || element.name}
-                          </td>
-                        )}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            }
-            show={selectEvent === Events.平行棒}
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.平行棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="宙返り技制限(モリスエ系)"
+            targetElementType={ElementType.平行棒_宙返り技制限_モリスエ系}
+            descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
           />
-
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.平行棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="宙返り技制限(爆弾カット系)"
+            targetElementType={ElementType.平行棒_宙返り技制限_爆弾カット系}
+            descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.平行棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="宙返り技制限(前方ダブル系)"
+            targetElementType={ElementType.平行棒_宙返り技制限_前方ダブル腕支持系}
+            descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.平行棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="宙返り技制限(ベーレ系)"
+            targetElementType={ElementType.平行棒_宙返り技制限_ベーレ系}
+            descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.平行棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="宙返り技制限(フォキン系)"
+            targetElementType={ElementType.平行棒_宙返り技制限_フォキン系}
+            descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.平行棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="宙返り技制限(タナカ系)"
+            targetElementType={ElementType.平行棒_宙返り技制限_タナカ系}
+            descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.平行棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="宙返り技制限(ギャニオン系)"
+            targetElementType={ElementType.平行棒_宙返り技制限_ギャニオン系}
+            descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.平行棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="宙返り技制限(テハダ系)"
+            targetElementType={ElementType.平行棒_宙返り技制限_テハダ系}
+            descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.平行棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="車輪系制限"
+            targetElementType={ElementType.平行棒_車輪系}
+            descriptionSentence="以下の車輪系の技は1演技に2つまで使用できます。"
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.平行棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="棒下宙返り系制限"
+            targetElementType={ElementType.平行棒_棒下宙返り系}
+            descriptionSentence="以下の棒下宙返り系の技は1演技に2つまで使用できます。"
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.平行棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="アーム倒立系制限"
+            targetElementType={ElementType.平行棒_アーム倒立系}
+            descriptionSentence="以下のアーム倒立系の技は1演技に2つまで使用できます。"
+          />
           {/* 平行棒_単棒倒立系制限 */}
           <RoutineRule
             summaryNode={
@@ -1585,12 +1132,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             }
             descriptionNode={
               <div className="rules__description">
-                <p>
-                  単棒倒立で終わる振動技は、単棒倒立で始まるヒーリー系に繋げない場合無効になります。
-                </p>
-                <p>
-                  単棒から始まるヒーリー系は 単棒倒立で終了する振動技にのみ繋げることができます。
-                </p>
+                <p>単棒倒立で終わる振動技は、単棒倒立で始まるヒーリー系に繋げない場合無効になります。</p>
+                <p>単棒から始まるヒーリー系は 単棒倒立で終了する振動技にのみ繋げることができます。</p>
                 <p>対象の技は以下のとおりです。</p>
                 <p className="rules__section-line" />
                 <p>単棒倒立で終わる技</p>
@@ -1607,15 +1150,10 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                             className={`rules__table-cell rules__table-cell--left ${
                               foundElement && "rules__table-cell--active"
                             }
-                            ${
-                              foundElement &&
-                              foundElement.is_qualified === false &&
-                              "rules__table-cell--limit"
-                            }`}
+                            ${foundElement && foundElement.is_qualified === false && "rules__table-cell--limit"}`}
                           >
                             {element.code}.{element.alias || element.name}
-                            {foundElement &&
-                              (foundElement.is_qualified ? " (選択中 / 有効)" : " (選択中 / 無効)")}
+                            {foundElement && (foundElement.is_qualified ? " (選択中 / 有効)" : " (選択中 / 無効)")}
                           </td>
                         </tr>
                       );
@@ -1628,8 +1166,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                     {pbOneRailBeginElements.map((element, index) => (
                       <tr key={index} className="rules__table-row">
                         {pbOneRailLimitCodes.find(
-                          (routineElement) =>
-                            routineElement.id === element.id && routineElement.is_qualified
+                          (routineElement) => routineElement.id === element.id && routineElement.is_qualified
                         ) ? (
                           <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
                             {element.code}.{element.alias || element.name} (選択中)
@@ -1654,6 +1191,108 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               </div>
             }
             show={selectEvent === Events.平行棒}
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.鉄棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="アドラー系制限"
+            targetElementType={ElementType.鉄棒_アドラー系}
+            descriptionSentence="以下のアドラー系は1演技に2つまで使用できます。"
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.鉄棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="手放し技制限(トカチェフ系)"
+            targetElementType={ElementType.鉄棒_手放し技制限_トカチェフ系}
+            descriptionSentence="以下の種類の手放し技は1演技中2つまで使用できます。"
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.鉄棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="手放し技制限(コバチ系)"
+            targetElementType={ElementType.鉄棒_手放し技制限_コバチ系}
+            descriptionSentence="以下の種類の手放し技は1演技中2つまで使用できます。"
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.鉄棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="手放し技制限(ギンガー系)"
+            targetElementType={ElementType.鉄棒_手放し技制限_ギンガー系}
+            descriptionSentence="以下の種類の手放し技は1演技中2つまで使用できます。"
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.鉄棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="手放し技制限(イェーガー系)"
+            targetElementType={ElementType.鉄棒_手放し技制限_イェーガー系}
+            descriptionSentence="以下の種類の手放し技は1演技中2つまで使用できます。"
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.鉄棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="手放し技制限(マルケロフ系)"
+            targetElementType={ElementType.鉄棒_手放し技制限_マルケロフ系}
+            descriptionSentence="以下の種類の手放し技は1演技中2つまで使用できます。"
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.鉄棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="手放し技制限(ゲイロード系)"
+            targetElementType={ElementType.鉄棒_手放し技制限_ゲイロード系}
+            descriptionSentence="以下の種類の手放し技は1演技中2つまで使用できます。"
+          />
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.鉄棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="ひねり技制限(ヒーリー系)"
+            targetElementType={ElementType.鉄棒_ひねり技制限_ヒーリー系}
+            descriptionSentence="以下の種類のひねり技は1演技中1つまで使用できます。"
+          />
+
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.鉄棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="ひねり技制限(リバルコ系)"
+            targetElementType={ElementType.鉄棒_ひねり技制限_リバルコ系}
+            descriptionSentence="以下の種類のひねり技は1演技中1つまで使用できます。"
+          />
+
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.鉄棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="ひねり技制限(シュタルダーリバルコ系)"
+            targetElementType={ElementType.鉄棒_ひねり技制限_シュタルダーリバルコ系}
+            descriptionSentence="以下の種類のひねり技は1演技中1つまで使用できます。"
+          />
+
+          <SimpleTypeCountRule
+            selectEvent={selectEvent}
+            showEvent={Events.鉄棒}
+            routine={routine}
+            categorizedElements={categorizedElements}
+            title="ひねり技制限(キンテロ系)"
+            targetElementType={ElementType.鉄棒_ひねり技制限_キンテロ系}
+            descriptionSentence="以下の種類のひねり技は1演技中1つまで使用できます。"
           />
         </div>
       </div>

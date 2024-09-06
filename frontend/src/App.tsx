@@ -170,7 +170,7 @@ const App: React.FC = () => {
     if (!isInitialized) {
       return;
     }
-    // 振動倒立技が解除されて力技が4連続になるケースを想定
+    // 無効技が発生するケースを想定
     updateRoutineForValidation(selectEvent, routine, setRoutine);
     // グループ得点を更新する
     updateElementGroupScoreInRoutine(selectEvent, routine, setRoutine);

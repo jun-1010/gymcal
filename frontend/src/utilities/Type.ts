@@ -79,6 +79,12 @@ export const GroupNames: { [key: number]: { [key: number]: string } } = {
     [ElementGroup.EG3]: "懸垂振動技",
     [ElementGroup.EG4]: "終末技",
   },
+  [Events.鉄棒]: {
+    [ElementGroup.EG1]: "懸垂振動技",
+    [ElementGroup.EG2]: "手放し技",
+    [ElementGroup.EG3]: "バーに近い技",
+    [ElementGroup.EG4]: "終末技",
+  },
   // 他の種目も追加する
 };
 
@@ -144,6 +150,17 @@ export enum ElementType {
   平行棒_アーム倒立系 = 52,
   平行棒_単棒終了技 = 53,
   平行棒_単棒開始技 = 54,
+  鉄棒_手放し技制限_トカチェフ系 = 55,
+  鉄棒_手放し技制限_コバチ系 = 56,
+  鉄棒_手放し技制限_ギンガー系 = 57,
+  鉄棒_手放し技制限_イェーガー系 = 58,
+  鉄棒_手放し技制限_マルケロフ系 = 59,
+  鉄棒_手放し技制限_ゲイロード系 = 60,
+  鉄棒_アドラー系 = 61,
+  鉄棒_ひねり技制限_ヒーリー系 = 62,
+  鉄棒_ひねり技制限_リバルコ系 = 63,
+  鉄棒_ひねり技制限_シュタルダーリバルコ系 = 64,
+  鉄棒_ひねり技制限_キンテロ系 = 65,
 }
 
 // ElementTypeの末尾のブロックを取得(つり輪_力技制限2_脚前挙→脚前挙)
@@ -215,145 +232,18 @@ export enum ElementStatus {
   平行棒_棒下宙返り系制限 = 51,
   平行棒_アーム倒立系制限 = 52,
   平行棒_単棒倒立系制限 = 53,
+  鉄棒_手放し技制限_トカチェフ系 = 54,
+  鉄棒_手放し技制限_コバチ系 = 55,
+  鉄棒_手放し技制限_ギンガー系 = 56,
+  鉄棒_手放し技制限_イェーガー系 = 57,
+  鉄棒_手放し技制限_マルケロフ系 = 58,
+  鉄棒_手放し技制限_ゲイロード系 = 59,
+  鉄棒_アドラー系制限 = 60,
+  鉄棒_ひねり技制限_ヒーリー系 = 61,
+  鉄棒_ひねり技制限_リバルコ系 = 62,
+  鉄棒_ひねり技制限_シュタルダーリバルコ系 = 63,
+  鉄棒_ひねり技制限_キンテロ系 = 64,
 }
-
-// ElementTile用 | elementTypeに対応するelementStatusを返す
-export const getElementStatusFromElementType = (elementType: ElementType): ElementStatus => {
-  switch (elementType) {
-    case ElementType.床_力技:
-      return ElementStatus.床_力技制限;
-
-    case ElementType.床_旋回:
-      return ElementStatus.床_旋回制限;
-
-    case ElementType.あん馬_縦向き移動技:
-      return ElementStatus.あん馬_縦向き移動技制限;
-
-    case ElementType.あん馬_把手上ロシアン転向技:
-    case ElementType.あん馬_馬端ロシアン転向技:
-    case ElementType.あん馬_一把手上ロシアン転向技:
-    case ElementType.あん馬_馬背ロシアン転向技:
-      return ElementStatus.あん馬_ロシアン転向技制限;
-
-    case ElementType.あん馬_倒立技:
-      return ElementStatus.あん馬_倒立技制限;
-
-    case ElementType.あん馬_ロシアン転向移動技1:
-      return ElementStatus.あん馬_ロシアン転向移動技1;
-
-    case ElementType.あん馬_移動ひねり技:
-      return ElementStatus.あん馬_移動ひねり技制限;
-
-    case ElementType.あん馬_ひねり技:
-      return ElementStatus.あん馬_ひねり技制限;
-
-    case ElementType.あん馬_ショーンべズゴ系:
-      return ElementStatus.あん馬_ショーンべズゴ系;
-
-    case ElementType.あん馬_開脚旋回技:
-      return ElementStatus.あん馬_開脚旋回技制限;
-
-    case ElementType.あん馬_ブスナリ系:
-      return ElementStatus.あん馬_ブスナリ系制限;
-
-    case ElementType.あん馬_ロシアン転向移動技2:
-      return ElementStatus.あん馬_ロシアン転向移動技2;
-
-    case ElementType.あん馬_トンフェイ系:
-      return ElementStatus.あん馬_トンフェイ系制限;
-
-    case ElementType.あん馬_ニンレイエス系:
-      return ElementStatus.あん馬_ニンレイエス系制限;
-
-    case ElementType.あん馬_フロップ系:
-      return ElementStatus.あん馬_フロップ系制限;
-
-    case ElementType.あん馬_コンバイン系:
-      return ElementStatus.あん馬_コンバイン系制限;
-
-    case ElementType.つり輪_力技制限2_脚前挙:
-      return ElementStatus.つり輪_力技制限2_脚前挙;
-
-    case ElementType.つり輪_力技制限2_脚上挙:
-      return ElementStatus.つり輪_力技制限2_脚上挙;
-
-    case ElementType.つり輪_力技制限2_十字倒立:
-      return ElementStatus.つり輪_力技制限2_十字倒立;
-
-    case ElementType.つり輪_力技制限2_背面水平:
-      return ElementStatus.つり輪_力技制限2_背面水平;
-
-    case ElementType.つり輪_力技制限2_上水平:
-      return ElementStatus.つり輪_力技制限2_上水平;
-
-    case ElementType.つり輪_力技制限2_開脚上水平:
-      return ElementStatus.つり輪_力技制限2_開脚上水平;
-
-    case ElementType.つり輪_力技制限2_中水平:
-      return ElementStatus.つり輪_力技制限2_中水平;
-
-    case ElementType.つり輪_力技制限2_正面水平:
-      return ElementStatus.つり輪_力技制限2_正面水平;
-
-    case ElementType.つり輪_力技制限2_上向き中水平:
-      return ElementStatus.つり輪_力技制限2_上向き中水平;
-
-    case ElementType.つり輪_力技制限2_十字懸垂:
-      return ElementStatus.つり輪_力技制限2_十字懸垂;
-
-    case ElementType.つり輪_力技制限2_倒立:
-      return ElementStatus.つり輪_力技制限2_倒立;
-
-    case ElementType.平行棒_宙返り技制限_ドミトリエンコ系:
-      return ElementStatus.平行棒_宙返り技制限_ドミトリエンコ系;
-
-    case ElementType.平行棒_宙返り技制限_ハラダ系:
-      return ElementStatus.平行棒_宙返り技制限_ハラダ系;
-
-    case ElementType.平行棒_宙返り技制限_パフニュク系:
-      return ElementStatus.平行棒_宙返り技制限_パフニュク系;
-
-    case ElementType.平行棒_宙返り技制限_モリスエ系:
-      return ElementStatus.平行棒_宙返り技制限_モリスエ系;
-
-    case ElementType.平行棒_宙返り技制限_爆弾カット系:
-      return ElementStatus.平行棒_宙返り技制限_爆弾カット系;
-
-    case ElementType.平行棒_宙返り技制限_前方ダブル腕支持系:
-      return ElementStatus.平行棒_宙返り技制限_前方ダブル腕支持系;
-
-    case ElementType.平行棒_宙返り技制限_ベーレ系:
-      return ElementStatus.平行棒_宙返り技制限_ベーレ系;
-
-    case ElementType.平行棒_宙返り技制限_フォキン系:
-      return ElementStatus.平行棒_宙返り技制限_フォキン系;
-
-    case ElementType.平行棒_宙返り技制限_タナカ系:
-      return ElementStatus.平行棒_宙返り技制限_タナカ系;
-
-    case ElementType.平行棒_宙返り技制限_ギャニオン系:
-      return ElementStatus.平行棒_宙返り技制限_ギャニオン系;
-
-    case ElementType.平行棒_宙返り技制限_テハダ系:
-      return ElementStatus.平行棒_宙返り技制限_テハダ系;
-
-    case ElementType.平行棒_車輪系:
-      return ElementStatus.平行棒_車輪系制限;
-
-    case ElementType.平行棒_棒下宙返り系:
-      return ElementStatus.平行棒_棒下宙返り系制限;
-
-    case ElementType.平行棒_アーム倒立系:
-      return ElementStatus.平行棒_アーム倒立系制限;
-
-    case ElementType.平行棒_単棒終了技:
-    case ElementType.平行棒_単棒開始技:
-      return ElementStatus.平行棒_単棒倒立系制限;
-
-    default:
-      return ElementStatus.選択可能;
-  }
-};
 
 export const getElementStatusName = (targetElementStatus: number): string => {
   let elementStatusKey = "";
@@ -421,6 +311,9 @@ export enum Rules {
   平行棒_棒下宙返り系制限 = 37,
   平行棒_アーム倒立系制限 = 38,
   平行棒_単棒倒立系制限 = 39,
+  鉄棒_手放し技制限 = 40,
+  鉄棒_アドラー系制限 = 41,
+  鉄棒_ひねり技制限 = 42,
 }
 
 export const RuleKey = (ruleKey: number): string => {

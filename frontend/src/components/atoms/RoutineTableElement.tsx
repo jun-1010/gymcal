@@ -2,7 +2,7 @@ import { isConnectable, RoutineElement } from "../../utilities/RoutineUtil";
 import AddIcon from "@mui/icons-material/Add";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import CloseIcon from "@mui/icons-material/Close";
-import { difficulties, element_groups, Events, hasCVEvents } from "../../utilities/Type";
+import { difficulties, element_groups, ElementGroup, Events, hasCVEvents } from "../../utilities/Type";
 
 interface RoutineTableElementProps {
   selectEvent: Events;
@@ -11,13 +11,7 @@ interface RoutineTableElementProps {
   setRoutine: (routine: RoutineElement[]) => void;
   routine: RoutineElement[];
 }
-const RoutineTableElement = ({
-  selectEvent,
-  element,
-  index,
-  setRoutine,
-  routine,
-}: RoutineTableElementProps) => {
+const RoutineTableElement = ({ selectEvent, element, index, setRoutine, routine }: RoutineTableElementProps) => {
   // そもそも組み合わせさせないための処理
   const handleConnectionClick = (element: RoutineElement, index: number) => {
     // 更新用関数
@@ -60,9 +54,7 @@ const RoutineTableElement = ({
       <span className={`routine__item`}>{validIndex === -1 ? "" : validIndex + 1}</span>
       {/* 組み合わせボタン */}
       <span
-        className={`routine__item routine__icon ${
-          element.is_connected ? "routine__icon--active" : ""
-        }`}
+        className={`routine__item routine__icon ${element.is_connected ? "routine__icon--active" : ""}`}
         onClick={() => handleConnectionClick(element, index)}
       >
         {element.is_connected ? (
@@ -85,28 +77,16 @@ const RoutineTableElement = ({
         {element.alias ? element.alias : element.name}
       </span>
       {/* EG */}
-      <span
-        className={`routine__item ${
-          selectEvent === Events.跳馬 && "routine__item--hidden"
-        }`}
-      >
+      <span className={`routine__item ${selectEvent === Events.跳馬 && "routine__item--hidden"}`}>
         {element_groups[element.element_group - 1]}
-        {element.element_group_score! > 0
-          ? `(${element.element_group_score?.toFixed(1)})`
-          : ``}
+        {element.element_group_score! > 0 ? `(${element.element_group_score?.toFixed(1)})` : ``}
       </span>
       {/* 難度 */}
       <span className="routine__item routine__item--center">
-        {selectEvent === Events.跳馬
-          ? (element.difficulty / 10).toFixed(1)
-          : difficulties[element.difficulty - 1]}
+        {selectEvent === Events.跳馬 ? (element.difficulty / 10).toFixed(1) : difficulties[element.difficulty - 1]}
       </span>
       {/* CV */}
-      <span
-        className={`routine__item ${
-          !hasCVEvents(selectEvent) && "routine__item--hidden"
-        }`}
-      >
+      <span className={`routine__item ${!hasCVEvents(selectEvent) && "routine__item--hidden"}`}>
         {element.connection_value}
       </span>
       {/* 削除ボタン */}
