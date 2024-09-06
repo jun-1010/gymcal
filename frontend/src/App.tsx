@@ -78,7 +78,7 @@ const App: React.FC = () => {
       routineOpen === parsedRoutineOpen &&
       (isEmpty || JSON.stringify(routines) === JSON.stringify(parsedRoutines))
     ) {
-      console.log("初回読み込み完了");
+      // console.log("初回読み込み完了");
       setIsInitialized(true);
     }
   }, [selectEvent, selectGroup, routineOpen, routines]);
