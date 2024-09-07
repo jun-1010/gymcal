@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  categorizeElements,
-  getGroupElements,
-  GroupElements,
-} from "./utilities/ElementUtil";
+import { categorizeElements, getGroupElements, GroupElements } from "./utilities/ElementUtil";
 import "./App.css";
 import { Events, ElementGroup } from "./utilities/Type";
 
@@ -19,7 +15,6 @@ import useMedia from "use-media";
 import Header from "./components/organisms/Header";
 import Elements from "./components/organisms/Elements";
 import Routine from "./components/organisms/Routine";
-import { checkPrime } from "crypto";
 
 const url = "http://54.250.128.188:8000/api/elements";
 // const url = "http://localhost:8000/api/elements";
@@ -34,6 +29,9 @@ const App: React.FC = () => {
   const [routine, setRoutine] = useState([] as RoutineElement[]);
   const isMobile = useMedia({ maxWidth: "850px" });
   const [isInitialized, setIsInitialized] = useState(false); // 初回読み込み完了時にtrue
+  const [isLoading, setIsLoading] = useState(true); // ローディング状態
+  const [isVisible, setIsVisible] = useState(true); // true なら表示, false なら非表示
+
   const fetchData = async () => {
     try {
       const response = await fetch(url);
@@ -44,6 +42,24 @@ const App: React.FC = () => {
       console.log(error);
     }
   };
+
+  // ローディング処理
+  useEffect(() => {
+    // フェードアウト
+    const fadeOutTimer = setTimeout(() => {
+      setIsVisible(false);
+    }, 2000);
+
+    // ローディングを完全に終了
+    const loadingEndTimer = setTimeout(() => {
+      setIsLoading(false);
+    }, 2500);
+
+    return () => {
+      clearTimeout(fadeOutTimer);
+      clearTimeout(loadingEndTimer);
+    };
+  }, []);
 
   // 初回読み込み判定
   useEffect(() => {
@@ -56,12 +72,7 @@ const App: React.FC = () => {
     const storedRoutineOpen = localStorage.getItem("routineOpen");
     const storedRoutines = localStorage.getItem("routines");
     // localStorageに値がない(= 初アクセス)場合は何もしない
-    if (
-      !storedSelectEvent ||
-      !storedSelectGroup ||
-      !storedRoutineOpen ||
-      !storedRoutines
-    ) {
+    if (!storedSelectEvent || !storedSelectGroup || !storedRoutineOpen || !storedRoutines) {
       return;
     }
     const parsedSelectEvent = parseInt(storedSelectEvent);
@@ -69,9 +80,7 @@ const App: React.FC = () => {
     const parsedRoutineOpen = parseInt(storedRoutineOpen);
     const parsedRoutines = JSON.parse(storedRoutines) as Routines;
     // すべての要素が空の配列かどうかをチェック
-    const isEmpty = Object.values(parsedRoutines).every(
-      (routine) => Array.isArray(routine) && routine.length === 0
-    );
+    const isEmpty = Object.values(parsedRoutines).every((routine) => Array.isArray(routine) && routine.length === 0);
     if (
       selectEvent === parsedSelectEvent &&
       selectGroup === parsedSelectGroup &&
@@ -102,12 +111,7 @@ const App: React.FC = () => {
     const storedRoutines = localStorage.getItem("routines");
 
     // selectEventとselectGroupが存在しない = 初アクセス
-    if (
-      !storedSelectEvent ||
-      !storedSelectGroup ||
-      !storedRoutineOpen ||
-      !storedRoutines
-    ) {
+    if (!storedSelectEvent || !storedSelectGroup || !storedRoutineOpen || !storedRoutines) {
       localStorage.setItem("selectEvent", Events.床.toString());
       localStorage.setItem("selectGroup", ElementGroup.EG1.toString());
       localStorage.setItem("routineOpen", "0");
@@ -123,9 +127,7 @@ const App: React.FC = () => {
 
     const parsedRoutines = JSON.parse(storedRoutines);
     // すべての要素が空の配列かどうかをチェック
-    const isEmpty = Object.values(parsedRoutines).every(
-      (routine) => Array.isArray(routine) && routine.length === 0
-    );
+    const isEmpty = Object.values(parsedRoutines).every((routine) => Array.isArray(routine) && routine.length === 0);
     if (isEmpty) {
       return;
     }
@@ -215,6 +217,12 @@ const App: React.FC = () => {
 
   return (
     <div className="App">
+      {isLoading && (
+        <div className={`loading ${!isVisible ? "loading--hidden" : ""}`}>
+          <img src="./icon512.png" alt="Loading..." className={`loading__icon`} />
+          <p></p>
+        </div>
+      )}
       <Header
         selectEvent={selectEvent}
         setSelectEvent={setSelectEvent}
