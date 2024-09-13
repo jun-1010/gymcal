@@ -608,10 +608,10 @@ export const updateConnectionInRoutine = (
             element.connection_value = 0.1;
             return;
           }
-          // D + E以上 || E以上 + D → 0.2
+          // D以上 + E以上 || E以上 + D以上 → 0.2
           if (
-            (previousElement.difficulty === 4 && element.difficulty >= 5) ||
-            (previousElement.difficulty >= 5 && element.difficulty === 4)
+            (previousElement.difficulty >= 4 && element.difficulty >= 5) ||
+            (previousElement.difficulty >= 5 && element.difficulty >= 4)
           ) {
             element.connection_value = 0.2;
             return;
