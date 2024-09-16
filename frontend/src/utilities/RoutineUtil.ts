@@ -223,8 +223,8 @@ export const getElementStatus = (
       return ElementStatus.鉄棒_ひねり技制限_ヒーリー系;
     } else if (checkTypeCount(routine, targetElement, ElementType.鉄棒_ひねり技制限_リバルコ系, 1)) {
       return ElementStatus.鉄棒_ひねり技制限_リバルコ系;
-    } else if (checkTypeCount(routine, targetElement, ElementType.鉄棒_ひねり技制限_シュタルダーリバルコ系, 1)) {
-      return ElementStatus.鉄棒_ひねり技制限_シュタルダーリバルコ系;
+    } else if (checkTypeCount(routine, targetElement, ElementType.鉄棒_ひねり技制限_シートリバルコ系, 1)) {
+      return ElementStatus.鉄棒_ひねり技制限_シートリバルコ系;
     } else if (checkTypeCount(routine, targetElement, ElementType.鉄棒_ひねり技制限_キンテロ系, 1)) {
       return ElementStatus.鉄棒_ひねり技制限_キンテロ系;
     }
