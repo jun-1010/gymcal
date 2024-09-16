@@ -141,9 +141,15 @@ html {
     .header__title {
       font-size: 1.4rem;
       font-weight: bold;
-      a {
-        text-decoration: none;
-        color: var(--black);
+      text-decoration: none;
+      color: var(--black);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      img {
+        margin-top: 0.3rem;
+        width: 1.5rem;
       }
     }
   }
