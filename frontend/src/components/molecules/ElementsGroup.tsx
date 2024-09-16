@@ -8,15 +8,14 @@ interface elementsGroupProps {
   groupElements: GroupElements;
   setRoutine: (routine: RoutineElement[]) => void;
   routine: RoutineElement[];
+  fontSize: number;
 }
-const ElementsGroup = ({
-  selectEvent,
-  groupElements,
-  setRoutine,
-  routine,
-}: elementsGroupProps) => {
+const ElementsGroup = ({ selectEvent, groupElements, setRoutine, routine, fontSize }: elementsGroupProps) => {
   return (
-    <div className="elements__group">
+    <div
+      className="elements__group"
+      style={{ fontSize: `${fontSize}rem` }} // 動的に変わるようにするため
+    >
       {Object.entries(groupElements as Object).map(([rowKey, rowElements]) => (
         <div className="elements__row" key={rowKey}>
           {Object.entries(rowElements as Object).map(([column_number, element]) => (
