@@ -368,8 +368,8 @@ html {
 
   .elements__zoom {
     position: absolute;
-    bottom: 1.5rem;
-    right: 2rem;
+    bottom: 0.5rem;
+    right: 0.5rem;
     border-radius: 1rem;
 
     display: flex;
@@ -396,8 +396,8 @@ html {
       }
 
       svg {
-        width: 1.5rem;
-        height: 1.5rem;
+        width: 2rem;
+        height: 2rem;
       }
     }
   }
@@ -868,6 +868,13 @@ PC mode
     .elements__zoom {
       bottom: 2rem;
       right: 2.5rem;
+
+      .elements__zoom-icon {
+        svg {
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+      }
     }
   }
   /********************************************
