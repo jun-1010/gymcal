@@ -1281,7 +1281,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             routine={routine}
             categorizedElements={categorizedElements}
             title="ひねり技制限(シュタルダーリバルコ系)"
-            targetElementType={ElementType.鉄棒_ひねり技制限_シュタルダーリバルコ系}
+            targetElementType={ElementType.鉄棒_ひねり技制限_シートリバルコ系}
             descriptionSentence="以下の種類のひねり技は1演技中1つまで使用できます。"
           />
 
