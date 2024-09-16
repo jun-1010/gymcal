@@ -12,59 +12,24 @@ interface HeaderProps {
   routine: RoutineElement[];
 }
 
-const Header = ({
-  selectEvent,
-  setSelectEvent,
-  routineOpen,
-  setRoutineOpen,
-  isMobile,
-  routine,
-}: HeaderProps) => {
+const Header = ({ selectEvent, setSelectEvent, routineOpen, setRoutineOpen, isMobile, routine }: HeaderProps) => {
   return (
     <div className="header">
-      {isMobile ? (
-        <>
-          <div className="header__left">
-            <h1 className="header__title">
-              <a href="/">GymCal</a>
-            </h1>
-            <HeaderEventButtons
-              selectEvent={selectEvent}
-              setSelectEvent={setSelectEvent}
-              isMobile={isMobile}
-            />
-          </div>
-          <div className="header__right">
-            <HeaderIcons
-              routineOpen={routineOpen}
-              setRoutineOpen={setRoutineOpen}
-              isMobile={isMobile}
-              badgeContent={routine.length}
-            />
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="header__left">
-            <h1 className="header__title">
-              <a href="/">GymCal</a>
-            </h1>
-          </div>
-          <HeaderEventButtons
-            selectEvent={selectEvent}
-            setSelectEvent={setSelectEvent}
-            isMobile={isMobile}
-          />
-          <div className="header__right">
-            <HeaderIcons
-              routineOpen={routineOpen}
-              setRoutineOpen={setRoutineOpen}
-              isMobile={isMobile}
-              badgeContent={routine.length}
-            />
-          </div>
-        </>
-      )}
+      <div className="header__left">
+        <a className="header__title" href="./">
+          <img src="./icon_枠なし_透過.png" alt="" />
+          <p>GymCal</p>
+        </a>
+      </div>
+      <HeaderEventButtons selectEvent={selectEvent} setSelectEvent={setSelectEvent} isMobile={isMobile} />
+      <div className="header__right">
+        <HeaderIcons
+          routineOpen={routineOpen}
+          setRoutineOpen={setRoutineOpen}
+          isMobile={isMobile}
+          badgeContent={routine.length}
+        />
+      </div>
     </div>
   );
 };
