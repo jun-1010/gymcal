@@ -1,12 +1,6 @@
 import React from "react";
 import { getElementStatus, RoutineElement } from "../../utilities/RoutineUtil";
-import {
-  difficulties,
-  ElementStatus,
-  Events,
-  getElementStatusName,
-  statusClass,
-} from "../../utilities/Type";
+import { difficulties, ElementStatus, Events, getElementStatusName, statusClass } from "../../utilities/Type";
 import { Element } from "../../utilities/ElementUtil";
 
 interface ElementsTileProps {
@@ -17,13 +11,7 @@ interface ElementsTileProps {
   elementsTileKey: string;
 }
 
-const ElementsTile = ({
-  selectEvent,
-  element,
-  setRoutine,
-  routine,
-  elementsTileKey,
-}: ElementsTileProps) => {
+const ElementsTile = ({ selectEvent, element, setRoutine, routine, elementsTileKey }: ElementsTileProps) => {
   // 技選択時のhandle関数
   const handleElementClick = (element: Element) => {
     if (getElementStatus(selectEvent, routine, element) === ElementStatus.選択済み) {
@@ -53,36 +41,30 @@ const ElementsTile = ({
     // 選択済み → 選択済み(技番号)
     if (status === ElementStatus.選択済み) {
       const index = routine.findIndex((e) => e.id === element.id);
-      return (
-        <div className="common__label common__label--active">{`選択済み(${
-          index + 1
-        }技目)`}</div>
-      );
+      return <div className="common__label common__label--active elements__label">{`選択済み(${index + 1}技目)`}</div>;
     }
     // 同一枠選択済み → 同一枠選択済み(技番号)
     if (status === ElementStatus.同一枠選択済み) {
       const code = routine.find((e) => e.code === element.code)?.code;
-      return <div className="common__label">{`同一枠(${code})`}</div>;
+      return <div className="common__label elements__label">{`同一枠(${code})`}</div>;
     }
     // 技数制限_グループ → 技数制限_グループ
     if (status === ElementStatus.技数制限_グループ) {
-      return <div className="common__label">グループ技数制限</div>;
+      return <div className="common__label elements__label">グループ技数制限</div>;
     }
     // 技数制限_全体 → 技数制限_全体
     if (status === ElementStatus.技数制限_全体) {
-      return <div className="common__label">全体技数制限</div>;
+      return <div className="common__label elements__label">全体技数制限</div>;
     }
     // それ以外は状態名のラストフレーズ
-    return <div className="common__label">{getElementStatusName(status)}</div>;
+    return <div className="common__label elements__label">{getElementStatusName(status)}</div>;
   };
 
   return (
     <React.Fragment key={elementsTileKey}>
       {element.id ? (
         <div
-          className={`elements__tile ${statusClass(
-            getElementStatus(selectEvent, routine, element)
-          )}`}
+          className={`elements__tile ${statusClass(getElementStatus(selectEvent, routine, element))}`}
           key={elementsTileKey}
           onClick={() => {
             handleElementClick(element);
@@ -94,7 +76,7 @@ const ElementsTile = ({
                 getElementStatus(selectEvent, routine, element) === ElementStatus.選択済み
                   ? "common__label--active"
                   : ""
-              }`}
+              } elements__label`}
             >
               {selectEvent === Events.跳馬
                 ? (element.difficulty / 10).toFixed(1)

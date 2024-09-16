@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { ElementGroup, ElementType, Events } from "../../utilities/Type";
 import { getRoutineElementsByType, RoutineElement } from "../../utilities/RoutineUtil";
 import { Element, CategorizedElements, getElementsByType } from "../../utilities/ElementUtil";
-import RoutineRule from "../atoms/RoutineRule";
+import RoutineRule from "./RoutineRule";
 
 type SimpleTypeCountRuleProps = {
   selectEvent: Events;
@@ -55,7 +55,8 @@ const SimpleTypeCountRule: FC<SimpleTypeCountRuleProps> = ({
                 <tr key={index} className="rules__table-row">
                   {limitCodes.find((routineElement) => routineElement.id === element.id) ? (
                     <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
-                      {element.code && element.code + "."}{element.alias || element.name} (選択中)
+                      {element.code && element.code + "."}
+                      {element.alias || element.name} (選択中)
                     </td>
                   ) : (
                     <td className="rules__table-cell rules__table-cell--left">

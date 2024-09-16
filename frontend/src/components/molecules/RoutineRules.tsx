@@ -33,7 +33,7 @@ import {
 import RoutineRule from "../atoms/RoutineRule";
 import { calculateVTScore } from "../../utilities/RoutineVTUtil";
 import { checkOneRailBeginLimit } from "../../utilities/RoutinePBUtil";
-import SimpleTypeCountRule from "../quarks/SimpleTypeCountRule";
+import SimpleTypeCountRule from "../atoms/SimpleTypeCountRule";
 
 // 同一枠の技を持つ技のコードを取得
 const getSameSlotCodes = (routine: RoutineElement[], categorizedElements: CategorizedElements) => {

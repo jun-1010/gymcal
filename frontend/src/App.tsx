@@ -219,7 +219,8 @@ const App: React.FC = () => {
     <div className="App">
       {isLoading && (
         <div className={`loading ${!isVisible ? "loading--hidden" : ""}`}>
-          <img src="./icon512.png" alt="Loading..." className={`loading__icon`} />
+          <img src="./icon_枠なし_透過.png" alt="Loading..." className={`loading__icon`} />
+          {/* <img src="./icon512.png" alt="Loading..." className={`loading__icon`} /> */}
           <p></p>
         </div>
       )}
