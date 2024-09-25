@@ -190,17 +190,17 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                   <span style={{ fontWeight: "bold" }}>最高難度の技</span>
                   に応じてグループ得点が付与されます。
                 </p>
-                <table className="rules__table-table">
+                <table className="common__table">
                   <tbody>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--3rem">難度</td>
-                      <td className={`rules__table-cell rules__table-cell--3rem`}>A~C</td>
-                      <td className={`rules__table-cell rules__table-cell--3rem`}>D以上</td>
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--3rem">難度</td>
+                      <td className={`common__table-cell common__table-cell--3rem`}>A~C</td>
+                      <td className={`common__table-cell common__table-cell--3rem`}>D以上</td>
                     </tr>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--3rem">加点</td>
-                      <td className={`rules__table-cell rules__table-cell--3rem`}>0.3</td>
-                      <td className={`rules__table-cell rules__table-cell--3rem`}>0.5</td>
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--3rem">加点</td>
+                      <td className={`common__table-cell common__table-cell--3rem`}>0.3</td>
+                      <td className={`common__table-cell common__table-cell--3rem`}>0.5</td>
                     </tr>
                   </tbody>
                 </table>
@@ -252,17 +252,17 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionNode={
               <div className="rules__description">
                 <p>技を組み合わせると加点が付与されます。</p>
-                <table className="rules__table-table">
+                <table className="common__table">
                   <tbody>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--6rem">組み合わせ</td>
-                      <td className={`rules__table-cell  rules__table-cell--6rem`}>D以上+BorC</td>
-                      <td className={`rules__table-cell  rules__table-cell--6rem`}>D以上+D以上</td>
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--6rem">組み合わせ</td>
+                      <td className={`common__table-cell  common__table-cell--6rem`}>D以上+BorC</td>
+                      <td className={`common__table-cell  common__table-cell--6rem`}>D以上+D以上</td>
                     </tr>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--6rem">加点</td>
-                      <td className={`rules__table-cell rules__table-cell--6rem`}>0.1</td>
-                      <td className={`rules__table-cell rules__table-cell--6rem`}>0.2</td>
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--6rem">加点</td>
+                      <td className={`common__table-cell common__table-cell--6rem`}>0.1</td>
+                      <td className={`common__table-cell common__table-cell--6rem`}>0.2</td>
                     </tr>
                   </tbody>
                 </table>
@@ -319,55 +319,67 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionNode={
               <div className="rules__description">
                 <p>技を組み合わせると加点が付与されます。</p>
-                <table className="rules__table-table">
+                <table className="common__table">
                   <tbody>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">手放し技</td>
-                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">手放し技</td>
-                      <td className="rules__table-cell rules__table-cell--6rem rules__table-cell--left">加点</td>
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--5rem common__table-cell--left">手放し技</td>
+                      <td className="common__table-cell common__table-cell--5rem common__table-cell--left">手放し技</td>
+                      <td className="common__table-cell common__table-cell--6rem common__table-cell--left">加点</td>
                     </tr>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">C 難度</td>
-                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度以上</td>
-                      <td className="rules__table-cell rules__table-cell--6rem rules__table-cell--left">
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--5rem common__table-cell--left">C 難度</td>
+                      <td className="common__table-cell common__table-cell--5rem common__table-cell--left">
+                        D 難度以上
+                      </td>
+                      <td className="common__table-cell common__table-cell--6rem common__table-cell--left">
                         0.1（逆も可）
                       </td>
                     </tr>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度</td>
-                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度</td>
-                      <td className="rules__table-cell rules__table-cell--6rem rules__table-cell--left">0.1</td>
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--5rem common__table-cell--left">D 難度</td>
+                      <td className="common__table-cell common__table-cell--5rem common__table-cell--left">D 難度</td>
+                      <td className="common__table-cell common__table-cell--6rem common__table-cell--left">0.1</td>
                     </tr>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度以上</td>
-                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">E 難度以上</td>
-                      <td className="rules__table-cell rules__table-cell--6rem rules__table-cell--left">
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--5rem common__table-cell--left">
+                        D 難度以上
+                      </td>
+                      <td className="common__table-cell common__table-cell--5rem common__table-cell--left">
+                        E 難度以上
+                      </td>
+                      <td className="common__table-cell common__table-cell--6rem common__table-cell--left">
                         0.2（逆も可）
                       </td>
                     </tr>
                   </tbody>
                 </table>
 
-                <table className="rules__table-table">
+                <table className="common__table">
                   <tbody>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--5rem common__table-cell--left">
                         手放し技以外
                       </td>
-                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">手放し技</td>
-                      <td className="rules__table-cell rules__table-cell--6rem rules__table-cell--left">加点</td>
+                      <td className="common__table-cell common__table-cell--5rem common__table-cell--left">手放し技</td>
+                      <td className="common__table-cell common__table-cell--6rem common__table-cell--left">加点</td>
                     </tr>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度</td>
-                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度以上</td>
-                      <td className="rules__table-cell rules__table-cell--6rem rules__table-cell--left">
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--5rem common__table-cell--left">D 難度</td>
+                      <td className="common__table-cell common__table-cell--5rem common__table-cell--left">
+                        D 難度以上
+                      </td>
+                      <td className="common__table-cell common__table-cell--6rem common__table-cell--left">
                         0.1（逆も可）
                       </td>
                     </tr>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">D 難度以上</td>
-                      <td className="rules__table-cell rules__table-cell--5rem rules__table-cell--left">E 難度以上</td>
-                      <td className="rules__table-cell rules__table-cell--6rem rules__table-cell--left">
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--5rem common__table-cell--left">
+                        D 難度以上
+                      </td>
+                      <td className="common__table-cell common__table-cell--5rem common__table-cell--left">
+                        E 難度以上
+                      </td>
+                      <td className="common__table-cell common__table-cell--6rem common__table-cell--left">
                         0.2（逆も可）
                       </td>
                     </tr>
@@ -425,28 +437,28 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
               descriptionNode={
                 <div className="rules__description">
                   <p>少ない技数の演技には減点が発生します(ND)。</p>
-                  <table className="rules__table-table">
+                  <table className="common__table">
                     <tbody>
-                      <tr className="rules__table-row">
-                        <td className="rules__table-cell rules__table-cell--3rem">技数</td>
+                      <tr className="common__table-row">
+                        <td className="common__table-cell common__table-cell--3rem">技数</td>
                         {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
                           <td
                             key={index}
-                            className={`rules__table-cell rules__table-cell--1-5rem ${
-                              routine.length === index ? "rules__table-cell--active" : ""
+                            className={`common__table-cell common__table-cell--1-5rem ${
+                              routine.length === index ? "common__table-cell--active" : ""
                             }`}
                           >
                             {index}
                           </td>
                         ))}
                       </tr>
-                      <tr className="rules__table-row">
-                        <td className="rules__table-cell rules__table-cell--3rem">減点</td>
+                      <tr className="common__table-row">
+                        <td className="common__table-cell common__table-cell--3rem">減点</td>
                         {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
                           <td
                             key={index}
-                            className={`rules__table-cell rules__table-cell--1-5rem ${
-                              routine.length === index ? "rules__table-cell--active" : ""
+                            className={`common__table-cell common__table-cell--1-5rem ${
+                              routine.length === index ? "common__table-cell--active" : ""
                             }`}
                           >
                             {deduction}
@@ -879,70 +891,39 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                   使用できます。
                 </p>
                 <p>・OK例:異なるEGで終末姿勢が同一</p>
-                <table className="rules__table-table">
+                <table className="common__table">
                   <tbody>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--3rem">EG2</td>
-                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--3rem">EG2</td>
+                      <td className={`common__table-cell common__table-cell--12rem common__table-cell--left`}>
                         II52.アザリアン
                       </td>
                     </tr>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
-                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--3rem">EG3</td>
+                      <td className={`common__table-cell common__table-cell--12rem common__table-cell--left`}>
                         III16.ホンマ十字懸垂
                       </td>
                     </tr>
                   </tbody>
                 </table>
                 <p>・NG例:同一EGで終末姿勢が同一</p>
-                <table className="rules__table-table">
+                <table className="common__table">
                   <tbody>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
-                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--3rem">EG3</td>
+                      <td className={`common__table-cell common__table-cell--12rem common__table-cell--left`}>
                         III47.後方け上がり中水平
                       </td>
                     </tr>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
-                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--3rem">EG3</td>
+                      <td className={`common__table-cell common__table-cell--12rem common__table-cell--left`}>
                         III71.後ろ振り上がり中水平
                       </td>
                     </tr>
                   </tbody>
                 </table>
-                {/* <p>脚前挙と脚上挙の2姿勢については別の姿勢として扱います。</p>
-                <p>・OK例:同一EGで脚前挙と脚上挙</p>
-                <table className="rules__table-table">
-                  <tbody>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
-                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>III2.前振り上がり脚前挙</td>
-                    </tr>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
-                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>III3.前振り上がり脚上挙</td>
-                    </tr>
-                  </tbody>
-                </table>
-                <p> ・NG例:同一EGで終末姿勢が同一 </p>
-                <table className="rules__table-table">
-                  <tbody>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
-                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
-                        III2.前振り上がり脚前挙
-                      </td>
-                    </tr>
-                    <tr className="rules__table-row">
-                      <td className="rules__table-cell rules__table-cell--3rem">EG3</td>
-                      <td className={`rules__table-cell rules__table-cell--12rem rules__table-cell--left`}>
-                        III8.け上がり脚前挙
-                      </td>
-                    </tr>
-                  </tbody>
-                </table> */}
               </div>
             }
             show={selectEvent === Events.つり輪}
@@ -1137,7 +1118,7 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                 <p>対象の技は以下のとおりです。</p>
                 <p className="rules__section-line" />
                 <p>単棒倒立で終わる技</p>
-                <table className="rules__table-table">
+                <table className="common__table">
                   <tbody>
                     {pbOneRailEndElements.map((element, index) => {
                       const foundElement = pbOneRailLimitCodes.find(
@@ -1145,12 +1126,12 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                       );
 
                       return (
-                        <tr key={index} className="rules__table-row">
+                        <tr key={index} className="common__table-row">
                           <td
-                            className={`rules__table-cell rules__table-cell--left ${
-                              foundElement && "rules__table-cell--active"
+                            className={`common__table-cell common__table-cell--left ${
+                              foundElement && "common__table-cell--active"
                             }
-                            ${foundElement && foundElement.is_qualified === false && "rules__table-cell--limit"}`}
+                            ${foundElement && foundElement.is_qualified === false && "common__table-cell--limit"}`}
                           >
                             {element.code}.{element.alias || element.name}
                             {foundElement && (foundElement.is_qualified ? " (選択中 / 有効)" : " (選択中 / 無効)")}
@@ -1161,24 +1142,24 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
                   </tbody>
                 </table>
                 <p>単棒倒立から始まるヒーリー系</p>
-                <table className="rules__table-table">
+                <table className="common__table">
                   <tbody>
                     {pbOneRailBeginElements.map((element, index) => (
-                      <tr key={index} className="rules__table-row">
+                      <tr key={index} className="common__table-row">
                         {pbOneRailLimitCodes.find(
                           (routineElement) => routineElement.id === element.id && routineElement.is_qualified
                         ) ? (
-                          <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
+                          <td className="common__table-cell common__table-cell--left common__table-cell--active">
                             {element.code}.{element.alias || element.name} (選択中)
                           </td>
                         ) : (
                           <React.Fragment>
                             {checkOneRailBeginLimit(routine, element) ? (
-                              <td className="rules__table-cell rules__table-cell--left rules__table-cell--limit">
+                              <td className="common__table-cell common__table-cell--left common__table-cell--limit">
                                 {element.code}.{element.alias || element.name} (選択不可)
                               </td>
                             ) : (
-                              <td className="rules__table-cell rules__table-cell--left">
+                              <td className="common__table-cell common__table-cell--left">
                                 {element.code}.{element.alias || element.name} (選択可能)
                               </td>
                             )}
