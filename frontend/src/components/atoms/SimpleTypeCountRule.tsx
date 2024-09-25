@@ -49,17 +49,17 @@ const SimpleTypeCountRule: FC<SimpleTypeCountRuleProps> = ({
       descriptionNode={
         <div className="rules__description">
           <p>{descriptionSentence}</p>
-          <table className="rules__table-table">
+          <table className="common__table">
             <tbody>
               {typeElements.map((element, index) => (
-                <tr key={index} className="rules__table-row">
+                <tr key={index} className="common__table-row">
                   {limitCodes.find((routineElement) => routineElement.id === element.id) ? (
-                    <td className="rules__table-cell rules__table-cell--left rules__table-cell--active">
+                    <td className="common__table-cell common__table-cell--left common__table-cell--active">
                       {element.code && element.code + "."}
                       {element.alias || element.name} (選択中)
                     </td>
                   ) : (
-                    <td className="rules__table-cell rules__table-cell--left">
+                    <td className="common__table-cell common__table-cell--left">
                       {element.code && element.code + "."}
                       {element.alias || element.name}
                     </td>
