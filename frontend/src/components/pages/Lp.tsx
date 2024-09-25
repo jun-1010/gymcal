@@ -44,8 +44,8 @@ const Lp = ({ setIsLpVisible }: LpProps) => {
           </p>
           <p>そう考え、このアプリを開発しました。</p>
         </div>
-        <div className="lp__video-box">
-          <video src="./LP用デモ動画.mov" loop autoPlay muted></video>
+        <div className="lp__image-box">
+          <img src="./LP用デモ動画.gif" alt="" />
           <p className="lp__video-description">技を選択すると得点が自動計算されます</p>
         </div>
       </div>
