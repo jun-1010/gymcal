@@ -15,6 +15,7 @@ import useMedia from "use-media";
 import Header from "./components/organisms/Header";
 import Elements from "./components/organisms/Elements";
 import Routine from "./components/organisms/Routine";
+import Lp from "./components/pages/Lp";
 
 const url = "http://54.250.128.188:8000/api/elements";
 // const url = "http://localhost:8000/api/elements";
@@ -30,7 +31,9 @@ const App: React.FC = () => {
   const isMobile = useMedia({ maxWidth: "850px" });
   const [isInitialized, setIsInitialized] = useState(false); // 初回読み込み完了時にtrue
   const [isLoading, setIsLoading] = useState(true); // ローディング状態
-  const [isVisible, setIsVisible] = useState(true); // true なら表示, false なら非表示
+  const [isVisible, setIsVisible] = useState(true); // true ならローディング画面表示, false なら非表示
+  const [isLpVisible, setIsLpVisible] = useState(true); // LPの表示状態
+  const [isLpHidden, setIsLpHidden] = useState(false); // 「次回から表示しない」か否か
 
   const fetchData = async () => {
     try {
@@ -43,27 +46,41 @@ const App: React.FC = () => {
     }
   };
 
+  // LP判定
+  useEffect(() => {
+    // 「次回から表示しない」が選択していない場合は何もしない
+    const storedIsLpHidden = localStorage.getItem("isLpHidden") as string | null;
+    // null(= 初アクセス) の場合
+    if (!storedIsLpHidden) {
+      localStorage.setItem("isLpHidden", "false");
+      setIsLpHidden(false);
+      setIsLpVisible(true);
+      return;
+    }
+    // true または false の場合はその値をセット
+    const isLpHidden = storedIsLpHidden === "true";
+    if (isLpHidden) {
+      setIsLpVisible(false);
+    }
+    setIsLpHidden(isLpHidden);
+  }, []);
+
   // ローディング処理
   useEffect(() => {
     // フェードアウト
-    const fadeOutTimer = setTimeout(() => {
+    setTimeout(() => {
       setIsVisible(false);
     }, 2000);
 
-    // ローディングを完全に終了
-    const loadingEndTimer = setTimeout(() => {
+    // フェードアウト後にDOMを無効化するために使う
+    setTimeout(() => {
       setIsLoading(false);
     }, 2500);
-
-    return () => {
-      clearTimeout(fadeOutTimer);
-      clearTimeout(loadingEndTimer);
-    };
   }, []);
 
-  // 初回読み込み判定
+  // 読み込み判定
   useEffect(() => {
-    // 初回読み込み完了済みなら何もしない
+    // 読み込み完了済みなら何もしない
     if (isInitialized) {
       return;
     }
@@ -220,10 +237,10 @@ const App: React.FC = () => {
       {isLoading && (
         <div className={`loading ${!isVisible ? "loading--hidden" : ""}`}>
           <img src="./icon_枠なし_透過.png" alt="Loading..." className={`loading__icon`} />
-          {/* <img src="./icon512.png" alt="Loading..." className={`loading__icon`} /> */}
           <p></p>
         </div>
       )}
+      {!isLpHidden && isLpVisible && <Lp setIsLpVisible={setIsLpVisible} />}
       <Header
         selectEvent={selectEvent}
         setSelectEvent={setSelectEvent}
