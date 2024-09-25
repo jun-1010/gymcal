@@ -268,13 +268,13 @@ LP
       }
     }
 
-    .lp__video-box {
+    .lp__image-box {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 0;
 
-      video {
+      img {
         margin-top: 2rem;
         width: 100%;
       }
