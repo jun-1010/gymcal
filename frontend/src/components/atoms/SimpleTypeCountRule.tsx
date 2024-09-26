@@ -1,10 +1,13 @@
 import React, { FC } from "react";
-import { ElementGroup, ElementType, Events } from "../../utilities/Type";
+import { ElementGroup, ElementStatus, ElementType, Events } from "../../utilities/Type";
 import { getRoutineElementsByType, RoutineElement } from "../../utilities/RoutineUtil";
 import { Element, CategorizedElements, getElementsByType } from "../../utilities/ElementUtil";
 import RoutineRule from "./RoutineRule";
 
 type SimpleTypeCountRuleProps = {
+  elementStatus: ElementStatus;
+  detailOpens: number[];
+  setDetailOpens: React.Dispatch<React.SetStateAction<number[]>>;
   selectEvent: Events;
   showEvent: Events;
   routine: RoutineElement[];
@@ -15,6 +18,9 @@ type SimpleTypeCountRuleProps = {
 };
 
 const SimpleTypeCountRule: FC<SimpleTypeCountRuleProps> = ({
+  elementStatus, // リンクする技の状態
+  detailOpens,
+  setDetailOpens,
   selectEvent, // 現在の種目
   showEvent, // このルールを表示する種目
   routine,
@@ -32,6 +38,9 @@ const SimpleTypeCountRule: FC<SimpleTypeCountRuleProps> = ({
 
   return (
     <RoutineRule
+      detailOpens={detailOpens}
+      setDetailOpens={setDetailOpens}
+      elementStatus={elementStatus}
       summaryNode={
         <span className="rules__summary-title">
           {title}

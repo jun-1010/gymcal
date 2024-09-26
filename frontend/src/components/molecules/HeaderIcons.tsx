@@ -53,7 +53,7 @@ const HeaderIcons = ({
                 rotate: "180deg",
               }}
             />
-          </StyledBadge>
+          </StyledBadge> 
         </div>
       ) : (
         <></>

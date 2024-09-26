@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { categorizeElements, getGroupElements, GroupElements } from "./utilities/ElementUtil";
 import "./App.css";
 import { Events, ElementGroup } from "./utilities/Type";
@@ -16,6 +16,7 @@ import Header from "./components/organisms/Header";
 import Elements from "./components/organisms/Elements";
 import Routine from "./components/organisms/Routine";
 import Lp from "./components/pages/Lp";
+import Hint from "./components/pages/Hint";
 
 const url = "http://54.250.128.188:8000/api/elements";
 // const url = "http://localhost:8000/api/elements";
@@ -34,6 +35,8 @@ const App: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true); // true ならローディング画面表示, false なら非表示
   const [isLpVisible, setIsLpVisible] = useState(true); // LPの表示状態
   const [isLpHidden, setIsLpHidden] = useState(false); // 「次回から表示しない」か否か
+  const [hintNum, setHintNum] = useState(-1); // 選択できない技を選択しようとした時に原因のルール番号を格納する(ヒントの表示状態にも利用する)
+  const [detailOpens, setDetailOpens] = useState([] as number[]); // 詳細表示中のルールの番号を格納する
 
   const fetchData = async () => {
     try {
@@ -241,6 +244,15 @@ const App: React.FC = () => {
         </div>
       )}
       {!isLpHidden && isLpVisible && <Lp setIsLpVisible={setIsLpVisible} />}
+      {hintNum !== -1 && (
+        <Hint
+          hintNum={hintNum}
+          setHintNum={setHintNum}
+          setRoutineOpen={setRoutineOpen}
+          isMobile={isMobile}
+          setDetailOpens={setDetailOpens}
+        />
+      )}
       <Header
         selectEvent={selectEvent}
         setSelectEvent={setSelectEvent}
@@ -260,6 +272,7 @@ const App: React.FC = () => {
             groupElements={groupElements}
             routine={routine}
             setRoutine={setRoutine}
+            setHintNum={setHintNum}
           />
           {/* 演技構成表 */}
           <Routine
@@ -269,6 +282,8 @@ const App: React.FC = () => {
             routineOpen={routineOpen}
             setRoutineOpen={setRoutineOpen}
             categorizedElements={categorizedElements}
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
           />
         </div>
       ) : (

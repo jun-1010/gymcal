@@ -129,7 +129,7 @@ const RoutineTable = ({
               </p>
             </div>
             <div
-              className="routine__empty-button"
+              className="common__button"
               onClick={() => {
                 setRoutineOpen(0);
               }}

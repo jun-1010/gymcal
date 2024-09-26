@@ -73,7 +73,10 @@ const Lp = ({ setIsLpVisible }: LpProps) => {
           <img src="./icon_枠なし_透過.png" alt="" />
         </a>
         <p>
-          <a href="https://x.com/Gymnastics_Jun">Jun</a>が運営しています。
+          <a href="https://x.com/Gymnastics_Jun" target="_blank">
+            Jun
+          </a>
+          が運営しています。
         </p>
       </div>
     </div>

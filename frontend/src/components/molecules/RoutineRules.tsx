@@ -18,10 +18,12 @@ import {
   isGroupLimited,
   RoutineElement,
   getRoutineElementsByType,
+  getElementStatus,
 } from "../../utilities/RoutineUtil";
 import {
   ELEMENT_COUNT_DEDUCTIONS,
   ElementGroup,
+  ElementStatus,
   ElementType,
   Events,
   RuleKey,
@@ -78,9 +80,17 @@ interface RoutineRulesProps {
   selectEvent: number;
   routine: RoutineElement[];
   categorizedElements: CategorizedElements;
+  detailOpens: number[];
+  setDetailOpens: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
-export const RoutineRules = ({ selectEvent, routine, categorizedElements }: RoutineRulesProps) => {
+export const RoutineRules = ({
+  selectEvent,
+  routine,
+  categorizedElements,
+  detailOpens,
+  setDetailOpens,
+}: RoutineRulesProps) => {
   const sameSlotCodes = getSameSlotCodes(routine, categorizedElements);
   const limitedGroups = getLimitedGroups(routine);
   const phRussianLimitCodes = selectEvent === Events.あん馬 ? getPHRussianLimitCodes(routine) : [];
@@ -114,6 +124,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
 
           {/* Dスコア */}
           <RoutineRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
             summaryNode={
               <span className="rules__summary-title">
                 {RuleKey(Rules.Dスコア)}
@@ -138,6 +150,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
 
           {/* 跳馬_Dスコア */}
           <RoutineRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
             summaryNode={
               <span className="rules__summary-title">
                 Dスコア
@@ -171,6 +185,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
 
           {/* グループ得点 */}
           <RoutineRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
             summaryNode={
               <span className="rules__summary-title">
                 {RuleKey(Rules.グループ得点)}
@@ -217,6 +233,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
 
           {/* 難度点 */}
           <RoutineRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
             summaryNode={
               <span className="rules__summary-title">
                 {RuleKey(Rules.難度点)}
@@ -238,6 +256,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
 
           {/* 床_組み合わせ加点 */}
           <RoutineRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
             summaryNode={
               <span className="rules__summary-title">
                 {RuleName(Rules.床_組み合わせ加点)}
@@ -278,6 +298,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
 
           {/* つり輪_組み合わせ加点 */}
           <RoutineRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
             summaryNode={
               <span className="rules__summary-title">
                 {RuleName(Rules.つり輪_組み合わせ加点)}
@@ -306,6 +328,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
 
           {/* 鉄棒_組み合わせ加点 */}
           <RoutineRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
             summaryNode={
               <span className="rules__summary-title">
                 組み合わせ加点
@@ -399,6 +423,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
 
             {/* ニュートラルディダクション */}
             <RoutineRule
+              detailOpens={detailOpens}
+              setDetailOpens={setDetailOpens}
               summaryNode={
                 <span className="rules__summary-title">
                   {RuleKey(Rules.ニュートラルディダクション)}
@@ -424,6 +450,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
 
             {/* 技数減点 */}
             <RoutineRule
+              detailOpens={detailOpens}
+              setDetailOpens={setDetailOpens}
               summaryNode={
                 <span className="rules__summary-title">
                   {RuleKey(Rules.技数減点)}
@@ -474,6 +502,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
 
             {/* 床_ダブル系 */}
             <RoutineRule
+              detailOpens={detailOpens}
+              setDetailOpens={setDetailOpens}
               summaryNode={
                 <span className="rules__summary-title">
                   {RuleName(Rules.床_ダブル系不足)}
@@ -494,6 +524,8 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
 
             {/* つり輪_振動倒立不足 */}
             <RoutineRule
+              detailOpens={detailOpens}
+              setDetailOpens={setDetailOpens}
               summaryNode={
                 <span className="rules__summary-title">
                   {RuleName(Rules.つり輪_振動倒立不足)}
@@ -516,13 +548,21 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
           </div>
         )}
 
+        {/******************************************************************
+         * 制限ルール
+         ******************************************************************/}
         <div className="rules__section">
           <div className="rules__section-header">
-            <p className="rules__section-title">制限ルール</p>
+            <p className="rules__section-title" id="limit-rules">
+              制限ルール
+            </p>
             <p className="rules__section-description">条件を満たした技に選択制限がかかるルール</p>
           </div>
           {/* 同一枠制限 */}
           <RoutineRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.同一枠制限}
             summaryNode={
               <span className="rules__summary-title">
                 {RuleKey(Rules.同一枠制限)}
@@ -557,6 +597,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
           />
           {/* グループ技数制限 */}
           <RoutineRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.グループ技数制限}
             summaryNode={
               <span className="rules__summary-title">
                 {RuleKey(Rules.グループ技数制限)}
@@ -591,6 +634,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
           />
           {/* 全体技数制限 */}
           <RoutineRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.全体技数制限}
             summaryNode={
               <span className="rules__summary-title">
                 {RuleKey(Rules.全体技数制限)}
@@ -610,6 +656,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
           />
           {/* 終末技制限 */}
           <RoutineRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.終末技制限}
             summaryNode={
               <span className="rules__summary-title">
                 {RuleKey(Rules.終末技制限)}
@@ -627,6 +676,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             show={selectEvent !== Events.床 && selectEvent !== Events.跳馬}
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.床_力技制限}
             selectEvent={selectEvent}
             showEvent={Events.床}
             routine={routine}
@@ -636,6 +688,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の力技は1演技に1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.床_旋回制限}
             selectEvent={selectEvent}
             showEvent={Events.床}
             routine={routine}
@@ -645,6 +700,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の旋回技は1演技に1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.あん馬_縦向き移動技制限}
             selectEvent={selectEvent}
             showEvent={Events.あん馬}
             routine={routine}
@@ -655,6 +713,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
           />
           {/* あん馬_ロシアン転向技制限 */}
           <RoutineRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.あん馬_ロシアン転向技制限}
             summaryNode={
               <span className="rules__summary-title">
                 {RuleName(Rules.あん馬_ロシアン転向技制限)}
@@ -682,6 +743,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             show={selectEvent === Events.あん馬}
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.あん馬_倒立技制限}
             selectEvent={selectEvent}
             showEvent={Events.あん馬}
             routine={routine}
@@ -691,6 +755,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の倒立する技は終末技を除いて1演技中2つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.あん馬_ロシアン転向移動技1}
             selectEvent={selectEvent}
             showEvent={Events.あん馬}
             routine={routine}
@@ -700,6 +767,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下のロシアン転向移動技は1演技中2つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.あん馬_移動ひねり技制限}
             selectEvent={selectEvent}
             showEvent={Events.あん馬}
             routine={routine}
@@ -709,6 +779,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下のひねりを伴う3/3移動技は1演技中2つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.あん馬_ひねり技制限}
             selectEvent={selectEvent}
             showEvent={Events.あん馬}
             routine={routine}
@@ -718,6 +791,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の1回ひねりを伴う技は1演技中2つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.あん馬_ショーンべズゴ系}
             selectEvent={selectEvent}
             showEvent={Events.あん馬}
             routine={routine}
@@ -727,6 +803,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下のショーン系及びベズゴ系の技はフロップやコンバイン、倒立技を含め1演技中2つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.あん馬_開脚旋回技制限}
             selectEvent={selectEvent}
             showEvent={Events.あん馬}
             routine={routine}
@@ -736,6 +815,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の開脚旋回で実施される技は終末技は含まずに1演技中4つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.あん馬_ブスナリ系制限}
             selectEvent={selectEvent}
             showEvent={Events.あん馬}
             routine={routine}
@@ -745,6 +827,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下のブスナリ系の技は1演技中1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.あん馬_ロシアン転向移動技2}
             selectEvent={selectEvent}
             showEvent={Events.あん馬}
             routine={routine}
@@ -754,6 +839,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下のロシアン転向移動技は1演技中1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.あん馬_トンフェイ系制限}
             selectEvent={selectEvent}
             showEvent={Events.あん馬}
             routine={routine}
@@ -763,6 +851,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下のトン・フェイ系の移動技は1演技中1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.あん馬_ニンレイエス系制限}
             selectEvent={selectEvent}
             showEvent={Events.あん馬}
             routine={routine}
@@ -772,6 +863,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下のニン・レイエス系の移動技は1演技中1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.あん馬_フロップ系制限}
             selectEvent={selectEvent}
             showEvent={Events.あん馬}
             routine={routine}
@@ -781,6 +875,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下のフロップ系の技は1演技中1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.あん馬_コンバイン系制限}
             selectEvent={selectEvent}
             showEvent={Events.あん馬}
             routine={routine}
@@ -791,6 +888,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
           />
           {/* つり輪_力技制限1 */}
           <RoutineRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.つり輪_力技制限1}
             summaryNode={
               <span className="rules__summary-title">
                 {RuleName(Rules.つり輪_力技制限1)}
@@ -843,6 +943,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
           />
           {/* つり輪_力技制限2 */}
           <RoutineRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.つり輪_力技制限2_脚前挙}
             summaryNode={
               <span className="rules__summary-title">
                 {RuleName(Rules.つり輪_力技制限2)}
@@ -930,6 +1033,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
           />
           {/* 跳馬_グループ制限 */}
           <RoutineRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.跳馬_グループ制限}
             summaryNode={
               <span className="rules__summary-title">
                 {RuleName(Rules.跳馬_グループ制限)}
@@ -960,6 +1066,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
           />
           {/* 跳馬_2技制限 */}
           <RoutineRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.跳馬_2技制限}
             summaryNode={
               <span className="rules__summary-title">
                 {RuleName(Rules.跳馬_2技制限)}
@@ -974,6 +1083,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             show={selectEvent === Events.跳馬}
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.平行棒_宙返り技制限_ドミトリエンコ系}
             selectEvent={selectEvent}
             showEvent={Events.平行棒}
             routine={routine}
@@ -983,6 +1095,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.平行棒_宙返り技制限_ハラダ系}
             selectEvent={selectEvent}
             showEvent={Events.平行棒}
             routine={routine}
@@ -992,6 +1107,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.平行棒_宙返り技制限_パフニュク系}
             selectEvent={selectEvent}
             showEvent={Events.平行棒}
             routine={routine}
@@ -1001,6 +1119,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.平行棒_宙返り技制限_モリスエ系}
             selectEvent={selectEvent}
             showEvent={Events.平行棒}
             routine={routine}
@@ -1010,6 +1131,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.平行棒_宙返り技制限_爆弾カット系}
             selectEvent={selectEvent}
             showEvent={Events.平行棒}
             routine={routine}
@@ -1019,6 +1143,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.平行棒_宙返り技制限_前方ダブル腕支持系}
             selectEvent={selectEvent}
             showEvent={Events.平行棒}
             routine={routine}
@@ -1028,6 +1155,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.平行棒_宙返り技制限_ベーレ系}
             selectEvent={selectEvent}
             showEvent={Events.平行棒}
             routine={routine}
@@ -1037,6 +1167,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.平行棒_宙返り技制限_フォキン系}
             selectEvent={selectEvent}
             showEvent={Events.平行棒}
             routine={routine}
@@ -1046,6 +1179,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.平行棒_宙返り技制限_タナカ系}
             selectEvent={selectEvent}
             showEvent={Events.平行棒}
             routine={routine}
@@ -1055,6 +1191,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.平行棒_宙返り技制限_ギャニオン系}
             selectEvent={selectEvent}
             showEvent={Events.平行棒}
             routine={routine}
@@ -1064,6 +1203,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.平行棒_宙返り技制限_テハダ系}
             selectEvent={selectEvent}
             showEvent={Events.平行棒}
             routine={routine}
@@ -1073,6 +1215,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の宙返り技は1演技中1つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.平行棒_車輪系制限}
             selectEvent={selectEvent}
             showEvent={Events.平行棒}
             routine={routine}
@@ -1082,6 +1227,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の車輪系の技は1演技に2つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.平行棒_棒下宙返り系制限}
             selectEvent={selectEvent}
             showEvent={Events.平行棒}
             routine={routine}
@@ -1091,6 +1239,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の棒下宙返り系の技は1演技に2つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.平行棒_アーム倒立系制限}
             selectEvent={selectEvent}
             showEvent={Events.平行棒}
             routine={routine}
@@ -1101,16 +1252,10 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
           />
           {/* 平行棒_単棒倒立系制限 */}
           <RoutineRule
-            summaryNode={
-              <span className="rules__summary-title">
-                {RuleName(Rules.平行棒_単棒倒立系制限)}
-                {/* {pbOneRailLimitCodes.length > 0 ? (
-                  <div className="rules__summary-labels">
-                    <p className="common__label">✔️</p>
-                  </div>
-                ) : null} */}
-              </span>
-            }
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.平行棒_単棒倒立系制限}
+            summaryNode={<span className="rules__summary-title">{RuleName(Rules.平行棒_単棒倒立系制限)}</span>}
             descriptionNode={
               <div className="rules__description">
                 <p>単棒倒立で終わる振動技は、単棒倒立で始まるヒーリー系に繋げない場合無効になります。</p>
@@ -1174,6 +1319,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             show={selectEvent === Events.平行棒}
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.鉄棒_アドラー系制限}
             selectEvent={selectEvent}
             showEvent={Events.鉄棒}
             routine={routine}
@@ -1183,6 +1331,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下のアドラー系は1演技に2つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.鉄棒_手放し技制限_トカチェフ系}
             selectEvent={selectEvent}
             showEvent={Events.鉄棒}
             routine={routine}
@@ -1192,6 +1343,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の手放し技は1演技中2つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.鉄棒_手放し技制限_コバチ系}
             selectEvent={selectEvent}
             showEvent={Events.鉄棒}
             routine={routine}
@@ -1201,6 +1355,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の手放し技は1演技中2つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.鉄棒_手放し技制限_ギンガー系}
             selectEvent={selectEvent}
             showEvent={Events.鉄棒}
             routine={routine}
@@ -1210,6 +1367,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の手放し技は1演技中2つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.鉄棒_手放し技制限_イェーガー系}
             selectEvent={selectEvent}
             showEvent={Events.鉄棒}
             routine={routine}
@@ -1219,6 +1379,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の手放し技は1演技中2つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.鉄棒_手放し技制限_マルケロフ系}
             selectEvent={selectEvent}
             showEvent={Events.鉄棒}
             routine={routine}
@@ -1228,6 +1391,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の手放し技は1演技中2つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.鉄棒_手放し技制限_ゲイロード系}
             selectEvent={selectEvent}
             showEvent={Events.鉄棒}
             routine={routine}
@@ -1237,6 +1403,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
             descriptionSentence="以下の種類の手放し技は1演技中2つまで使用できます。"
           />
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.鉄棒_ひねり技制限_ヒーリー系}
             selectEvent={selectEvent}
             showEvent={Events.鉄棒}
             routine={routine}
@@ -1247,6 +1416,9 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
           />
 
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.鉄棒_ひねり技制限_リバルコ系}
             selectEvent={selectEvent}
             showEvent={Events.鉄棒}
             routine={routine}
@@ -1257,16 +1429,22 @@ export const RoutineRules = ({ selectEvent, routine, categorizedElements }: Rout
           />
 
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.鉄棒_ひねり技制限_シートリバルコ系}
             selectEvent={selectEvent}
             showEvent={Events.鉄棒}
             routine={routine}
             categorizedElements={categorizedElements}
-            title="ひねり技制限(シュタルダーリバルコ系)"
+            title="ひねり技制限(シートリバルコ系)"
             targetElementType={ElementType.鉄棒_ひねり技制限_シートリバルコ系}
             descriptionSentence="以下の種類のひねり技は1演技中1つまで使用できます。"
           />
 
           <SimpleTypeCountRule
+            detailOpens={detailOpens}
+            setDetailOpens={setDetailOpens}
+            elementStatus={ElementStatus.鉄棒_ひねり技制限_キンテロ系}
             selectEvent={selectEvent}
             showEvent={Events.鉄棒}
             routine={routine}

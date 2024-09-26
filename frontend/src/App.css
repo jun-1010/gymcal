@@ -21,8 +21,8 @@ SP mode(初期スタイル)
   --red-hover-color: #b91c1b;
   --red-active-color: #c9504c;
 
-  --header-height: 5dvh;
-  --header-margin-top-bottom-pc: 1.5rem;
+  --header-height: 6dvh;
+  --header-margin-top-bottom-pc: 1rem;
   --group-tabs-height: 2.5rem;
 }
 
@@ -150,6 +150,16 @@ html {
   .common__table-cell--left {
     justify-content: left;
   }
+}
+
+.common__button {
+  width: fit-content;
+  font-weight: bold;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1rem;
+  border: 0.1rem solid var(--orange-darkest);
+  color: var(--orange-darkest);
+  text-decoration: none;
 }
 
 /**********************************
@@ -338,6 +348,43 @@ LP
 }
 
 /**********************************
+ヒントモーダル
+**********************************/
+.hint {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .hint__contents {
+    width: min(80%, 25rem);
+    height: min(40%, 20rem);
+    background-color: var(--white);
+    border-radius: 1rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+
+    .hint__table {
+      background-color: var(--gray-lighter);
+
+      .hint__table-cell {
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
+/**********************************
 ヘッダー
 **********************************/
 .header {
@@ -378,14 +425,14 @@ LP
       gap: 0.3rem;
 
       .header__icon {
-        opacity: 0.5;
+        /* opacity: 0.8;
         &:hover {
           opacity: 1;
-        }
+        } */
       }
 
       .header__icon--active {
-        opacity: 1;
+        opacity: 0.5;
       }
     }
   }
@@ -582,6 +629,7 @@ LP
       .elements__tile--disabled {
         background-color: var(--gray-lighter);
         opacity: 0.7;
+        cursor: pointer;
       }
     }
   }
@@ -863,6 +911,7 @@ LP
     .rules__details {
       border-radius: 0.5rem;
       box-shadow: 0 0 0.2rem 0.1rem var(--gray-darker);
+      transition: all 0.3s;
 
       summary {
         display: flex;
@@ -872,11 +921,16 @@ LP
         cursor: pointer;
         font-weight: bold;
 
+        .rules__summary-prefix {
+          font-size: 0.8rem;
+        }
+
         .rules__summary-title {
           display: flex;
           align-items: center;
           gap: 0.5rem;
           width: calc(100% - 1.2rem);
+          font-size: 0.9rem;
 
           .rules__summary-labels {
             display: flex;
@@ -950,6 +1004,9 @@ LP
     }
 
     .rules__details[open] {
+      box-shadow: 0 0 0.2rem 0.1rem var(--gray-darkest);
+      transition: all 0.3s;
+
       summary::after {
         transform: rotate(225deg);
       }
@@ -977,6 +1034,17 @@ PC mode
 **********************************/
 @media (min-width: 850px) {
   /**********************************
+  Common
+  **********************************/
+  .common__button {
+    &:hover {
+      cursor: pointer;
+      background-color: var(--orange-base);
+      transition: all 0.3s;
+      user-select: none;
+    }
+  }
+  /**********************************
   LP
   **********************************/
   .lp {
@@ -988,13 +1056,18 @@ PC mode
       }
     }
   }
+  /**********************************
+  HEADER
+  **********************************/
   .header {
     margin: var(--header-margin-top-bottom-pc) 3rem;
     .header__title {
       font-size: 1.4rem;
     }
   }
-
+  /**********************************
+  MAIN
+  **********************************/
   .main {
     margin: 0 1.5rem;
     height: calc(100dvh - var(--header-height) - var(--header-margin-top-bottom-pc) - 3rem);
