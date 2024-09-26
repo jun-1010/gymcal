@@ -15,6 +15,7 @@ interface ElementsProps {
   groupElements: GroupElements;
   routine: RoutineElement[];
   setRoutine: (routine: RoutineElement[]) => void;
+  setHintNum: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const Elements = ({
@@ -25,6 +26,7 @@ const Elements = ({
   groupElements,
   routine,
   setRoutine,
+  setHintNum,
 }: ElementsProps) => {
   const [fontSize, setFontSize] = useState(1);
   return (
@@ -40,6 +42,7 @@ const Elements = ({
         setRoutine={setRoutine}
         routine={routine}
         fontSize={fontSize}
+        setHintNum={setHintNum}
       />
 
       <div className="elements__zoom">

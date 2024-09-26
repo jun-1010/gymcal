@@ -9,8 +9,16 @@ interface elementsGroupProps {
   setRoutine: (routine: RoutineElement[]) => void;
   routine: RoutineElement[];
   fontSize: number;
+  setHintNum: React.Dispatch<React.SetStateAction<number>>;
 }
-const ElementsGroup = ({ selectEvent, groupElements, setRoutine, routine, fontSize }: elementsGroupProps) => {
+const ElementsGroup = ({
+  selectEvent,
+  groupElements,
+  setRoutine,
+  routine,
+  fontSize,
+  setHintNum,
+}: elementsGroupProps) => {
   return (
     <div
       className="elements__group"
@@ -26,6 +34,7 @@ const ElementsGroup = ({ selectEvent, groupElements, setRoutine, routine, fontSi
               routine={routine}
               elementsTileKey={`${rowKey}-${column_number}`}
               key={`${rowKey}-${column_number}`}
+              setHintNum={setHintNum}
             />
           ))}
         </div>

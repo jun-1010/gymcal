@@ -99,11 +99,11 @@ export const getElementStatus = (
   if (routine.some((element) => element.id === targetElement.id)) {
     return ElementStatus.選択済み;
   } else if (routine.some((element) => element.code !== "" && element.code === targetElement.code)) {
-    return ElementStatus.同一枠選択済み;
+    return ElementStatus.同一枠制限;
   } else if (isGroupLimited(routine, targetElement)) {
-    return ElementStatus.技数制限_グループ;
+    return ElementStatus.グループ技数制限;
   } else if (routine.filter((element) => element.is_qualified).length >= 8) {
-    return ElementStatus.技数制限_全体;
+    return ElementStatus.全体技数制限;
   }
   // 固有ルールの表示[床以外]
   if (selectEvent !== Events.床) {

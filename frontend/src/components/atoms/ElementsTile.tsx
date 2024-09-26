@@ -9,9 +9,17 @@ interface ElementsTileProps {
   setRoutine: (routine: RoutineElement[]) => void;
   routine: RoutineElement[];
   elementsTileKey: string;
+  setHintNum: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const ElementsTile = ({ selectEvent, element, setRoutine, routine, elementsTileKey }: ElementsTileProps) => {
+const ElementsTile = ({
+  selectEvent,
+  element,
+  setRoutine,
+  routine,
+  elementsTileKey,
+  setHintNum,
+}: ElementsTileProps) => {
   // 技選択時のhandle関数
   const handleElementClick = (element: Element) => {
     if (getElementStatus(selectEvent, routine, element) === ElementStatus.選択済み) {
@@ -28,6 +36,9 @@ const ElementsTile = ({ selectEvent, element, setRoutine, routine, elementsTileK
         is_qualified: true,
       };
       setRoutine([...routine, newRoutineElement]);
+    } else {
+      // 選択できないことを表示する
+      setHintNum(getElementStatus(selectEvent, routine, element));
     }
   };
 
@@ -43,17 +54,17 @@ const ElementsTile = ({ selectEvent, element, setRoutine, routine, elementsTileK
       const index = routine.findIndex((e) => e.id === element.id);
       return <div className="common__label common__label--active elements__label">{`選択済み(${index + 1}技目)`}</div>;
     }
-    // 同一枠選択済み → 同一枠選択済み(技番号)
-    if (status === ElementStatus.同一枠選択済み) {
+    // 同一枠制限 → 同一枠制限(技番号)
+    if (status === ElementStatus.同一枠制限) {
       const code = routine.find((e) => e.code === element.code)?.code;
       return <div className="common__label elements__label">{`同一枠(${code})`}</div>;
     }
-    // 技数制限_グループ → 技数制限_グループ
-    if (status === ElementStatus.技数制限_グループ) {
+    // グループ技数制限 → グループ技数制限
+    if (status === ElementStatus.グループ技数制限) {
       return <div className="common__label elements__label">グループ技数制限</div>;
     }
-    // 技数制限_全体 → 技数制限_全体
-    if (status === ElementStatus.技数制限_全体) {
+    // 全体技数制限 → 全体技数制限
+    if (status === ElementStatus.全体技数制限) {
       return <div className="common__label elements__label">全体技数制限</div>;
     }
     // それ以外は状態名のラストフレーズ

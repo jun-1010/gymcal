@@ -11,6 +11,8 @@ interface RoutineProps {
   routineOpen: number;
   setRoutineOpen: React.Dispatch<React.SetStateAction<number>>;
   categorizedElements: CategorizedElements;
+  detailOpens: number[];
+  setDetailOpens: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 const Routine = ({
@@ -20,6 +22,8 @@ const Routine = ({
   routineOpen,
   setRoutineOpen,
   categorizedElements,
+  detailOpens,
+  setDetailOpens
 }: RoutineProps) => {
   return (
     <div
@@ -37,6 +41,8 @@ const Routine = ({
         selectEvent={selectEvent}
         routine={routine}
         categorizedElements={categorizedElements}
+        detailOpens={detailOpens}
+        setDetailOpens={setDetailOpens}
       />
     </div>
   );
