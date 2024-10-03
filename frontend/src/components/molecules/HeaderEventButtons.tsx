@@ -70,7 +70,7 @@ const HeaderEventButtons = ({ selectEvent, setSelectEvent, isMobile, routines }:
                   >
                     <span className="event-dropdown__text">{eventKey}</span>
                     <span
-                      className={`event-dropdown__badge ${selectEvent === event && "event-dropdown__badge--active"}`}
+                      className={`event-dropdown__badge`}
                     >
                       {routineLengths[(event as number) - 1] || ""}
                     </span>
@@ -93,8 +93,7 @@ const HeaderEventButtons = ({ selectEvent, setSelectEvent, isMobile, routines }:
               >
                 {eventKey}
                 {routineLengths[(event as number) - 1] > 0 && (
-                  <span className={`event-buttons__badge ${selectEvent === event && "event-buttons__badge--active"}`}>
-                    {/* {routineLengths[(event as number) - 1] ? `(${routineLengths[(event as number) - 1]})` : ""} */}
+                  <span className={`event-buttons__badge`}>
                     {routineLengths[(event as number) - 1]}
                   </span>
                 )}
