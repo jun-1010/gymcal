@@ -1,4 +1,4 @@
-import { RoutineElement } from "../../utilities/RoutineUtil";
+import { RoutineElement, Routines } from "../../utilities/RoutineUtil";
 import { Events } from "../../utilities/Type";
 import HeaderEventButtons from "../molecules/HeaderEventButtons";
 import HeaderIcons from "../molecules/HeaderIcons";
@@ -10,9 +10,10 @@ interface HeaderProps {
   setRoutineOpen: React.Dispatch<React.SetStateAction<number>>;
   isMobile: boolean;
   routine: RoutineElement[];
+  routines: Routines;
 }
 
-const Header = ({ selectEvent, setSelectEvent, routineOpen, setRoutineOpen, isMobile, routine }: HeaderProps) => {
+const Header = ({ selectEvent, setSelectEvent, routineOpen, setRoutineOpen, isMobile, routine, routines }: HeaderProps) => {
   return (
     <div className="header">
       <div className="header__left">
@@ -21,7 +22,7 @@ const Header = ({ selectEvent, setSelectEvent, routineOpen, setRoutineOpen, isMo
           <p>GymCal</p>
         </a>
       </div>
-      <HeaderEventButtons selectEvent={selectEvent} setSelectEvent={setSelectEvent} isMobile={isMobile} />
+      <HeaderEventButtons selectEvent={selectEvent} setSelectEvent={setSelectEvent} isMobile={isMobile} routines={routines}/>
       <div className="header__right">
         <HeaderIcons
           routineOpen={routineOpen}

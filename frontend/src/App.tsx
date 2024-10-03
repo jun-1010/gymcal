@@ -29,7 +29,7 @@ const App: React.FC = () => {
   const [routineOpen, setRoutineOpen] = useState(0); // 0: 難度表 1: 半分 2:演技構成
   const [routines, setRoutines] = useState(initialRoutines as Routines);
   const [routine, setRoutine] = useState([] as RoutineElement[]);
-  const isMobile = useMedia({ maxWidth: "850px" });
+  const isMobile = useMedia({ maxWidth: "849px" });
   const [isInitialized, setIsInitialized] = useState(false); // 初回読み込み完了時にtrue
   const [isLoading, setIsLoading] = useState(true); // ローディング状態
   const [isVisible, setIsVisible] = useState(true); // true ならローディング画面表示, false なら非表示
@@ -260,6 +260,7 @@ const App: React.FC = () => {
         setRoutineOpen={setRoutineOpen}
         isMobile={isMobile}
         routine={routine}
+        routines={routines}
       />
       {Object.keys(groupElements).length ? (
         <div className="main">

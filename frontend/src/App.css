@@ -525,7 +525,7 @@ LP
   }
 
   .event-dropdown__badge--active {
-    color: var(--orange-base)
+    color: var(--orange-base);
   }
 }
 
@@ -1099,13 +1099,33 @@ PC mode
 
     .event-buttons__item {
       cursor: pointer;
-      padding: 0.4rem;
-      width: 8.5vw;
-      text-align: center;
+      padding: 0.45rem 1.2rem 0.4rem;
+      /* width: 9.5vw; */
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      gap: 0.25rem;
       user-select: none;
 
       &:hover:not(.event-buttons__item--active) {
-        color: var(--gray-darkest);
+        opacity: 0.6;
+      }
+
+      .event-buttons__badge {
+        font-size: 0.8rem;
+        height: 1.2rem;
+        width: 1.2rem;
+        color: var(--white);
+        font-weight: bold;
+        background-color: var(--orange-darkest);
+        padding: 0.1rem 0.3rem;
+        border-radius: 50%;
+        text-align: center;
+      }
+
+      .event-buttons__badge--active {
+        /* color: var(--orange-base); */
       }
     }
 
@@ -1150,6 +1170,14 @@ hover none mode
   .group-tabs {
     .group-tabs__item:hover:not(.group-tabs__item--active) {
       color: var(--black);
+    }
+  }
+  /* 種目ボタン */
+  .event-buttons {
+    .event-buttons__item {
+      &:hover:not(.event-buttons__item--active) {
+        opacity: 1.0;
+      }
     }
   }
   .elements {

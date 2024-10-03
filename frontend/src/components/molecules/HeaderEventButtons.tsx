@@ -7,24 +7,21 @@ type HeaderEventButtonsProps = {
   selectEvent: number;
   setSelectEvent: React.Dispatch<React.SetStateAction<number>>;
   isMobile: boolean;
+  routines: Routines;
 };
 
-const HeaderEventButtons = ({ selectEvent, setSelectEvent, isMobile }: HeaderEventButtonsProps) => {
+const HeaderEventButtons = ({ selectEvent, setSelectEvent, isMobile, routines }: HeaderEventButtonsProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [routineLengths, setRoutineLengths] = useState([] as number[]);
 
+  // 初期読み込み
   useEffect(() => {
-    const storedRoutines = localStorage.getItem("routines");
-    if (!storedRoutines) {
-      return;
-    }
-    const parsedRoutines = JSON.parse(storedRoutines) as Routines;
-    const newRoutineLength = Object.entries(parsedRoutines).map(([event, routine]) => {
+    const newRoutineLengths = Object.entries(routines).map(([event, routine]) => {
       return routine.length;
     });
-    setRoutineLengths(newRoutineLength);
-  }, []);
+    setRoutineLengths(newRoutineLengths);
+  }, [routines]);
 
   const handleSelect = (event: number) => {
     setSelectEvent(event);
@@ -95,6 +92,12 @@ const HeaderEventButtons = ({ selectEvent, setSelectEvent, isMobile }: HeaderEve
                 }}
               >
                 {eventKey}
+                {routineLengths[(event as number) - 1] > 0 && (
+                  <span className={`event-buttons__badge ${selectEvent === event && "event-buttons__badge--active"}`}>
+                    {/* {routineLengths[(event as number) - 1] ? `(${routineLengths[(event as number) - 1]})` : ""} */}
+                    {routineLengths[(event as number) - 1]}
+                  </span>
+                )}
               </div>
             ))}
         </div>
