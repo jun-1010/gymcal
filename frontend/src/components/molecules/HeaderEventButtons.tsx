@@ -69,11 +69,9 @@ const HeaderEventButtons = ({ selectEvent, setSelectEvent, isMobile, routines }:
                     onClick={() => handleSelect(event as number)}
                   >
                     <span className="event-dropdown__text">{eventKey}</span>
-                    <span
-                      className={`event-dropdown__badge`}
-                    >
-                      {routineLengths[(event as number) - 1] || ""}
-                    </span>
+                    {routineLengths[(event as number) - 1] > 0 && (
+                      <span className={`event-dropdown__badge`}>{routineLengths[(event as number) - 1] || ""}</span>
+                    )}
                   </div>
                 ))}
             </div>
@@ -93,9 +91,7 @@ const HeaderEventButtons = ({ selectEvent, setSelectEvent, isMobile, routines }:
               >
                 {eventKey}
                 {routineLengths[(event as number) - 1] > 0 && (
-                  <span className={`event-buttons__badge`}>
-                    {routineLengths[(event as number) - 1]}
-                  </span>
+                  <span className={`event-buttons__badge`}>{routineLengths[(event as number) - 1]}</span>
                 )}
               </div>
             ))}
