@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Events, getEventKey } from "../../utilities/Type";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { Routines } from "../../utilities/RoutineUtil";
 
 type HeaderEventButtonsProps = {
   selectEvent: number;
@@ -8,13 +9,22 @@ type HeaderEventButtonsProps = {
   isMobile: boolean;
 };
 
-const HeaderEventButtons = ({
-  selectEvent,
-  setSelectEvent,
-  isMobile,
-}: HeaderEventButtonsProps) => {
+const HeaderEventButtons = ({ selectEvent, setSelectEvent, isMobile }: HeaderEventButtonsProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [routineLengths, setRoutineLengths] = useState([] as number[]);
+
+  useEffect(() => {
+    const storedRoutines = localStorage.getItem("routines");
+    if (!storedRoutines) {
+      return;
+    }
+    const parsedRoutines = JSON.parse(storedRoutines) as Routines;
+    const newRoutineLength = Object.entries(parsedRoutines).map(([event, routine]) => {
+      return routine.length;
+    });
+    setRoutineLengths(newRoutineLength);
+  }, []);
 
   const handleSelect = (event: number) => {
     setSelectEvent(event);
@@ -40,35 +50,33 @@ const HeaderEventButtons = ({
       {isMobile ? (
         <div className="event-dropdown" ref={dropdownRef}>
           <div className="event-dropdown__selected" onClick={() => setIsOpen(!isOpen)}>
-            <span className="event-dropdown__text">
-              {Object.keys(Events)
-                .filter((eventKey) => typeof eventKey === "string")
-                .find((eventKey) => eventKey === getEventKey(selectEvent))}
-            </span>
-            <span
-              className={`event-dropdown__icon ${
-                isOpen ? "event-dropdown__icon--open" : ""
-              }`}
-            >
-              <KeyboardArrowDownIcon />
-            </span>
+            <div className="event-dropdown__item">
+              <span className="event-dropdown__text">
+                {Object.keys(Events)
+                  .filter((eventKey) => typeof eventKey === "string")
+                  .find((eventKey) => eventKey === getEventKey(selectEvent))}
+              </span>
+              <span className={`event-dropdown__icon ${isOpen ? "event-dropdown__icon--open" : ""}`}>
+                <KeyboardArrowDownIcon />
+              </span>
+            </div>
           </div>
           {isOpen && (
             <div className="event-dropdown__menu">
               {Object.entries(Events)
-                .filter(
-                  ([eventKey, event]) =>
-                    typeof event === "number" && event !== selectEvent
-                )
+                .filter(([eventKey, event]) => typeof event === "number")
                 .map(([eventKey, event]) => (
                   <div
                     key={eventKey}
-                    className={`event-dropdown__item ${
-                      selectEvent === event ? "event-dropdown__item--active" : ""
-                    }`}
+                    className={`event-dropdown__item ${selectEvent === event && "event-dropdown__item--active"}`}
                     onClick={() => handleSelect(event as number)}
                   >
-                    {eventKey}
+                    <span className="event-dropdown__text">{eventKey}</span>
+                    <span
+                      className={`event-dropdown__badge ${selectEvent === event && "event-dropdown__badge--active"}`}
+                    >
+                      {routineLengths[(event as number) - 1] || ""}
+                    </span>
                   </div>
                 ))}
             </div>
@@ -81,9 +89,7 @@ const HeaderEventButtons = ({
             .map(([eventKey, event]) => (
               <div
                 key={eventKey}
-                className={`event-buttons__item ${
-                  selectEvent === event ? "event-buttons__item--active" : ""
-                }`}
+                className={`event-buttons__item ${selectEvent === event ? "event-buttons__item--active" : ""}`}
                 onClick={() => {
                   setSelectEvent(event as number);
                 }}
