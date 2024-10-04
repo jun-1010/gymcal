@@ -18,7 +18,7 @@ const Header = ({ selectEvent, setSelectEvent, routineOpen, setRoutineOpen, isMo
     <div className="header">
       <div className="header__left">
         <a className="header__title" href="./">
-          {/* <img src="./icon_枠なし_透過.png" alt="" /> */}
+          <img src="./icon_枠なし_透過.png" alt="" />
           <p>GymCal</p>
         </a>
       </div>
