@@ -1,8 +1,7 @@
 import VerticalSplitIcon from "@mui/icons-material/VerticalSplit";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import ReorderIcon from "@mui/icons-material/Reorder";
-import Badge, { BadgeProps } from "@mui/material/Badge";
-import { styled } from "@mui/material/styles";
+import StyledBadge from "../atoms/StyledBadge";
 
 interface HeaderIconsProps {
   routineOpen: number;
@@ -20,16 +19,6 @@ const HeaderIcons = ({
   const iconStyle = {
     fontSize: "2rem",
   };
-
-  const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
-    "& .MuiBadge-badge": {
-      right: 2,
-      top: 3,
-      border: `2px solid ${theme.palette.background.paper}`,
-      padding: "0 4px",
-      color: "white",
-    },
-  }));
 
   return (
     <div className="header__icons">

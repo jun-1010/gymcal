@@ -555,7 +555,6 @@ LP
     color: var(--gray-darkest);
   }
   .group-tabs__item--active {
-    transition: all 0.2s;
     border-bottom: 0.1rem solid var(--gray-darkest);
     font-weight: bold;
   }
@@ -675,6 +674,7 @@ LP
 
       &:active {
         background-color: var(--orange-darker);
+        box-shadow: 0 0 0.2rem 0.2rem var(--gray-darker);
         transition: all 0.2s;
       }
 
@@ -1094,32 +1094,19 @@ PC mode
     display: flex;
     background-color: var(--gray-darker);
     border-radius: 1rem;
+    gap: 1rem;
 
     .event-buttons__item {
       cursor: pointer;
-      padding: 0.45rem 1.2rem 0.4rem;
-      /* width: 9.5vw; */
+      padding: 0.45rem 0.8rem 0.4rem;
       display: flex;
       flex-direction: row;
       justify-content: center;
       align-items: center;
-      gap: 0.25rem;
       user-select: none;
 
       &:hover:not(.event-buttons__item--active) {
         opacity: 0.6;
-      }
-
-      .event-buttons__badge {
-        font-size: 0.8rem;
-        height: 1.2rem;
-        width: 1.2rem;
-        color: var(--white);
-        font-weight: bold;
-        background-color: var(--orange-darkest);
-        padding: 0.1rem 0.3rem;
-        border-radius: 50%;
-        text-align: center;
       }
     }
 
