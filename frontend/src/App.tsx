@@ -285,6 +285,7 @@ const App: React.FC = () => {
             categorizedElements={categorizedElements}
             detailOpens={detailOpens}
             setDetailOpens={setDetailOpens}
+            setRoutines={setRoutines}
           />
         </div>
       ) : (
