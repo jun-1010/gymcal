@@ -1,4 +1,4 @@
-import { RoutineElement } from "../../utilities/RoutineUtil";
+import { RoutineElement, Routines } from "../../utilities/RoutineUtil";
 import { Events } from "../../utilities/Type";
 import { RoutineRules } from "../molecules/RoutineRules";
 import { CategorizedElements } from "../../utilities/ElementUtil";
@@ -13,6 +13,7 @@ interface RoutineProps {
   categorizedElements: CategorizedElements;
   detailOpens: number[];
   setDetailOpens: React.Dispatch<React.SetStateAction<number[]>>;
+  setRoutines: React.Dispatch<React.SetStateAction<Routines>>;
 }
 
 const Routine = ({
@@ -23,7 +24,8 @@ const Routine = ({
   setRoutineOpen,
   categorizedElements,
   detailOpens,
-  setDetailOpens
+  setDetailOpens,
+  setRoutines
 }: RoutineProps) => {
   return (
     <div
@@ -36,6 +38,7 @@ const Routine = ({
         routine={routine}
         setRoutine={setRoutine}
         setRoutineOpen={setRoutineOpen}
+        setRoutines={setRoutines}
       />
       <RoutineRules
         selectEvent={selectEvent}
