@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Events, getEventKey } from "../../utilities/Type";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Routines } from "../../utilities/RoutineUtil";
+import StyledBadge from "../atoms/StyledBadge";
 
 type HeaderEventButtonsProps = {
   selectEvent: number;
@@ -82,18 +83,17 @@ const HeaderEventButtons = ({ selectEvent, setSelectEvent, isMobile, routines }:
           {Object.entries(Events)
             .filter(([eventKey, event]) => typeof event === "number")
             .map(([eventKey, event]) => (
-              <div
-                key={eventKey}
-                className={`event-buttons__item ${selectEvent === event ? "event-buttons__item--active" : ""}`}
-                onClick={() => {
-                  setSelectEvent(event as number);
-                }}
-              >
-                {eventKey}
-                {routineLengths[(event as number) - 1] > 0 && (
-                  <span className={`event-buttons__badge`}>{routineLengths[(event as number) - 1]}</span>
-                )}
-              </div>
+              <StyledBadge badgeContent={routineLengths[(event as number) - 1]} color="primary">
+                <div
+                  key={eventKey}
+                  className={`event-buttons__item ${selectEvent === event ? "event-buttons__item--active" : ""}`}
+                  onClick={() => {
+                    setSelectEvent(event as number);
+                  }}
+                >
+                  {eventKey}
+                </div>
+              </StyledBadge>
             ))}
         </div>
       )}
