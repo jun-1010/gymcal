@@ -140,9 +140,38 @@ export const RoutineRules = ({
             descriptionNode={
               <div className="rules__description">
                 <p>Dスコアは以下の得点の合計で算出されます。</p>
-                <p>・グループ得点(EG)</p>
-                <p>・難度点</p>
-                <p>・組み合わせ加点(CV)</p>
+                <table className="common__table">
+                  <tbody>
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--9rem common__table-cell--left">
+                        グループ得点(EG)
+                      </td>
+                      <td className={`common__table-cell common__table-cell--3rem common__table-cell--left`}>
+                        {calculateTotalElementGroupScore(routine).toFixed(1)}
+                      </td>
+                    </tr>
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--9rem common__table-cell--left">難度点</td>
+                      <td className={`common__table-cell common__table-cell--3rem common__table-cell--left`}>
+                        {calculateTotalDifficulty(routine).toFixed(1)}
+                      </td>
+                    </tr>
+                    <tr className="common__table-row">
+                      <td className="common__table-cell common__table-cell--9rem common__table-cell--left">
+                        組み合わせ加点(CV)
+                      </td>
+                      <td className={`common__table-cell common__table-cell--3rem common__table-cell--left`}>
+                        {calculateTotalConnectionValue(routine).toFixed(1)}
+                      </td>
+                    </tr>
+                    <tr className="common__table-row common__table-row--active">
+                      <td className="common__table-cell common__table-cell--9rem common__table-cell--left">Dスコア</td>
+                      <td className={`common__table-cell common__table-cell--3rem common__table-cell--left`}>
+                        {calculateTotalScore(routine).toFixed(1)}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             }
             show={selectEvent !== Events.跳馬}
