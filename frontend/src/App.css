@@ -1120,11 +1120,10 @@ PC mode
     display: flex;
     background-color: var(--gray-darker);
     border-radius: 1rem;
-    gap: 1rem;
 
     .event-buttons__item {
       cursor: pointer;
-      padding: 0.45rem 0.8rem 0.4rem;
+      padding: 0.45rem 1.5rem 0.4rem;
       display: flex;
       flex-direction: row;
       justify-content: center;
