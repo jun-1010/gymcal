@@ -460,14 +460,14 @@ LP
   right: 0;
   bottom: 0;
   left: 0;
-  margin: 0 auto 1rem;
+  margin: 0 auto 1.5rem;
 }
 
 .hint--pc {
   position: absolute;
   bottom: 0;
   left: 0;
-  margin: 0 1rem 1rem;
+  margin: 0 1rem 2rem;
 }
 
 .hint.hint--fade-in {
