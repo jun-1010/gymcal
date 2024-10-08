@@ -274,6 +274,7 @@ const App: React.FC = () => {
             routine={routine}
             setRoutine={setRoutine}
             setHintNum={setHintNum}
+            isMobile={isMobile}
           />
           {/* 演技構成表 */}
           <Routine

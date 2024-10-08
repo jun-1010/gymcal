@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GroupElements } from "../../utilities/ElementUtil";
 import { RoutineElement } from "../../utilities/RoutineUtil";
 import { ElementGroup, Events } from "../../utilities/Type";
@@ -16,6 +16,7 @@ interface ElementsProps {
   routine: RoutineElement[];
   setRoutine: (routine: RoutineElement[]) => void;
   setHintNum: React.Dispatch<React.SetStateAction<number>>;
+  isMobile: boolean;
 }
 
 const Elements = ({
@@ -27,8 +28,10 @@ const Elements = ({
   routine,
   setRoutine,
   setHintNum,
+  isMobile,
 }: ElementsProps) => {
-  const [fontSize, setFontSize] = useState(1);
+  const [fontSize, setFontSize] = useState(isMobile ? 0.6 : 0.9);
+
   return (
     <div
       className={`elements ${routineOpen === 0 ? "elements--full" : ""} ${routineOpen === 1 ? "elements--side" : ""}  ${
