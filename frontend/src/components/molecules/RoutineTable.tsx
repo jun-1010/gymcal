@@ -10,7 +10,7 @@ import {
   RoutineElement,
   Routines,
 } from "../../utilities/RoutineUtil";
-import { Events, getEventKey, hasCVEvents, RuleName, Rules } from "../../utilities/Type";
+import { ElementStatus, Events, getEventKey, hasCVEvents, RuleName, Rules } from "../../utilities/Type";
 import RoutineSummaryLabel from "../atoms/RoutineSummaryLabel";
 import RoutineTableElement from "../atoms/RoutineTableElement";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -52,7 +52,9 @@ const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen, setRou
   return (
     <>
       <div className="routine__title-box">
-        <div className="routine__title">演技構成表</div>
+        <div className="routine__title" id={ElementStatus.選択可能.toString()}>
+          演技構成表
+        </div>
         {routine.length ? (
           <div className="routine__delete">
             <span className="routine__delete-icon">
