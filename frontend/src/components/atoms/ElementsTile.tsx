@@ -27,6 +27,7 @@ const ElementsTile = ({
       return;
     }
     if (getElementStatus(selectEvent, routine, element) === ElementStatus.選択可能) {
+      setHintNum(ElementStatus.選択可能);
       const newRoutineElement: RoutineElement = {
         ...element,
         is_connected: false,
