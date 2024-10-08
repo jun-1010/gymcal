@@ -291,7 +291,7 @@ const App: React.FC = () => {
         </div>
       ) : (
         <div className="main__emplty">
-          <p>ただいま絶賛開発中です。</p>
+          <p>技データを取得中です。</p>
           <p>もう少しお待ち下さい🙇</p>
         </div>
       )}
