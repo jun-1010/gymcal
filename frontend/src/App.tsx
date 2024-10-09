@@ -26,7 +26,7 @@ const App: React.FC = () => {
   const [selectEvent, setSelectEvent] = useState(Events.床);
   const [selectGroup, setSelectGroup] = useState(ElementGroup.EG1);
   const [groupElements, setGroupElements] = useState({} as GroupElements);
-  const [routineOpen, setRoutineOpen] = useState(0); // 0: 難度表 1: 半分 2:演技構成
+  const [routineOpen, setRoutineOpen] = useState(1); // 0:難度表 1:半分 2:演技構成
   const [routines, setRoutines] = useState(initialRoutines as Routines);
   const [routine, setRoutine] = useState([] as RoutineElement[]);
   const isMobile = useMedia({ maxWidth: "849px" });
@@ -127,23 +127,19 @@ const App: React.FC = () => {
     // selectEventとselectGroupの取得
     const storedSelectEvent = localStorage.getItem("selectEvent");
     const storedSelectGroup = localStorage.getItem("selectGroup");
-    const storedRoutineOpen = localStorage.getItem("routineOpen");
     const storedRoutines = localStorage.getItem("routines");
 
     // selectEventとselectGroupが存在しない = 初アクセス
-    if (!storedSelectEvent || !storedSelectGroup || !storedRoutineOpen || !storedRoutines) {
+    if (!storedSelectEvent || !storedSelectGroup || !storedRoutines) {
       localStorage.setItem("selectEvent", Events.床.toString());
       localStorage.setItem("selectGroup", ElementGroup.EG1.toString());
-      localStorage.setItem("routineOpen", "0");
       localStorage.setItem("routines", JSON.stringify(initialRoutines));
       return;
     }
     const parsedSelectEvent = parseInt(storedSelectEvent);
     const parsedSelectGroup = parseInt(storedSelectGroup);
-    const parsedRoutineOpen = parseInt(storedRoutineOpen);
     setSelectEvent(parsedSelectEvent);
     setSelectGroup(parsedSelectGroup);
-    setRoutineOpen(parsedRoutineOpen);
 
     const parsedRoutines = JSON.parse(storedRoutines);
     // すべての要素が空の配列かどうかをチェック
@@ -163,7 +159,6 @@ const App: React.FC = () => {
     setSelectGroup(ElementGroup.EG1);
     // 表示する技を更新する
     setGroupElements(getGroupElements(categorizedElements, selectEvent, selectGroup));
-    // localStorageに保存する
     localStorage.setItem("selectEvent", selectEvent.toString());
 
     // 種目変更に応じて表示演技構成を更新する
@@ -183,7 +178,6 @@ const App: React.FC = () => {
     }
     // 表示する技を更新する
     setGroupElements(getGroupElements(categorizedElements, selectEvent, selectGroup));
-    // localStorageに保存する
     localStorage.setItem("selectGroup", selectGroup.toString());
   }, [selectGroup]);
 
@@ -220,20 +214,12 @@ const App: React.FC = () => {
     }
   }, [routines]);
 
-  // 画面幅変更時（PC→SP）にside modeの場合は演技構成表を開く
+  // 画面幅変更時（PC→SP）にside modeの場合
   useEffect(() => {
     if (isMobile && routineOpen === 1) {
-      setRoutineOpen(2);
+      setRoutineOpen(0);
     }
   }, [isMobile]);
-
-  // 表示モード変更時
-  useEffect(() => {
-    if (!isInitialized) {
-      return;
-    }
-    localStorage.setItem("routineOpen", routineOpen.toString());
-  }, [routineOpen]);
 
   return (
     <div className="App">

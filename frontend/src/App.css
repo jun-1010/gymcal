@@ -274,7 +274,7 @@ LP
     gap: 2rem;
 
     .lp__table {
-      width: min(100%, 20rem);
+      width: min(100%, 21rem);
       font-size: 0.9rem;
       padding: 0.5rem;
     }
