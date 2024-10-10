@@ -52,12 +52,12 @@ export const GroupNames: { [key: number]: { [key: number]: string } } = {
     [ElementGroup.EG1]: "跳躍技以外",
     [ElementGroup.EG2]: "前方系の跳躍技",
     [ElementGroup.EG3]: "後方系の跳躍技",
-    [ElementGroup.EG4]: "1回以上のひねりを伴う跳躍技",
+    [ElementGroup.EG4]: "ひねり系の跳躍技",
   },
   [Events.あん馬]: {
     [ElementGroup.EG1]: "セア系",
-    [ElementGroup.EG2]: "旋回技（ひねり・転向・倒立）",
-    [ElementGroup.EG3]: "旋回技（移動）",
+    [ElementGroup.EG2]: "旋回技",
+    [ElementGroup.EG3]: "旋回移動技",
     [ElementGroup.EG4]: "終末技",
   },
   [Events.つり輪]: {
@@ -67,11 +67,11 @@ export const GroupNames: { [key: number]: { [key: number]: string } } = {
     [ElementGroup.EG4]: "終末技",
   },
   [Events.跳馬]: {
-    [ElementGroup.EG1]: "1回宙返りひねり技",
+    [ElementGroup.EG1]: "ひねり技",
     [ElementGroup.EG2]: "前方技",
     [ElementGroup.EG3]: "側方技",
-    [ElementGroup.EG4]: "ロンダート入りひねり技",
-    [ElementGroup.EG5]: "ロンダート入り技",
+    [ElementGroup.EG4]: "ロンダートひねり技",
+    [ElementGroup.EG5]: "ロンダート技",
   },
   [Events.平行棒]: {
     [ElementGroup.EG1]: "腕支持振動技",
