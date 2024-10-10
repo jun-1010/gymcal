@@ -398,6 +398,10 @@ LP
           .hint__title {
             font-weight: bold;
             line-height: 1.2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.2rem;
           }
 
           .hint__description {
@@ -673,6 +677,7 @@ LP
     top: 0;
   }
   .elements__group {
+    /* fontSizeを指定されるため子要素はemを使用する */
     padding: 1.5rem 0;
     height: calc(100% - var(--group-tabs-height));
     overflow: scroll;
@@ -699,14 +704,16 @@ LP
 
         .elements__labels {
           display: flex;
-          gap: 0.5em;
+          gap: 0.4em;
           font-size: 0.8em;
         }
 
         .elements__label {
           font-size: 1em;
-          padding: 0.2em 0.5em;
+          padding: 0.2em 0.4em;
           border-radius: 0.5em;
+          display: flex;
+          gap: 0.2em;
         }
 
         .elements__alias {
