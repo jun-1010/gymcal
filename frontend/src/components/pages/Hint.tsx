@@ -81,7 +81,7 @@ const Hint = ({ hintNum, setHintNum, setRoutineOpen, isMobile, setDetailOpens, r
               </span>
               {hintNum === ElementStatus.選択可能 ? (
                 <span className="hint__description">
-                  現在のDスコア: <span style={{ fontWeight: "bold" }}> {calculateTotalScore(routine)}</span>
+                  現在のDスコア: <span style={{ fontWeight: "bold" }}> {calculateTotalScore(routine).toFixed(1)}</span>
                 </span>
               ) : (
                 <span className="hint__description">
