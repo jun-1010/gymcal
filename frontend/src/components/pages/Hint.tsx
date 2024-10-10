@@ -15,7 +15,7 @@ interface HintProps {
 }
 
 const Hint = ({ hintNum, setHintNum, setRoutineOpen, isMobile, setDetailOpens, routine }: HintProps) => {
-  const visibleTime = 4000000; // Hint表示時間
+  const visibleTime = 4000; // Hint表示時間
   const hintModalRef = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = (event: MouseEvent) => {
