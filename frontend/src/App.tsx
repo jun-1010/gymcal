@@ -237,6 +237,7 @@ const App: React.FC = () => {
           setRoutineOpen={setRoutineOpen}
           isMobile={isMobile}
           setDetailOpens={setDetailOpens}
+          routine={routine}
         />
       )}
       <Header
