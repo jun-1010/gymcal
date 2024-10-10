@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { ElementStatus, getElementStatusName } from "../../utilities/Type";
 import CloseIcon from "@mui/icons-material/Close";
+import LockIcon from "@mui/icons-material/Lock";
+import CheckIcon from "@mui/icons-material/Check";
+import { calculateTotalScore, RoutineElement } from "../../utilities/RoutineUtil";
 
 interface HintProps {
   hintNum: number;
@@ -8,9 +11,10 @@ interface HintProps {
   setRoutineOpen: React.Dispatch<React.SetStateAction<number>>;
   isMobile: boolean;
   setDetailOpens: React.Dispatch<React.SetStateAction<number[]>>;
+  routine: RoutineElement[];
 }
 
-const Hint = ({ hintNum, setHintNum, setRoutineOpen, isMobile, setDetailOpens }: HintProps) => {
+const Hint = ({ hintNum, setHintNum, setRoutineOpen, isMobile, setDetailOpens, routine }: HintProps) => {
   const visibleTime = 4000; // Hint表示時間
   const hintModalRef = useRef<HTMLDivElement>(null);
 
@@ -62,8 +66,24 @@ const Hint = ({ hintNum, setHintNum, setRoutineOpen, isMobile, setDetailOpens }:
         <div className="hint__wrapper">
           <div className="hint__content">
             <p className="hint__textbox">
-              <span className="hint__title">{hintNum === ElementStatus.選択可能 ? "追加しました" : "制限中"}</span>
-              {hintNum !== ElementStatus.選択可能 && (
+              <span className="hint__title">
+                {hintNum === ElementStatus.選択可能 ? (
+                  <>
+                    <CheckIcon sx={{ color: `var(--black)`, fontSize: `1.2rem` }} />
+                    追加しました
+                  </>
+                ) : (
+                  <>
+                    <LockIcon sx={{ color: `var(--white)`, fontSize: `1rem` }} />
+                    制限中
+                  </>
+                )}
+              </span>
+              {hintNum === ElementStatus.選択可能 ? (
+                <span className="hint__description">
+                  現在のDスコア: <span style={{ fontWeight: "bold" }}> {calculateTotalScore(routine)}</span>
+                </span>
+              ) : (
                 <span className="hint__description">
                   {hintNum}.{getElementStatusName(hintNum)}
                 </span>

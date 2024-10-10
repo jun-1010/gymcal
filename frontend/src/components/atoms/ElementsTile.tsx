@@ -2,6 +2,8 @@ import React from "react";
 import { getElementStatus, RoutineElement } from "../../utilities/RoutineUtil";
 import { difficulties, ElementStatus, Events, getElementStatusName, statusClass } from "../../utilities/Type";
 import { Element } from "../../utilities/ElementUtil";
+import LockIcon from "@mui/icons-material/Lock";
+import CheckIcon from "@mui/icons-material/Check";
 
 interface ElementsTileProps {
   selectEvent: Events;
@@ -46,6 +48,8 @@ const ElementsTile = ({
   // ElementStatusを表示する関数
   const renderElementStatusLabel = (element: Element) => {
     const status = getElementStatus(selectEvent, routine, element);
+    const IconStyle = { fontSize: `1em`, marginBottom: `0.05em` };
+
     // 選択可能 → 何も表示しない
     if (status === ElementStatus.選択可能) {
       return null;
@@ -53,23 +57,30 @@ const ElementsTile = ({
     // 選択済み → 選択済み(技番号)
     if (status === ElementStatus.選択済み) {
       const index = routine.findIndex((e) => e.id === element.id);
-      return <div className="common__label common__label--active elements__label">{`選択済み(${index + 1}技目)`}</div>;
+      return (
+        <div className="common__label common__label--active elements__label">
+          <CheckIcon sx={IconStyle} />
+          {`選択済み(${index + 1}技目)`}
+        </div>
+      );
     }
     // 同一枠制限 → 同一枠制限(技番号)
     if (status === ElementStatus.同一枠制限) {
       const code = routine.find((e) => e.code === element.code)?.code;
-      return <div className="common__label elements__label">{`同一枠(${code})`}</div>;
-    }
-    // グループ技数制限 → グループ技数制限
-    if (status === ElementStatus.グループ技数制限) {
-      return <div className="common__label elements__label">グループ技数制限</div>;
-    }
-    // 全体技数制限 → 全体技数制限
-    if (status === ElementStatus.全体技数制限) {
-      return <div className="common__label elements__label">全体技数制限</div>;
+      return (
+        <div className="common__label elements__label">
+          <LockIcon sx={IconStyle} />
+          {`同一枠(${code})`}
+        </div>
+      );
     }
     // それ以外は状態名のラストフレーズ
-    return <div className="common__label elements__label">{getElementStatusName(status)}</div>;
+    return (
+      <div className="common__label elements__label">
+        <LockIcon sx={IconStyle} />
+        {getElementStatusName(status)}
+      </div>
+    );
   };
 
   return (
