@@ -635,19 +635,22 @@ LP
   display: flex;
   gap: 0.5rem;
   overflow-x: scroll;
+
   &::-webkit-scrollbar {
     display: none;
   }
+
   .group-tabs__item {
     cursor: pointer;
     padding: 0.5rem;
     white-space: nowrap;
     user-select: none;
     font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    border-bottom: 0.1rem solid transparent;
   }
-  .group-tabs__item:hover:not(.group-tabs__item--active) {
-    color: var(--gray-darker);
-  }
+
   .group-tabs__item--active {
     border-bottom: 0.1rem solid var(--gray-darker);
     font-weight: bold;
@@ -1249,6 +1252,14 @@ PC mode
     }
   }
   /********************************************
+  要求グループタブ 
+  ********************************************/
+  .group-tabs {
+    .group-tabs__item:hover:not(.group-tabs__item--active) {
+      color: var(--gray-darker);
+    }
+  }
+  /********************************************
   難度表
   ********************************************/
   .elements {
@@ -1279,11 +1290,6 @@ hover none mode
 (スマホやタブレットでhoverエフェクトが残る症状に対応するため)
 **********************************/
 @media (hover: none) {
-  .group-tabs {
-    .group-tabs__item:hover:not(.group-tabs__item--active) {
-      color: var(--black);
-    }
-  }
   /* 種目ボタン */
   .event-buttons {
     .event-buttons__item {
