@@ -8,7 +8,7 @@ interface RoutineTableElementProps {
   selectEvent: Events;
   element: RoutineElement;
   index: number;
-  setRoutine: (routine: RoutineElement[]) => void;
+  setRoutine: React.Dispatch<React.SetStateAction<RoutineElement[]>>;
   routine: RoutineElement[];
 }
 const RoutineTableElement = ({ selectEvent, element, index, setRoutine, routine }: RoutineTableElementProps) => {

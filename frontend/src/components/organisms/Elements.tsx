@@ -14,7 +14,7 @@ interface ElementsProps {
   setSelectGroup: React.Dispatch<React.SetStateAction<ElementGroup>>;
   groupElements: GroupElements;
   routine: RoutineElement[];
-  setRoutine: (routine: RoutineElement[]) => void;
+  setRoutine: React.Dispatch<React.SetStateAction<RoutineElement[]>>;
   setHintNum: React.Dispatch<React.SetStateAction<number>>;
   isMobile: boolean;
 }

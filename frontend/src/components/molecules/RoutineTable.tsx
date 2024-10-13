@@ -22,7 +22,7 @@ import WarningIcon from "@mui/icons-material/Warning";
 interface RoutineTableProps {
   selectEvent: Events;
   routine: RoutineElement[];
-  setRoutine: (routine: RoutineElement[]) => void;
+  setRoutine: React.Dispatch<React.SetStateAction<RoutineElement[]>>;
   setRoutineOpen: React.Dispatch<React.SetStateAction<number>>;
   setRoutines: React.Dispatch<React.SetStateAction<Routines>>;
 }

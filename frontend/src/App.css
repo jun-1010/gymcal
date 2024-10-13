@@ -522,13 +522,6 @@ LP
       cursor: pointer;
       gap: 0.3rem;
 
-      .header__icon {
-        /* opacity: 0.8;
-        &:hover {
-          opacity: 1;
-        } */
-      }
-
       .header__icon--active {
         opacity: 0.5;
       }

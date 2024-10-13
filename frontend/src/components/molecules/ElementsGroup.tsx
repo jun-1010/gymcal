@@ -6,7 +6,7 @@ import ElementsTile from "../atoms/ElementsTile";
 interface elementsGroupProps {
   selectEvent: Events;
   groupElements: GroupElements;
-  setRoutine: (routine: RoutineElement[]) => void;
+  setRoutine: React.Dispatch<React.SetStateAction<RoutineElement[]>>;
   routine: RoutineElement[];
   fontSize: number;
   setHintNum: React.Dispatch<React.SetStateAction<number>>;

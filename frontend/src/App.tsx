@@ -1,22 +1,12 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { categorizeElements, getGroupElements, GroupElements } from "./utilities/ElementUtil";
 import "./App.css";
 import { Events, ElementGroup } from "./utilities/Type";
 
-import {
-  initialRoutines,
-  RoutineElement,
-  Routines,
-  updateConnectionInRoutine,
-  updateElementGroupScoreInRoutine,
-  updateRoutineForValidation,
-} from "./utilities/RoutineUtil";
+import { initialRoutines, RoutineElement, Routines } from "./utilities/RoutineUtil";
 import useMedia from "use-media";
-import Header from "./components/organisms/Header";
-import Elements from "./components/organisms/Elements";
-import Routine from "./components/organisms/Routine";
 import Lp from "./components/pages/Lp";
-import Hint from "./components/pages/Hint";
+import MainContent from "./components/pages/MainContent";
 
 // const url = "http://54.250.128.188:8000/api/elements"; // iPadで見る用
 const url = "http://localhost:8000/api/elements";
@@ -35,8 +25,6 @@ const App: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true); // true ならローディング画面表示, false なら非表示
   const [isLpVisible, setIsLpVisible] = useState(true); // LPの表示状態
   const [isLpHidden, setIsLpHidden] = useState(false); // 「次回から表示しない」か否か
-  const [hintNum, setHintNum] = useState(-1); // 選択できない技を選択しようとした時に原因のルール番号を格納する(ヒントの表示状態にも利用する)
-  const [detailOpens, setDetailOpens] = useState([] as number[]); // 詳細表示中のルールの番号を格納する
 
   const fetchData = async () => {
     try {
@@ -81,7 +69,12 @@ const App: React.FC = () => {
     }, 2500);
   }, []);
 
-  // 読み込み判定
+  // 先にデータを読み込んでおく
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  // 読み込み判定 TODO: EventMenu導入でselectEventとselectGroupはurlから取得可能になる
   useEffect(() => {
     // 読み込み完了済みなら何もしない
     if (isInitialized) {
@@ -89,32 +82,25 @@ const App: React.FC = () => {
     }
     const storedSelectEvent = localStorage.getItem("selectEvent");
     const storedSelectGroup = localStorage.getItem("selectGroup");
-    const storedRoutineOpen = localStorage.getItem("routineOpen");
     const storedRoutines = localStorage.getItem("routines");
     // localStorageに値がない(= 初アクセス)場合は何もしない
-    if (!storedSelectEvent || !storedSelectGroup || !storedRoutineOpen || !storedRoutines) {
+    if (!storedSelectEvent || !storedSelectGroup || !storedRoutines) {
       return;
     }
     const parsedSelectEvent = parseInt(storedSelectEvent);
     const parsedSelectGroup = parseInt(storedSelectGroup);
-    const parsedRoutineOpen = parseInt(storedRoutineOpen);
     const parsedRoutines = JSON.parse(storedRoutines) as Routines;
     // すべての要素が空の配列かどうかをチェック
     const isEmpty = Object.values(parsedRoutines).every((routine) => Array.isArray(routine) && routine.length === 0);
     if (
       selectEvent === parsedSelectEvent &&
       selectGroup === parsedSelectGroup &&
-      routineOpen === parsedRoutineOpen &&
       (isEmpty || JSON.stringify(routines) === JSON.stringify(parsedRoutines))
     ) {
       // console.log("初回読み込み完了");
       setIsInitialized(true);
     }
-  }, [selectEvent, selectGroup, routineOpen, routines]);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  }, [selectEvent, selectGroup, routines]);
 
   // 初期読み込み時にcategorizedElementsが取得されたらgroupElementsを更新する
   // categorizedElementsが更新されるのは初回読み込み時のみ
@@ -161,7 +147,7 @@ const App: React.FC = () => {
     setGroupElements(getGroupElements(categorizedElements, selectEvent, selectGroup));
     localStorage.setItem("selectEvent", selectEvent.toString());
 
-    // 種目変更に応じて表示演技構成を更新する
+    // 演技構成を更新する
     if (routines[selectEvent].length > 0) {
       // routinesに保存済みデータが存在するならroutineに代入する
       setRoutine(routines[selectEvent]);
@@ -170,56 +156,6 @@ const App: React.FC = () => {
       setRoutine([] as RoutineElement[]);
     }
   }, [selectEvent]);
-
-  // グループが変更された場合
-  useEffect(() => {
-    if (Object.keys(categorizedElements).length === 0) {
-      return;
-    }
-    // 表示する技を更新する
-    setGroupElements(getGroupElements(categorizedElements, selectEvent, selectGroup));
-    localStorage.setItem("selectGroup", selectGroup.toString());
-  }, [selectGroup]);
-
-  // 演技構成が変更された場合
-  useEffect(() => {
-    if (!isInitialized) {
-      return;
-    }
-    // 無効技が発生するケースを想定
-    updateRoutineForValidation(selectEvent, routine, setRoutine);
-    // グループ得点を更新する
-    updateElementGroupScoreInRoutine(selectEvent, routine, setRoutine);
-    // 組み合わせ加点を更新する
-    updateConnectionInRoutine(selectEvent, routine, setRoutine);
-    // routinesを更新する
-    setRoutines({
-      ...routines,
-      [selectEvent]: routine,
-    } as Routines);
-  }, [routine]);
-
-  // routinesが変更されたときにlocalStorageに保存する
-  useEffect(() => {
-    // routineをユーザーが変更した場合
-    if (isInitialized) {
-      localStorage.setItem("routines", JSON.stringify(routines));
-    } else {
-      // localStorageからroutinesにデータが格納された場合
-      // ガード節:routinesに未反映の場合を除外する
-      if (routines[selectEvent].length === 0) {
-        return;
-      }
-      setRoutine(routines[selectEvent]);
-    }
-  }, [routines]);
-
-  // 画面幅変更時（PC→SP）にside modeの場合
-  useEffect(() => {
-    if (isMobile && routineOpen === 1) {
-      setRoutineOpen(0);
-    }
-  }, [isMobile]);
 
   return (
     <div className="App">
@@ -230,58 +166,23 @@ const App: React.FC = () => {
         </div>
       )}
       {!isLpHidden && isLpVisible && <Lp setIsLpVisible={setIsLpVisible} />}
-      {hintNum !== -1 && (
-        <Hint
-          hintNum={hintNum}
-          setHintNum={setHintNum}
-          setRoutineOpen={setRoutineOpen}
-          isMobile={isMobile}
-          setDetailOpens={setDetailOpens}
-          routine={routine}
-        />
-      )}
-      <Header
-        selectEvent={selectEvent}
-        setSelectEvent={setSelectEvent}
+      <MainContent
         routineOpen={routineOpen}
         setRoutineOpen={setRoutineOpen}
         isMobile={isMobile}
         routine={routine}
+        setRoutine={setRoutine}
+        selectEvent={selectEvent}
+        setSelectEvent={setSelectEvent}
+        selectGroup={selectGroup}
+        setSelectGroup={setSelectGroup}
         routines={routines}
+        setRoutines={setRoutines}
+        groupElements={groupElements}
+        setGroupElements={setGroupElements}
+        categorizedElements={categorizedElements}
+        isInitialized={isInitialized}
       />
-      {Object.keys(groupElements).length ? (
-        <div className="main">
-          {/* 難度表 */}
-          <Elements
-            routineOpen={routineOpen}
-            selectEvent={selectEvent}
-            selectGroup={selectGroup}
-            setSelectGroup={setSelectGroup}
-            groupElements={groupElements}
-            routine={routine}
-            setRoutine={setRoutine}
-            setHintNum={setHintNum}
-            isMobile={isMobile}
-          />
-          {/* 演技構成表 */}
-          <Routine
-            selectEvent={selectEvent}
-            routine={routine}
-            setRoutine={setRoutine}
-            routineOpen={routineOpen}
-            setRoutineOpen={setRoutineOpen}
-            categorizedElements={categorizedElements}
-            detailOpens={detailOpens}
-            setDetailOpens={setDetailOpens}
-            setRoutines={setRoutines}
-          />
-        </div>
-      ) : (
-        <div className="main__emplty">
-          <p>技データを取得中です。</p>
-          <p>もう少しお待ち下さい🙇</p>
-        </div>
-      )}
     </div>
   );
 };
