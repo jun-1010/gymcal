@@ -1,7 +1,9 @@
+import { Link } from "react-router-dom";
 import { RoutineElement, Routines } from "../../utilities/RoutineUtil";
 import { Events } from "../../utilities/Type";
-import HeaderEventButtons from "../molecules/HeaderEventButtons";
-import HeaderIcons from "../molecules/HeaderIcons";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import MenuIcon from "@mui/icons-material/Menu";
+import ModeButtons from "../molecules/ModeButtons";
 
 interface HeaderProps {
   selectEvent: Events;
@@ -13,24 +15,30 @@ interface HeaderProps {
   routines: Routines;
 }
 
-const Header = ({ selectEvent, setSelectEvent, routineOpen, setRoutineOpen, isMobile, routine, routines }: HeaderProps) => {
+const Header = ({
+  selectEvent,
+  setSelectEvent,
+  routineOpen,
+  setRoutineOpen,
+  isMobile,
+  routine,
+  routines,
+}: HeaderProps) => {
   return (
     <div className="header">
       <div className="header__left">
-        <a className="header__title" href="./">
-          <img src="./icon_枠なし_透過.png" alt="" />
-          <p>GymCal</p>
-        </a>
+        <Link className="header__title" to={"/"}>
+          {isMobile ? <KeyboardArrowLeftIcon /> : <MenuIcon />}
+          <p>{Events[selectEvent]}</p>
+        </Link>
       </div>
-      <HeaderEventButtons selectEvent={selectEvent} setSelectEvent={setSelectEvent} isMobile={isMobile} routines={routines}/>
-      <div className="header__right">
-        <HeaderIcons
-          routineOpen={routineOpen}
-          setRoutineOpen={setRoutineOpen}
-          isMobile={isMobile}
-          badgeContent={routine.length}
-        />
-      </div>
+      <ModeButtons
+        routineOpen={routineOpen}
+        setRoutineOpen={setRoutineOpen}
+        isMobile={isMobile}
+        badgeContent={routine.length}
+      />
+      <div className="header__right"></div>
     </div>
   );
 };

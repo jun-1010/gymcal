@@ -30,7 +30,7 @@ const Elements = ({
   setHintNum,
   isMobile,
 }: ElementsProps) => {
-  const [fontSize, setFontSize] = useState(isMobile ? 0.6 : 0.9);
+  const [fontSize, setFontSize] = useState(isMobile ? 0.8 : 0.9);
 
   return (
     <div

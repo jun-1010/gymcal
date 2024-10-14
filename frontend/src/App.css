@@ -28,6 +28,7 @@ SP mode(初期スタイル)
 }
 
 * {
+  font-family: "Jost", sans-serif;
   padding: 0;
   margin: 0;
   /* タップ時ハイライトを消す */
@@ -360,6 +361,86 @@ LP
   }
 }
 
+/************************************
+種目選択画面
+*************************************/
+.event-menu {
+  background-color: var(--white);
+  height: 100%;
+  padding: 0 1rem;
+  font-weight: bold;
+
+  * {
+    /* border: 0.1px solid var(--black); */
+  }
+
+  .event-menu__header {
+    display: flex;
+    flex-direction: space-between;
+    padding: 1.5rem 0.5rem;
+
+    .event-menu__top-button {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      text-decoration: none;
+      color: var(--black);
+
+      .event-menu__header-icon {
+        height: 3rem;
+      }
+
+      .event-menu__header-title {
+        font-size: 1.4rem;
+      }
+    }
+  }
+
+  .event-menu__content {
+    .event-menu__total {
+      background-color: var(--orange-base);
+      border-radius: 1rem;
+      padding: 1rem;
+
+      .event-menu__total-score {
+        padding: 0 0 1.5rem;
+        font-size: 2rem;
+        text-align: center;
+      }
+    }
+
+    .event-menu__section {
+      padding: 1rem 0.4rem 1rem 1rem;
+
+      .event-menu__list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1rem 0 1rem 0;
+
+        .event-menu__list-item {
+          cursor: pointer;
+          display: flex;
+          justify-content: space-between;
+
+          .event-menu__list-item--block {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 0.5rem;
+
+            .event-menu__event-label {
+              font-family: "Jost", sans-serif;
+              font-weight: bold;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 /**********************************
 ヒントモーダル
 **********************************/
@@ -491,6 +572,7 @@ LP
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative; /* 中央配置用に相対位置を設定 */
 
   .header__left {
     display: flex;
@@ -498,7 +580,7 @@ LP
     gap: 1rem;
 
     .header__title {
-      font-size: 1.4rem;
+      font-size: 1rem;
       font-weight: bold;
       text-decoration: none;
       color: var(--black);
@@ -512,20 +594,31 @@ LP
       }
     }
   }
+}
 
-  .header__right {
-    margin-top: 0.2rem;
-    .header__icons {
-      display: flex;
-      justify-content: right;
-      align-items: center;
-      cursor: pointer;
-      gap: 0.3rem;
+/* 表示モード切り替えボタン */
+.mode-buttons {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 
-      .header__icon--active {
-        opacity: 0.5;
-      }
-    }
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 0.5rem;
+  background-color: var(--gray-base);
+  padding: 0.2rem;
+  border-radius: calc(1rem + 0.2rem);
+
+  .mode-buttons__item {
+    background-color: transparent;
+    font-weight: bold;
+    padding: 0.3rem 1rem;
+    border-radius: 1rem;
+  }
+
+  .mode-buttons__item--active {
+    background-color: var(--white);
   }
 }
 /**********************************
@@ -544,84 +637,6 @@ LP
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-/************************************
-種目ボタン
-*************************************/
-.event-dropdown {
-  position: relative;
-  width: fit-content;
-  width: 9rem;
-}
-
-.event-dropdown__selected {
-  border-radius: 1rem;
-  background-color: var(--black);
-  cursor: pointer;
-  color: var(--white);
-  user-select: none;
-
-  .event-dropdown__icon {
-    width: 1.5rem;
-    opacity: 0.8;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.3s ease; /* スムーズな回転 */
-  }
-
-  .event-dropdown__icon--open {
-    transform: rotate(-180deg);
-  }
-}
-
-.event-dropdown__menu {
-  position: absolute;
-  top: 0%;
-  left: 0;
-  width: 100%;
-  background-color: var(--gray-lightest);
-  border-radius: 1rem;
-  box-shadow: 0 0 0.2rem 0.05rem var(--gray-base);
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  /* gap: 0.7rem; */
-}
-
-.event-dropdown__item {
-  padding: 0.3rem 1.2rem 0.3rem 1.5rem;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 1rem;
-  color: inherit;
-  user-select: none;
-  margin: 0.3rem 0;
-
-  .event-dropdown__text {
-    font-size: 1.1rem;
-  }
-
-  .event-dropdown__badge {
-    font-size: 0.8rem;
-    height: 1.2rem;
-    width: 1.2rem;
-    color: var(--white);
-    font-weight: bold;
-    background-color: var(--orange-darkest);
-    padding: 0.1rem 0.3rem;
-    border-radius: 50%;
-    text-align: center;
-  }
-}
-
-.event-dropdown__item--active {
-  background-color: var(--black);
-  color: var(--white);
-  border-radius: 1rem;
 }
 
 /********************************************
@@ -931,7 +946,7 @@ LP
       display: flex;
       flex-direction: column;
       gap: 0.2rem;
-      background-color: var(--orange-lightest);
+      background-color: var(--orange-lighter);
       padding: 1rem 0.2rem 1rem 0.5rem;
 
       .routine__element--header {
@@ -992,7 +1007,7 @@ LP
     }
 
     .routine__empty-box {
-      background-color: var(--orange-lightest);
+      background-color: var(--orange-lighter);
       padding: 2rem 0;
       display: flex;
       flex-direction: column;
@@ -1211,9 +1226,6 @@ PC mode
   **********************************/
   .header {
     margin: var(--header-margin-top-bottom-pc) 3rem;
-    .header__title {
-      font-size: 1.4rem;
-    }
   }
   /**********************************
   MAIN
@@ -1221,35 +1233,6 @@ PC mode
   .main {
     margin: 0 1.5rem;
     height: calc(100dvh - var(--header-height) - var(--header-margin-top-bottom-pc) - 3rem);
-  }
-  /********************************************
-  種目ボタン
-  ********************************************/
-  .event-buttons {
-    display: flex;
-    background-color: var(--gray-base);
-    border-radius: 1rem;
-
-    .event-buttons__item {
-      cursor: pointer;
-      padding: 0.45rem 1.5rem 0.4rem;
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-      user-select: none;
-
-      &:hover:not(.event-buttons__item--active) {
-        opacity: 0.6;
-      }
-    }
-
-    .event-buttons__item--active {
-      border-radius: 1.5rem;
-      transition: color 0.5s, background-color 0.5s;
-      color: var(--white);
-      background-color: var(--black);
-    }
   }
   /********************************************
   要求グループタブ 
@@ -1290,14 +1273,6 @@ hover none mode
 (スマホやタブレットでhoverエフェクトが残る症状に対応するため)
 **********************************/
 @media (hover: none) {
-  /* 種目ボタン */
-  .event-buttons {
-    .event-buttons__item {
-      &:hover:not(.event-buttons__item--active) {
-        opacity: 1;
-      }
-    }
-  }
   .elements {
     .elements__group {
       .elements__row {
