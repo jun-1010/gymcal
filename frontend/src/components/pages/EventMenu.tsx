@@ -9,9 +9,10 @@ interface EventMenuProps {
   isMobile: boolean;
   routines: Routines;
   setRoutine: React.Dispatch<React.SetStateAction<RoutineElement[]>>;
+  setSelectEvent: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const EventMenu = ({ isMobile, routines, setRoutine }: EventMenuProps) => {
+const EventMenu = ({ isMobile, routines, setRoutine, setSelectEvent }: EventMenuProps) => {
   const navigate = useNavigate();
 
   // 型ガード関数
@@ -20,6 +21,7 @@ const EventMenu = ({ isMobile, routines, setRoutine }: EventMenuProps) => {
   const handleButtonClick = (event: string | Events) => {
     if (isValidEvent(event)) {
       setRoutine(routines[event]); // ここで格納しないとEventPageの初期読み込み時にroutineが空のためroutinesが初期化される
+      setSelectEvent(event);
       navigate(`/${Events_en[event]}`);
     }
   };
@@ -44,7 +46,7 @@ const EventMenu = ({ isMobile, routines, setRoutine }: EventMenuProps) => {
       <div className="event-menu__content">
         <div className="event-menu__total">
           <p className="event-menu__total-title">合計Dスコア</p>
-          <p className="event-menu__total-score">{calculateOverallScore(routines)}</p>
+          <p className="event-menu__total-score">{calculateOverallScore(routines).toFixed(1)}</p>
         </div>
 
         <div className="event-menu__section">

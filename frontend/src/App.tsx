@@ -158,7 +158,17 @@ const App: React.FC = () => {
       {!isLpHidden && isLpVisible && <Lp setIsLpVisible={setIsLpVisible} />}
       <Router>
         <Routes>
-          <Route path="/" element={<EventMenu isMobile={isMobile} routines={routines} setRoutine={setRoutine} />} />
+          <Route
+            path="/"
+            element={
+              <EventMenu
+                isMobile={isMobile}
+                routines={routines}
+                setRoutine={setRoutine}
+                setSelectEvent={setSelectEvent}
+              />
+            }
+          />
           <Route
             path="/:eventType"
             element={
