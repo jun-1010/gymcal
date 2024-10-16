@@ -8,6 +8,7 @@ import {
   hasStrengtElement,
   isSRStrengthLimit1,
 } from "./RoutineSRUtil";
+import { calculateVTScore } from "./RoutineVTUtil";
 import { ELEMENT_COUNT_DEDUCTIONS, ElementGroup, ElementStatus, ElementType, Events } from "./Type";
 
 // 6種目分のroutine
@@ -660,7 +661,8 @@ export const calculateOverallScore = (routines: Routines): number => {
   Object.values(Events)
     .filter((event) => typeof event === "number") // イベントIDだけを抽出
     .forEach((event) => {
-      overallScore += calculateTotalScore(routines[event]);
+      const score = event === Events.跳馬 ? calculateVTScore(routines[event]) : calculateTotalScore(routines[event]);
+      overallScore += score;
     });
 
   return overallScore;
