@@ -63,14 +63,14 @@ const EventMenu = ({ selectEvent, isMobile, routines, setRoutine, setRoutines, s
         <div className="event-menu__section">
           <div className="event-menu__section-header">
             <p>種目</p>
-            {/* {calculateOverallScore(routines) > 0 && (
+            {calculateOverallScore(routines) > 0 && (
               <RoutineDeleteModal
                 selectEvent={selectEvent}
                 setRoutine={setRoutine}
                 setRoutines={setRoutines}
                 allowIndividualReset={false} // ここで切り替え
               />
-            )} */}
+            )}
           </div>
           <div className="event-menu__list">
             {Object.entries(Events)

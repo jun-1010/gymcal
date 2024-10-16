@@ -91,7 +91,10 @@ html {
     opacity: 0;
     width: 0;
     height: 100vh;
-    z-index: 1;
+    z-index: 1.5;
+    /* 1 < z-index < 2 ならOK*/
+    /* 1だとmain要素に負けて、2だとmain > delete-modalがevent menuに負ける */
+    /* Appとmainが関係していそう... */
     box-shadow: 0 0.2rem 0.5rem 0.1rem var(--gray-base);
   }
 
@@ -447,6 +450,12 @@ LP
 
     .event-menu__section {
       padding: 1rem 0.4rem 1rem 1rem;
+
+      .event-menu__section-header {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 0.5rem;
+      }
 
       .event-menu__list {
         display: flex;
@@ -890,106 +899,6 @@ LP
       font-weight: bold;
       font-size: 1.1rem;
     }
-
-    .routine__delete {
-      .routine__delete-icon {
-        cursor: pointer;
-        opacity: 0.6;
-
-        &:hover {
-          opacity: 1;
-        }
-      }
-
-      .routine__delete-modal {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .routine__delete-menu {
-        width: 20rem;
-        background-color: var(--white);
-        box-shadow: 0 0.15rem 0.5rem 0.01rem var(--gray-darker);
-        border-radius: 0.5rem;
-        padding: 1rem 1.5rem;
-        z-index: 1;
-
-        .routine__delete-title {
-          font-size: 1.1rem;
-          font-weight: bold;
-          margin-bottom: 0.4rem;
-        }
-
-        .routine__delete-line {
-          /* rules__section-line と同じなので共通化を検討しても良い*/
-          width: 100%;
-          height: 0.1rem;
-          background-color: var(--gray-base);
-          margin: 1rem auto;
-        }
-
-        .routine__delete-label {
-          display: flex;
-          gap: 0.2rem;
-          margin-bottom: 0.5rem;
-          cursor: pointer;
-          user-select: none;
-
-          input {
-            accent-color: var(--red);
-            cursor: pointer;
-          }
-        }
-
-        .routine__delete-alert {
-          color: var(--red);
-        }
-
-        .routine__delete-table {
-          width: 100%;
-        }
-
-        .routine__delete-button-box {
-          display: flex;
-          justify-content: flex-end;
-          gap: 1rem;
-
-          .routine__delete-button {
-            padding: 0.3rem 0.6rem;
-            border-radius: 0.5rem;
-            border: 0.1rem solid var(--gray-base);
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: bold;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: fit-content;
-            &:hover {
-              background-color: var(--gray-lightest);
-            }
-          }
-
-          .routine__delete-button--alert {
-            background-color: var(--red);
-            border: none;
-            color: var(--white);
-
-            &:hover {
-              background-color: var(--red-hover-color);
-            }
-          }
-        }
-      }
-    }
   }
 
   .routine__table {
@@ -1249,6 +1158,108 @@ LP
 .routine--side {
   width: var(--routine-width);
 }
+/**********************************
+演技構成リセットボタン
+**********************************/
+.routine__delete {
+  .routine__delete-icon {
+    cursor: pointer;
+    opacity: 0.6;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .routine__delete-modal {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .routine__delete-menu {
+    width: 20rem;
+    background-color: var(--white);
+    box-shadow: 0 0.15rem 0.5rem 0.01rem var(--gray-darker);
+    border-radius: 0.5rem;
+    padding: 1rem 1.5rem;
+    font-weight: normal;
+
+    .routine__delete-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 0.4rem;
+    }
+
+    .routine__delete-line {
+      /* rules__section-line と同じなので共通化を検討しても良い*/
+      width: 100%;
+      height: 0.1rem;
+      background-color: var(--gray-base);
+      margin: 1rem auto;
+    }
+
+    .routine__delete-label {
+      display: flex;
+      gap: 0.2rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      user-select: none;
+
+      input {
+        accent-color: var(--red);
+        cursor: pointer;
+      }
+    }
+
+    .routine__delete-alert {
+      color: var(--red);
+    }
+
+    .routine__delete-table {
+      width: 100%;
+    }
+
+    .routine__delete-button-box {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+
+      .routine__delete-button {
+        padding: 0.3rem 0.6rem;
+        border-radius: 0.5rem;
+        border: 0.1rem solid var(--gray-base);
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: fit-content;
+        &:hover {
+          background-color: var(--gray-lightest);
+        }
+      }
+
+      .routine__delete-button--alert {
+        background-color: var(--red);
+        border: none;
+        color: var(--white);
+
+        &:hover {
+          background-color: var(--red-hover-color);
+        }
+      }
+    }
+  }
+}
 
 /**********************************
 PC mode
@@ -1355,15 +1366,11 @@ hover none mode
       }
     }
   }
-  .routine {
-    .routine__title-box {
-      .routine__delete {
-        .routine__delete-icon {
-          opacity: 0.8;
-          &:hover {
-            opacity: 0.8;
-          }
-        }
+  .routine__delete {
+    .routine__delete-icon {
+      opacity: 0.8;
+      &:hover {
+        opacity: 0.8;
       }
     }
   }
