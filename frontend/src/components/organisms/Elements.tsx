@@ -8,19 +8,19 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 
 interface ElementsProps {
-  routineOpen: number;
+  displayMode: number;
   selectEvent: Events;
   selectGroup: ElementGroup;
   setSelectGroup: React.Dispatch<React.SetStateAction<ElementGroup>>;
   groupElements: GroupElements;
   routine: RoutineElement[];
-  setRoutine: (routine: RoutineElement[]) => void;
+  setRoutine: React.Dispatch<React.SetStateAction<RoutineElement[]>>;
   setHintNum: React.Dispatch<React.SetStateAction<number>>;
   isMobile: boolean;
 }
 
 const Elements = ({
-  routineOpen,
+  displayMode,
   selectEvent,
   selectGroup,
   setSelectGroup,
@@ -30,12 +30,12 @@ const Elements = ({
   setHintNum,
   isMobile,
 }: ElementsProps) => {
-  const [fontSize, setFontSize] = useState(isMobile ? 0.6 : 0.9);
+  const [fontSize, setFontSize] = useState(isMobile ? 0.8 : 0.9);
 
   return (
     <div
-      className={`elements ${routineOpen === 0 ? "elements--full" : ""} ${routineOpen === 1 ? "elements--side" : ""}  ${
-        routineOpen === 2 ? "elements--disabled" : ""
+      className={`elements ${displayMode === 0 ? "elements--full" : ""} ${displayMode === 1 ? "elements--side" : ""}  ${
+        displayMode === 2 ? "elements--disabled" : ""
       }`}
     >
       <ElementsGroupButtons selectEvent={selectEvent} selectGroup={selectGroup} setSelectGroup={setSelectGroup} />

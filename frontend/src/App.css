@@ -25,9 +25,15 @@ SP mode(初期スタイル)
   --header-height: 6dvh;
   --header-margin-top-bottom-pc: 1rem;
   --group-tabs-height: 2.5rem;
+
+  --routine-width: 375px; /* iPhone12Pro と同じ */
+  --drawer-width: 15rem;
+
+  --transition-delay: 0.3s;
 }
 
 * {
+  font-family: "Jost", sans-serif;
   padding: 0;
   margin: 0;
   /* タップ時ハイライトを消す */
@@ -63,10 +69,39 @@ html {
 }
 
 .App {
-  position: absolute;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   z-index: 1; /* App内の他の要素がロード中に隠れるように設定 */
+  display: flex;
+  flex-direction: row-reverse;
+
+  .main {
+    width: 100vw;
+    height: 100vh;
+    /* transition: width var(--transition-delay) ease; */
+    z-index: 2;
+  }
+
+  .main--drawer-open {
+    width: calc(100vw - var(--drawer-width));
+  }
+
+  /* ドロワー */
+  .drawer {
+    opacity: 0;
+    width: 0;
+    height: 100vh;
+    z-index: 1.5;
+    /* 1 < z-index < 2 ならOK*/
+    /* 1だとmain要素に負けて、2だとmain > delete-modalがevent menuに負ける */
+    /* Appとmainが関係していそう... */
+    box-shadow: 0 0.2rem 0.5rem 0.1rem var(--gray-base);
+  }
+
+  .drawer--open {
+    opacity: 1;
+    width: var(--drawer-width);
+  }
 }
 /**********************************
 共通
@@ -100,11 +135,10 @@ html {
   .common__table-row {
     display: flex;
     justify-content: flex-start;
-    gap: 0.3rem;
+    gap: 0.5rem;
     max-width: 50rem;
-    padding: 0 0.5rem;
+    padding: 0.4rem 0.5rem;
     min-width: 100%;
-    height: 2rem;
   }
 
   .common__table-row--active {
@@ -119,6 +153,7 @@ html {
     align-items: center;
     width: min(fit-content, 100%);
     height: 100%;
+    line-height: 0.9rem;
   }
 
   .common__table-cell--active {
@@ -187,9 +222,9 @@ html {
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: opacity 0.3s ease-in-out; /* フェードイン・フェードアウト共に適用 */
+  transition: opacity var(--transition-delay) ease-in-out; /* フェードイン・フェードアウト共に適用 */
   background-color: var(--gray-lightest);
-  z-index: 999; /* Headerやmainよりも上に表示 */
+  z-index: 999; /* Headerやcontentよりも上に表示 */
 
   .loading__icon {
     width: 13rem;
@@ -360,6 +395,112 @@ LP
   }
 }
 
+/************************************
+種目選択画面
+*************************************/
+.event-menu {
+  background-color: var(--white);
+  height: 100%;
+  width: 100%;
+  padding: 0 1rem;
+  font-weight: bold;
+
+  .event-menu__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 0 1.5rem 0.5rem;
+
+    .event-menu__top-button {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      text-decoration: none;
+      color: var(--black);
+
+      .event-menu__header-icon {
+        height: 2.5rem;
+      }
+
+      .event-menu__header-title {
+        font-size: 1.4rem;
+      }
+    }
+
+    .event-menu__close {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+  }
+
+  .event-menu__content {
+    .event-menu__total {
+      background-color: var(--orange-base);
+      border-radius: 1rem;
+      padding: 1rem;
+
+      .event-menu__total-score {
+        padding: 0 0 1.5rem;
+        font-size: 2rem;
+        text-align: center;
+      }
+    }
+
+    .event-menu__section {
+      padding: 1rem 0.4rem 1rem 1rem;
+
+      .event-menu__section-header {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 0.5rem;
+      }
+
+      .event-menu__list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem 0 1rem 0;
+
+        .event-menu__list-item {
+          padding: 0.5rem;
+          border-radius: 1rem;
+          cursor: pointer;
+          display: flex;
+          justify-content: space-between;
+          transition: all var(--transition-delay);
+
+          .event-menu__list-item--block {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 0.5rem;
+
+            .event-menu__event-label {
+              font-weight: bold;
+              transition: all var(--transition-delay);
+            }
+          }
+        }
+
+        .event-menu__list-item--active {
+          background-color: var(--gray-base);
+          transition: all var(--transition-delay);
+
+          .event-menu__list-item--block {
+            .event-menu__event-label {
+              background-color: var(--white);
+              font-weight: bold;
+              transition: all var(--transition-delay);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 /**********************************
 ヒントモーダル
 **********************************/
@@ -439,12 +580,12 @@ LP
 
     .hint__icon--light:hover {
       background-color: var(--orange-base);
-      transition: all 0.3s;
+      transition: all var(--routine-width);
     }
 
     .hint__icon--dark:hover {
       background-color: var(--gray-darkest);
-      transition: all 0.3s;
+      transition: all var(--routine-width);
     }
   }
 
@@ -481,7 +622,6 @@ LP
 .hint.hint--fade-out {
   opacity: 0;
 }
-
 /**********************************
 ヘッダー
 **********************************/
@@ -491,6 +631,7 @@ LP
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative; /* 中央配置用に相対位置を設定 */
 
   .header__left {
     display: flex;
@@ -498,137 +639,68 @@ LP
     gap: 1rem;
 
     .header__title {
-      font-size: 1.4rem;
+      cursor: pointer;
+      font-size: 1rem;
       font-weight: bold;
       text-decoration: none;
       color: var(--black);
       display: flex;
       align-items: center;
       gap: 0.5rem;
-
-      img {
-        margin-top: 0.2rem;
-        width: 1.5rem;
-      }
     }
   }
 
   .header__right {
-    margin-top: 0.2rem;
-    .header__icons {
-      display: flex;
-      justify-content: right;
-      align-items: center;
-      cursor: pointer;
-      gap: 0.3rem;
-
-      .header__icon {
-        /* opacity: 0.8;
-        &:hover {
-          opacity: 1;
-        } */
-      }
-
-      .header__icon--active {
-        opacity: 0.5;
-      }
+    .header__score {
+      background-color: var(--orange-base);
+      border-radius: 1rem;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
     }
+  }
+}
+
+/* 表示モード切り替えボタン */
+.mode-buttons {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 0.5rem;
+  background-color: var(--gray-base);
+  padding: 0.2rem;
+  border-radius: calc(1rem + 0.2rem);
+
+  .mode-buttons__item {
+    background-color: transparent;
+    font-weight: bold;
+    padding: 0.3rem 1rem;
+    border-radius: 1rem;
+  }
+
+  .mode-buttons__item--active {
+    background-color: var(--white);
   }
 }
 /**********************************
 メイン
 **********************************/
-.main {
+.content {
   display: flex;
   justify-content: space-between;
   margin: 0 0.5rem;
   height: calc(100dvh - var(--header-height) - 2rem);
 }
 
-.main__emplty {
+.content__emplty {
   height: 10rem;
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-/************************************
-種目ボタン
-*************************************/
-.event-dropdown {
-  position: relative;
-  width: fit-content;
-  width: 9rem;
-}
-
-.event-dropdown__selected {
-  border-radius: 1rem;
-  background-color: var(--black);
-  cursor: pointer;
-  color: var(--white);
-  user-select: none;
-
-  .event-dropdown__icon {
-    width: 1.5rem;
-    opacity: 0.8;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.3s ease; /* スムーズな回転 */
-  }
-
-  .event-dropdown__icon--open {
-    transform: rotate(-180deg);
-  }
-}
-
-.event-dropdown__menu {
-  position: absolute;
-  top: 0%;
-  left: 0;
-  width: 100%;
-  background-color: var(--gray-lightest);
-  border-radius: 1rem;
-  box-shadow: 0 0 0.2rem 0.05rem var(--gray-base);
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  /* gap: 0.7rem; */
-}
-
-.event-dropdown__item {
-  padding: 0.3rem 1.2rem 0.3rem 1.5rem;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 1rem;
-  color: inherit;
-  user-select: none;
-  margin: 0.3rem 0;
-
-  .event-dropdown__text {
-    font-size: 1.1rem;
-  }
-
-  .event-dropdown__badge {
-    font-size: 0.8rem;
-    height: 1.2rem;
-    width: 1.2rem;
-    color: var(--white);
-    font-weight: bold;
-    background-color: var(--orange-darkest);
-    padding: 0.1rem 0.3rem;
-    border-radius: 50%;
-    text-align: center;
-  }
-}
-
-.event-dropdown__item--active {
-  background-color: var(--black);
-  color: var(--white);
-  border-radius: 1rem;
 }
 
 /********************************************
@@ -773,13 +845,13 @@ LP
 
       &:hover {
         background-color: var(--orange-base);
-        transition: all 0.2s;
+        transition: all var(--transition-delay);
       }
 
       &:active {
         background-color: var(--orange-darker);
         box-shadow: 0 0 0.2rem 0.2rem var(--gray-base);
-        transition: all 0.2s;
+        transition: all var(--transition-delay);
       }
 
       svg {
@@ -794,7 +866,8 @@ LP
   width: 100%;
 }
 .elements--side {
-  width: calc(50%);
+  /* width: calc(50%); */
+  width: calc(100% - var(--routine-width) - 1rem);
 }
 
 .elements--disabled {
@@ -826,106 +899,6 @@ LP
       font-weight: bold;
       font-size: 1.1rem;
     }
-
-    .routine__delete {
-      .routine__delete-icon {
-        cursor: pointer;
-        opacity: 0.6;
-
-        &:hover {
-          opacity: 1;
-        }
-      }
-
-      .routine__delete-modal {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 999;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .routine__delete-menu {
-        width: 20rem;
-        background-color: var(--white);
-        box-shadow: 0 0.15rem 0.5rem 0.01rem var(--gray-darker);
-        border-radius: 0.5rem;
-        padding: 1rem 1.5rem;
-        z-index: 1;
-
-        .routine__delete-title {
-          font-size: 1.1rem;
-          font-weight: bold;
-          margin-bottom: 0.4rem;
-        }
-
-        .routine__delete-line {
-          /* rules__section-line と同じなので共通化を検討しても良い*/
-          width: 100%;
-          height: 0.1rem;
-          background-color: var(--gray-base);
-          margin: 1rem auto;
-        }
-
-        .routine__delete-label {
-          display: flex;
-          gap: 0.2rem;
-          margin-bottom: 0.5rem;
-          cursor: pointer;
-          user-select: none;
-
-          input {
-            accent-color: var(--red);
-            cursor: pointer;
-          }
-        }
-
-        .routine__delete-alert {
-          color: var(--red);
-        }
-
-        .routine__delete-table {
-          width: 100%;
-        }
-
-        .routine__delete-button-box {
-          display: flex;
-          justify-content: flex-end;
-          gap: 1rem;
-
-          .routine__delete-button {
-            padding: 0.3rem 0.6rem;
-            border-radius: 0.5rem;
-            border: 0.1rem solid var(--gray-base);
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: bold;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: fit-content;
-            &:hover {
-              background-color: var(--gray-lightest);
-            }
-          }
-
-          .routine__delete-button--alert {
-            background-color: var(--red);
-            border: none;
-            color: var(--white);
-
-            &:hover {
-              background-color: var(--red-hover-color);
-            }
-          }
-        }
-      }
-    }
   }
 
   .routine__table {
@@ -938,7 +911,7 @@ LP
       display: flex;
       flex-direction: column;
       gap: 0.2rem;
-      background-color: var(--orange-lightest);
+      background-color: var(--orange-lighter);
       padding: 1rem 0.2rem 1rem 0.5rem;
 
       .routine__element--header {
@@ -999,7 +972,7 @@ LP
     }
 
     .routine__empty-box {
-      background-color: var(--orange-lightest);
+      background-color: var(--orange-lighter);
       padding: 2rem 0;
       display: flex;
       flex-direction: column;
@@ -1026,7 +999,7 @@ LP
         &:hover {
           cursor: pointer;
           background-color: var(--orange-base);
-          transition: all 0.3s;
+          transition: all var(--routine-width);
           user-select: none;
         }
       }
@@ -1068,7 +1041,7 @@ LP
     .rules__details {
       border-radius: 0.5rem;
       box-shadow: 0 0 0.2rem 0.1rem var(--gray-base);
-      transition: all 0.3s;
+      transition: all var(--routine-width);
 
       summary {
         display: flex;
@@ -1108,7 +1081,7 @@ LP
           border-bottom: 0.1rem solid var(--black);
           border-right: 0.1rem solid var(--black);
           content: "";
-          transition: transform 0.3s;
+          transition: transform var(--routine-width);
         }
       }
 
@@ -1162,7 +1135,7 @@ LP
 
     .rules__details[open] {
       box-shadow: 0 0 0.2rem 0.1rem var(--gray-darker);
-      transition: all 0.3s;
+      transition: all var(--routine-width);
 
       summary::after {
         transform: rotate(225deg);
@@ -1183,7 +1156,109 @@ LP
   display: none;
 }
 .routine--side {
-  width: calc(50% - 1rem);
+  width: var(--routine-width);
+}
+/**********************************
+演技構成リセットボタン
+**********************************/
+.routine__delete {
+  .routine__delete-icon {
+    cursor: pointer;
+    opacity: 0.6;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .routine__delete-modal {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .routine__delete-menu {
+    width: 20rem;
+    background-color: var(--white);
+    box-shadow: 0 0.15rem 0.5rem 0.01rem var(--gray-darker);
+    border-radius: 0.5rem;
+    padding: 1rem 1.5rem;
+    font-weight: normal;
+
+    .routine__delete-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      margin-bottom: 0.4rem;
+    }
+
+    .routine__delete-line {
+      /* rules__section-line と同じなので共通化を検討しても良い*/
+      width: 100%;
+      height: 0.1rem;
+      background-color: var(--gray-base);
+      margin: 1rem auto;
+    }
+
+    .routine__delete-label {
+      display: flex;
+      gap: 0.2rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      user-select: none;
+
+      input {
+        accent-color: var(--red);
+        cursor: pointer;
+      }
+    }
+
+    .routine__delete-alert {
+      color: var(--red);
+    }
+
+    .routine__delete-table {
+      width: 100%;
+    }
+
+    .routine__delete-button-box {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+
+      .routine__delete-button {
+        padding: 0.3rem 0.6rem;
+        border-radius: 0.5rem;
+        border: 0.1rem solid var(--gray-base);
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: bold;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: fit-content;
+        &:hover {
+          background-color: var(--gray-lightest);
+        }
+      }
+
+      .routine__delete-button--alert {
+        background-color: var(--red);
+        border: none;
+        color: var(--white);
+
+        &:hover {
+          background-color: var(--red-hover-color);
+        }
+      }
+    }
+  }
 }
 
 /**********************************
@@ -1197,7 +1272,7 @@ PC mode
     &:hover {
       cursor: pointer;
       background-color: var(--orange-base);
-      transition: all 0.3s;
+      transition: all var(--routine-width);
       user-select: none;
     }
   }
@@ -1218,45 +1293,13 @@ PC mode
   **********************************/
   .header {
     margin: var(--header-margin-top-bottom-pc) 3rem;
-    .header__title {
-      font-size: 1.4rem;
-    }
   }
   /**********************************
-  MAIN
+  content
   **********************************/
-  .main {
+  .content {
     margin: 0 1.5rem;
     height: calc(100dvh - var(--header-height) - var(--header-margin-top-bottom-pc) - 3rem);
-  }
-  /********************************************
-  種目ボタン
-  ********************************************/
-  .event-buttons {
-    display: flex;
-    background-color: var(--gray-base);
-    border-radius: 1rem;
-
-    .event-buttons__item {
-      cursor: pointer;
-      padding: 0.45rem 1.5rem 0.4rem;
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-      user-select: none;
-
-      &:hover:not(.event-buttons__item--active) {
-        opacity: 0.6;
-      }
-    }
-
-    .event-buttons__item--active {
-      border-radius: 1.5rem;
-      transition: color 0.5s, background-color 0.5s;
-      color: var(--white);
-      background-color: var(--black);
-    }
   }
   /********************************************
   要求グループタブ 
@@ -1273,8 +1316,8 @@ PC mode
     padding: 1rem 1.5rem;
 
     .elements__zoom {
-      bottom: 2rem;
-      right: 2.5rem;
+      bottom: 1rem;
+      right: 1rem;
 
       .elements__zoom-icon {
         svg {
@@ -1297,14 +1340,6 @@ hover none mode
 (スマホやタブレットでhoverエフェクトが残る症状に対応するため)
 **********************************/
 @media (hover: none) {
-  /* 種目ボタン */
-  .event-buttons {
-    .event-buttons__item {
-      &:hover:not(.event-buttons__item--active) {
-        opacity: 1;
-      }
-    }
-  }
   .elements {
     .elements__group {
       .elements__row {
@@ -1331,15 +1366,11 @@ hover none mode
       }
     }
   }
-  .routine {
-    .routine__title-box {
-      .routine__delete {
-        .routine__delete-icon {
-          opacity: 0.8;
-          &:hover {
-            opacity: 0.8;
-          }
-        }
+  .routine__delete {
+    .routine__delete-icon {
+      opacity: 0.8;
+      &:hover {
+        opacity: 0.8;
       }
     }
   }

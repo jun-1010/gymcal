@@ -8,13 +8,13 @@ import { calculateTotalScore, RoutineElement } from "../../utilities/RoutineUtil
 interface HintProps {
   hintNum: number;
   setHintNum: React.Dispatch<React.SetStateAction<number>>;
-  setRoutineOpen: React.Dispatch<React.SetStateAction<number>>;
+  setDisplayMode: React.Dispatch<React.SetStateAction<number>>;
   isMobile: boolean;
   setDetailOpens: React.Dispatch<React.SetStateAction<number[]>>;
   routine: RoutineElement[];
 }
 
-const Hint = ({ hintNum, setHintNum, setRoutineOpen, isMobile, setDetailOpens, routine }: HintProps) => {
+const Hint = ({ hintNum, setHintNum, setDisplayMode, isMobile, setDetailOpens, routine }: HintProps) => {
   const visibleTime = 4000; // Hint表示時間
   const hintModalRef = useRef<HTMLDivElement>(null);
 
@@ -52,7 +52,7 @@ const Hint = ({ hintNum, setHintNum, setRoutineOpen, isMobile, setDetailOpens, r
       }
       return prevState; // すでに存在する場合はそのまま返す
     });
-    setRoutineOpen(isMobile ? 2 : 1);
+    setDisplayMode(isMobile ? 2 : 1);
   };
 
   return (
