@@ -8,6 +8,7 @@ interface DrawerProps {
   isMobile: boolean;
   routines: Routines;
   setRoutine: React.Dispatch<React.SetStateAction<RoutineElement[]>>;
+  setRoutines: React.Dispatch<React.SetStateAction<Routines>>;
   setSelectEvent: React.Dispatch<React.SetStateAction<number>>;
   setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -20,6 +21,7 @@ const Drawer = ({
   setRoutine,
   setSelectEvent,
   setDrawerOpen,
+  setRoutines,
 }: DrawerProps) => {
   return (
     <div className={`drawer ${drawerOpen ? "drawer--open" : ""}`}>
@@ -28,6 +30,7 @@ const Drawer = ({
         isMobile={isMobile}
         routines={routines}
         setRoutine={setRoutine}
+        setRoutines={setRoutines}
         setSelectEvent={setSelectEvent}
         setDrawerOpen={setDrawerOpen}
       />

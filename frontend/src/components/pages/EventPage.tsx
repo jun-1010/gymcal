@@ -183,6 +183,7 @@ const EventPage = ({
           isMobile={isMobile}
           routines={routines}
           setRoutine={setRoutine}
+          setRoutines={setRoutines}
           setSelectEvent={setSelectEvent}
           setDrawerOpen={setDrawerOpen}
         />

@@ -167,6 +167,7 @@ const App: React.FC = () => {
                   isMobile={isMobile}
                   routines={routines}
                   setRoutine={setRoutine}
+                  setRoutines={setRoutines}
                   setSelectEvent={setSelectEvent}
                   setDrawerOpen={() => {}} // SPモードでは使わない(しApp.tsxに定義されていない)
                 />

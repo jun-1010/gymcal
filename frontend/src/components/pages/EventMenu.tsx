@@ -4,17 +4,19 @@ import { Events, Events_en } from "../../utilities/Type";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { calculateVTScore } from "../../utilities/RoutineVTUtil";
+import RoutineDeleteModal from "./RoutineDeleteModal";
 
 interface EventMenuProps {
   selectEvent: Events;
   isMobile: boolean;
   routines: Routines;
   setRoutine: React.Dispatch<React.SetStateAction<RoutineElement[]>>;
+  setRoutines: React.Dispatch<React.SetStateAction<Routines>>;
   setSelectEvent: React.Dispatch<React.SetStateAction<number>>;
   setDrawerOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const EventMenu = ({ selectEvent, isMobile, routines, setRoutine, setSelectEvent, setDrawerOpen }: EventMenuProps) => {
+const EventMenu = ({ selectEvent, isMobile, routines, setRoutine, setRoutines, setSelectEvent, setDrawerOpen }: EventMenuProps) => {
   const navigate = useNavigate();
 
   // 型ガード関数
@@ -59,7 +61,17 @@ const EventMenu = ({ selectEvent, isMobile, routines, setRoutine, setSelectEvent
         </div>
 
         <div className="event-menu__section">
-          {isMobile && <div className="event-menu__section-title">種目</div>}
+          <div className="event-menu__section-header">
+            <p>種目</p>
+            {/* {calculateOverallScore(routines) > 0 && (
+              <RoutineDeleteModal
+                selectEvent={selectEvent}
+                setRoutine={setRoutine}
+                setRoutines={setRoutines}
+                allowIndividualReset={false} // ここで切り替え
+              />
+            )} */}
+          </div>
           <div className="event-menu__list">
             {Object.entries(Events)
               .filter(([key]) => isNaN(Number(key))) // 数値キーを除外
