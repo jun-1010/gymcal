@@ -13,8 +13,9 @@ import {
 import { Events, Events_en } from "../../utilities/Type";
 import { CategorizedElements, getGroupElements, GroupElements } from "../../utilities/ElementUtil";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import Drawer from "../organisms/Drawer";
 
-interface MainContentProps {
+interface EventPageProps {
   isMobile: boolean;
   routine: RoutineElement[];
   setRoutine: React.Dispatch<React.SetStateAction<RoutineElement[]>>;
@@ -45,14 +46,15 @@ const EventPage = ({
   setGroupElements,
   categorizedElements,
   isInitialized,
-}: MainContentProps) => {
+}: EventPageProps) => {
   const { eventType } = useParams<{ eventType: keyof typeof Events_en }>();
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [routineOpen, setRoutineOpen] = useState(isMobile ? 0 : 1); // 0:難度表 1:半分 2:演技構成
+  const [displayMode, setDisplayMode] = useState(isMobile ? 0 : 1); // 0:難度表 1:演技表&構成表 2:構成表
   const [hintNum, setHintNum] = useState(-1); // 選択できない技を選択しようとした時に原因のルール番号を格納する(ヒントの表示状態にも利用する)
   const [detailOpens, setDetailOpens] = useState([] as number[]); // 詳細表示中のルールの番号を格納する
+  const [drawerOpen, setDrawerOpen] = useState(false); // PCモードで使用するドロワー開閉状態
 
   // URLの変更に対する処理
   useEffect(() => {
@@ -112,8 +114,8 @@ const EventPage = ({
 
   // 画面幅変更時（PC→SP）にside modeの場合
   useEffect(() => {
-    if (isMobile && routineOpen === 1) {
-      setRoutineOpen(0);
+    if (isMobile && displayMode === 1) {
+      setDisplayMode(0);
     }
   }, [isMobile]);
 
@@ -123,52 +125,67 @@ const EventPage = ({
         <Hint
           hintNum={hintNum}
           setHintNum={setHintNum}
-          setRoutineOpen={setRoutineOpen}
+          setDisplayMode={setDisplayMode}
           isMobile={isMobile}
           setDetailOpens={setDetailOpens}
           routine={routine}
         />
       )}
-      <Header
-        selectEvent={selectEvent}
-        setSelectEvent={setSelectEvent}
-        routineOpen={routineOpen}
-        setRoutineOpen={setRoutineOpen}
-        isMobile={isMobile}
-        routine={routine}
-        routines={routines}
-      />
-      {Object.keys(groupElements).length ? (
-        <div className="main">
-          {/* 難度表 */}
-          <Elements
-            routineOpen={routineOpen}
-            selectEvent={selectEvent}
-            selectGroup={selectGroup}
-            setSelectGroup={setSelectGroup}
-            groupElements={groupElements}
-            routine={routine}
-            setRoutine={setRoutine}
-            setHintNum={setHintNum}
-            isMobile={isMobile}
-          />
-          {/* 演技構成表 */}
-          <Routine
-            selectEvent={selectEvent}
-            routine={routine}
-            setRoutine={setRoutine}
-            routineOpen={routineOpen}
-            setRoutineOpen={setRoutineOpen}
-            categorizedElements={categorizedElements}
-            detailOpens={detailOpens}
-            setDetailOpens={setDetailOpens}
-            setRoutines={setRoutines}
-          />
-        </div>
-      ) : (
-        <div className="main__emplty">
-          <p>技データが取得できません</p>
-        </div>
+      <div className={`main ${drawerOpen ? "main--drawer-open" : ""}`}>
+        <Header
+          selectEvent={selectEvent}
+          setSelectEvent={setSelectEvent}
+          displayMode={displayMode}
+          setDisplayMode={setDisplayMode}
+          isMobile={isMobile}
+          routine={routine}
+          routines={routines}
+          drawerOpen={drawerOpen}
+          setDrawerOpen={setDrawerOpen}
+        />
+        {Object.keys(groupElements).length ? (
+          <div className="content">
+            {/* 難度表 */}
+            <Elements
+              displayMode={displayMode}
+              selectEvent={selectEvent}
+              selectGroup={selectGroup}
+              setSelectGroup={setSelectGroup}
+              groupElements={groupElements}
+              routine={routine}
+              setRoutine={setRoutine}
+              setHintNum={setHintNum}
+              isMobile={isMobile}
+            />
+            {/* 演技構成表 */}
+            <Routine
+              selectEvent={selectEvent}
+              routine={routine}
+              setRoutine={setRoutine}
+              displayMode={displayMode}
+              setDisplayMode={setDisplayMode}
+              categorizedElements={categorizedElements}
+              detailOpens={detailOpens}
+              setDetailOpens={setDetailOpens}
+              setRoutines={setRoutines}
+            />
+          </div>
+        ) : (
+          <div className="content__emplty">
+            <p>技データが取得できません</p>
+          </div>
+        )}
+      </div>
+      {!isMobile && drawerOpen && (
+        <Drawer
+          selectEvent={selectEvent}
+          drawerOpen={drawerOpen}
+          isMobile={isMobile}
+          routines={routines}
+          setRoutine={setRoutine}
+          setSelectEvent={setSelectEvent}
+          setDrawerOpen={setDrawerOpen}
+        />
       )}
     </>
   );

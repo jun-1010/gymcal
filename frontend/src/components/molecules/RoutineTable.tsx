@@ -23,11 +23,11 @@ interface RoutineTableProps {
   selectEvent: Events;
   routine: RoutineElement[];
   setRoutine: React.Dispatch<React.SetStateAction<RoutineElement[]>>;
-  setRoutineOpen: React.Dispatch<React.SetStateAction<number>>;
+  setDisplayMode: React.Dispatch<React.SetStateAction<number>>;
   setRoutines: React.Dispatch<React.SetStateAction<Routines>>;
 }
 
-const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen, setRoutines }: RoutineTableProps) => {
+const RoutineTable = ({ selectEvent, routine, setRoutine, setDisplayMode, setRoutines }: RoutineTableProps) => {
   const [deleteMenuOpen, setDeleteMenuOpen] = useState(false);
   const deleteMenuRef = useRef<HTMLDivElement>(null);
   const [resetTarget, setResetTarget] = useState(0);
@@ -170,7 +170,7 @@ const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen, setRou
             <div
               className="common__button"
               onClick={() => {
-                setRoutineOpen(0);
+                setDisplayMode(0);
               }}
             >
               難度表を見る

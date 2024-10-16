@@ -11,23 +11,22 @@ import EventPage from "./components/pages/EventPage";
 import EventMenu from "./components/pages/EventMenu";
 import NotFound from "./components/pages/NotFound";
 
-const url = "http://54.250.128.188:8000/api/elements"; // iPadで見る用
-// const url = "http://localhost:8000/api/elements";
+// const url = "http://54.250.128.188:8000/api/elements"; // iPadで見る用
+const url = "http://localhost:8000/api/elements";
 
 const App: React.FC = () => {
+  const isMobile = useMedia({ maxWidth: "849px" }, true); // 初期値を設定することで、ダイレクト処理のバグを防ぐ
   const [categorizedElements, setCategorizedElements] = useState({});
   const [selectEvent, setSelectEvent] = useState(Events.床);
   const [selectGroup, setSelectGroup] = useState(ElementGroup.EG1);
   const [groupElements, setGroupElements] = useState({} as GroupElements);
   const [routines, setRoutines] = useState(initialRoutines as Routines);
   const [routine, setRoutine] = useState([] as RoutineElement[]);
-  const isMobile = useMedia({ maxWidth: "849px" });
   const [isInitialized, setIsInitialized] = useState(false); // 初回読み込み完了時にtrue
   const [isLoading, setIsLoading] = useState(true); // ローディング状態
   const [isVisible, setIsVisible] = useState(true); // true ならローディング画面表示, false なら非表示
   const [isLpVisible, setIsLpVisible] = useState(true); // LPの表示状態
   const [isLpHidden, setIsLpHidden] = useState(false); // 「次回から表示しない」か否か
-
   const fetchData = async () => {
     try {
       const response = await fetch(url);
@@ -158,15 +157,22 @@ const App: React.FC = () => {
       {!isLpHidden && isLpVisible && <Lp setIsLpVisible={setIsLpVisible} />}
       <Router>
         <Routes>
+          {/* PCで「/」にアクセスされたら「/fx」にリダイレクト */}
           <Route
             path="/"
             element={
-              <EventMenu
-                isMobile={isMobile}
-                routines={routines}
-                setRoutine={setRoutine}
-                setSelectEvent={setSelectEvent}
-              />
+              isMobile ? (
+                <EventMenu
+                  selectEvent={selectEvent}
+                  isMobile={isMobile}
+                  routines={routines}
+                  setRoutine={setRoutine}
+                  setSelectEvent={setSelectEvent}
+                  setDrawerOpen={() => {}} // SPモードでは使わない(しApp.tsxに定義されていない)
+                />
+              ) : (
+                <Navigate to="/fx" replace />
+              )
             }
           />
           <Route
@@ -194,21 +200,6 @@ const App: React.FC = () => {
           <Route path="/not-found" element={<NotFound />} />
         </Routes>
       </Router>
-      {/* <EventPage
-        isMobile={isMobile}
-        routine={routine}
-        setRoutine={setRoutine}
-        selectEvent={selectEvent}
-        setSelectEvent={setSelectEvent}
-        selectGroup={selectGroup}
-        setSelectGroup={setSelectGroup}
-        routines={routines}
-        setRoutines={setRoutines}
-        groupElements={groupElements}
-        setGroupElements={setGroupElements}
-        categorizedElements={categorizedElements}
-        isInitialized={isInitialized}
-      /> */}
     </div>
   );
 };

@@ -8,7 +8,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 
 interface ElementsProps {
-  routineOpen: number;
+  displayMode: number;
   selectEvent: Events;
   selectGroup: ElementGroup;
   setSelectGroup: React.Dispatch<React.SetStateAction<ElementGroup>>;
@@ -20,7 +20,7 @@ interface ElementsProps {
 }
 
 const Elements = ({
-  routineOpen,
+  displayMode,
   selectEvent,
   selectGroup,
   setSelectGroup,
@@ -34,8 +34,8 @@ const Elements = ({
 
   return (
     <div
-      className={`elements ${routineOpen === 0 ? "elements--full" : ""} ${routineOpen === 1 ? "elements--side" : ""}  ${
-        routineOpen === 2 ? "elements--disabled" : ""
+      className={`elements ${displayMode === 0 ? "elements--full" : ""} ${displayMode === 1 ? "elements--side" : ""}  ${
+        displayMode === 2 ? "elements--disabled" : ""
       }`}
     >
       <ElementsGroupButtons selectEvent={selectEvent} selectGroup={selectGroup} setSelectGroup={setSelectGroup} />

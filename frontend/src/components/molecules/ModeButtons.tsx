@@ -1,26 +1,25 @@
-
 import StyledBadge from "../atoms/StyledBadge";
 
 interface ModeButtonsProps {
-  routineOpen: number;
-  setRoutineOpen: React.Dispatch<React.SetStateAction<number>>;
+  displayMode: number;
+  setDisplayMode: React.Dispatch<React.SetStateAction<number>>;
   isMobile: boolean;
   badgeContent: number;
 }
 
-const ModeButtons = ({ routineOpen, setRoutineOpen, isMobile, badgeContent }: ModeButtonsProps) => {
+const ModeButtons = ({ displayMode, setDisplayMode, isMobile, badgeContent }: ModeButtonsProps) => {
   return (
     <div className="mode-buttons">
       <div
-        className={`mode-buttons__item ${routineOpen === 0 ? "mode-buttons__item--active" : ""}`}
-        onClick={() => setRoutineOpen(0)}
+        className={`mode-buttons__item ${displayMode === 0 ? "mode-buttons__item--active" : ""}`}
+        onClick={() => setDisplayMode(0)}
       >
         <StyledBadge color="primary">難度表</StyledBadge>
       </div>
       {!isMobile ? (
         <div
-          onClick={() => setRoutineOpen(1)}
-          className={`mode-buttons__item ${routineOpen === 1 ? "mode-buttons__item--active" : ""}`}
+          onClick={() => setDisplayMode(1)}
+          className={`mode-buttons__item ${displayMode === 1 ? "mode-buttons__item--active" : ""}`}
         >
           <StyledBadge badgeContent={badgeContent} color="primary">
             ハーフ
@@ -30,8 +29,8 @@ const ModeButtons = ({ routineOpen, setRoutineOpen, isMobile, badgeContent }: Mo
         <></>
       )}
       <div
-        className={`mode-buttons__item ${routineOpen === 2 ? "mode-buttons__item--active" : ""}`}
-        onClick={() => setRoutineOpen(2)}
+        className={`mode-buttons__item ${displayMode === 2 ? "mode-buttons__item--active" : ""}`}
+        onClick={() => setDisplayMode(2)}
       >
         <StyledBadge badgeContent={badgeContent} color="primary">
           構成表

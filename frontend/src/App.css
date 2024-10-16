@@ -25,6 +25,11 @@ SP mode(初期スタイル)
   --header-height: 6dvh;
   --header-margin-top-bottom-pc: 1rem;
   --group-tabs-height: 2.5rem;
+
+  --routine-width: 375px; /* iPhone12Pro と同じ */
+  --drawer-width: 15rem;
+
+  --transition-delay: 0.3s;
 }
 
 * {
@@ -64,10 +69,36 @@ html {
 }
 
 .App {
-  position: absolute;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   z-index: 1; /* App内の他の要素がロード中に隠れるように設定 */
+  display: flex;
+  flex-direction: row-reverse;
+
+  .main {
+    width: 100vw;
+    height: 100vh;
+    /* transition: width var(--transition-delay) ease; */
+    z-index: 2;
+  }
+
+  .main--drawer-open {
+    width: calc(100vw - var(--drawer-width));
+  }
+
+  /* ドロワー */
+  .drawer {
+    opacity: 0;
+    width: 0;
+    height: 100vh;
+    z-index: 1;
+    box-shadow: 0 0.2rem 0.5rem 0.1rem var(--gray-base);
+  }
+
+  .drawer--open {
+    opacity: 1;
+    width: var(--drawer-width);
+  }
 }
 /**********************************
 共通
@@ -101,11 +132,10 @@ html {
   .common__table-row {
     display: flex;
     justify-content: flex-start;
-    gap: 0.3rem;
+    gap: 0.5rem;
     max-width: 50rem;
-    padding: 0 0.5rem;
+    padding: 0.4rem 0.5rem;
     min-width: 100%;
-    height: 2rem;
   }
 
   .common__table-row--active {
@@ -120,6 +150,7 @@ html {
     align-items: center;
     width: min(fit-content, 100%);
     height: 100%;
+    line-height: 0.9rem;
   }
 
   .common__table-cell--active {
@@ -188,9 +219,9 @@ html {
   display: flex;
   justify-content: center;
   align-items: center;
-  transition: opacity 0.3s ease-in-out; /* フェードイン・フェードアウト共に適用 */
+  transition: opacity var(--transition-delay) ease-in-out; /* フェードイン・フェードアウト共に適用 */
   background-color: var(--gray-lightest);
-  z-index: 999; /* Headerやmainよりも上に表示 */
+  z-index: 999; /* Headerやcontentよりも上に表示 */
 
   .loading__icon {
     width: 13rem;
@@ -367,17 +398,15 @@ LP
 .event-menu {
   background-color: var(--white);
   height: 100%;
+  width: 100%;
   padding: 0 1rem;
   font-weight: bold;
 
-  * {
-    /* border: 0.1px solid var(--black); */
-  }
-
   .event-menu__header {
     display: flex;
-    flex-direction: space-between;
-    padding: 1.5rem 0.5rem;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 0 1.5rem 0.5rem;
 
     .event-menu__top-button {
       display: flex;
@@ -388,12 +417,18 @@ LP
       color: var(--black);
 
       .event-menu__header-icon {
-        height: 3rem;
+        height: 2.5rem;
       }
 
       .event-menu__header-title {
         font-size: 1.4rem;
       }
+    }
+
+    .event-menu__close {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
     }
   }
 
@@ -416,13 +451,16 @@ LP
       .event-menu__list {
         display: flex;
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 1rem;
         padding: 1rem 0 1rem 0;
 
         .event-menu__list-item {
+          padding: 0.5rem;
+          border-radius: 1rem;
           cursor: pointer;
           display: flex;
           justify-content: space-between;
+          transition: all var(--transition-delay);
 
           .event-menu__list-item--block {
             display: flex;
@@ -431,8 +469,21 @@ LP
             gap: 0.5rem;
 
             .event-menu__event-label {
-              font-family: "Jost", sans-serif;
               font-weight: bold;
+              transition: all var(--transition-delay);
+            }
+          }
+        }
+
+        .event-menu__list-item--active {
+          background-color: var(--gray-base);
+          transition: all var(--transition-delay);
+
+          .event-menu__list-item--block {
+            .event-menu__event-label {
+              background-color: var(--white);
+              font-weight: bold;
+              transition: all var(--transition-delay);
             }
           }
         }
@@ -520,12 +571,12 @@ LP
 
     .hint__icon--light:hover {
       background-color: var(--orange-base);
-      transition: all 0.3s;
+      transition: all var(--routine-width);
     }
 
     .hint__icon--dark:hover {
       background-color: var(--gray-darkest);
-      transition: all 0.3s;
+      transition: all var(--routine-width);
     }
   }
 
@@ -562,7 +613,6 @@ LP
 .hint.hint--fade-out {
   opacity: 0;
 }
-
 /**********************************
 ヘッダー
 **********************************/
@@ -580,6 +630,7 @@ LP
     gap: 1rem;
 
     .header__title {
+      cursor: pointer;
       font-size: 1rem;
       font-weight: bold;
       text-decoration: none;
@@ -587,11 +638,15 @@ LP
       display: flex;
       align-items: center;
       gap: 0.5rem;
+    }
+  }
 
-      img {
-        margin-top: 0.2rem;
-        width: 1.5rem;
-      }
+  .header__right {
+    .header__score {
+      background-color: var(--orange-base);
+      border-radius: 1rem;
+      padding: 0.5rem 1rem;
+      font-weight: bold;
     }
   }
 }
@@ -624,14 +679,14 @@ LP
 /**********************************
 メイン
 **********************************/
-.main {
+.content {
   display: flex;
   justify-content: space-between;
   margin: 0 0.5rem;
   height: calc(100dvh - var(--header-height) - 2rem);
 }
 
-.main__emplty {
+.content__emplty {
   height: 10rem;
   width: 100%;
   display: flex;
@@ -781,13 +836,13 @@ LP
 
       &:hover {
         background-color: var(--orange-base);
-        transition: all 0.2s;
+        transition: all var(--transition-delay);
       }
 
       &:active {
         background-color: var(--orange-darker);
         box-shadow: 0 0 0.2rem 0.2rem var(--gray-base);
-        transition: all 0.2s;
+        transition: all var(--transition-delay);
       }
 
       svg {
@@ -802,7 +857,8 @@ LP
   width: 100%;
 }
 .elements--side {
-  width: calc(50%);
+  /* width: calc(50%); */
+  width: calc(100% - var(--routine-width) - 1rem);
 }
 
 .elements--disabled {
@@ -1034,7 +1090,7 @@ LP
         &:hover {
           cursor: pointer;
           background-color: var(--orange-base);
-          transition: all 0.3s;
+          transition: all var(--routine-width);
           user-select: none;
         }
       }
@@ -1076,7 +1132,7 @@ LP
     .rules__details {
       border-radius: 0.5rem;
       box-shadow: 0 0 0.2rem 0.1rem var(--gray-base);
-      transition: all 0.3s;
+      transition: all var(--routine-width);
 
       summary {
         display: flex;
@@ -1116,7 +1172,7 @@ LP
           border-bottom: 0.1rem solid var(--black);
           border-right: 0.1rem solid var(--black);
           content: "";
-          transition: transform 0.3s;
+          transition: transform var(--routine-width);
         }
       }
 
@@ -1170,7 +1226,7 @@ LP
 
     .rules__details[open] {
       box-shadow: 0 0 0.2rem 0.1rem var(--gray-darker);
-      transition: all 0.3s;
+      transition: all var(--routine-width);
 
       summary::after {
         transform: rotate(225deg);
@@ -1191,7 +1247,7 @@ LP
   display: none;
 }
 .routine--side {
-  width: calc(50% - 1rem);
+  width: var(--routine-width);
 }
 
 /**********************************
@@ -1205,7 +1261,7 @@ PC mode
     &:hover {
       cursor: pointer;
       background-color: var(--orange-base);
-      transition: all 0.3s;
+      transition: all var(--routine-width);
       user-select: none;
     }
   }
@@ -1228,9 +1284,9 @@ PC mode
     margin: var(--header-margin-top-bottom-pc) 3rem;
   }
   /**********************************
-  MAIN
+  content
   **********************************/
-  .main {
+  .content {
     margin: 0 1.5rem;
     height: calc(100dvh - var(--header-height) - var(--header-margin-top-bottom-pc) - 3rem);
   }
@@ -1249,8 +1305,8 @@ PC mode
     padding: 1rem 1.5rem;
 
     .elements__zoom {
-      bottom: 2rem;
-      right: 2.5rem;
+      bottom: 1rem;
+      right: 1rem;
 
       .elements__zoom-icon {
         svg {
