@@ -18,121 +18,30 @@ import { calculateMultipleSaltoShortage } from "../../utilities/RoutineFXUtil";
 import { calculateSwingHandstandShortage } from "../../utilities/RoutineSRUtil";
 import { calculateVTScore } from "../../utilities/RoutineVTUtil";
 import WarningIcon from "@mui/icons-material/Warning";
+import RoutineDeleteModal from "../pages/RoutineDeleteModal";
 
 interface RoutineTableProps {
   selectEvent: Events;
   routine: RoutineElement[];
-  setRoutine: (routine: RoutineElement[]) => void;
-  setRoutineOpen: React.Dispatch<React.SetStateAction<number>>;
+  setRoutine: React.Dispatch<React.SetStateAction<RoutineElement[]>>;
+  setDisplayMode: React.Dispatch<React.SetStateAction<number>>;
   setRoutines: React.Dispatch<React.SetStateAction<Routines>>;
 }
 
-const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen, setRoutines }: RoutineTableProps) => {
-  const [deleteMenuOpen, setDeleteMenuOpen] = useState(false);
-  const deleteMenuRef = useRef<HTMLDivElement>(null);
-  const [resetTarget, setResetTarget] = useState(0);
-  const [resetErrorMessage, setResetErrorMessage] = useState("");
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (deleteMenuRef.current && !deleteMenuRef.current.contains(event.target as Node)) {
-      setResetTarget(0);
-      setResetErrorMessage("");
-      setDeleteMenuOpen(false);
-    }
-  };
-
-  // メニューの外側をクリックしたらメニューを閉じる
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
+const RoutineTable = ({ selectEvent, routine, setRoutine, setDisplayMode, setRoutines }: RoutineTableProps) => {
   return (
     <>
       <div className="routine__title-box">
         <div className="routine__title" id={ElementStatus.選択可能.toString()}>
           演技構成表
         </div>
-        {routine.length ? (
-          <div className="routine__delete">
-            <span className="routine__delete-icon">
-              <DeleteIcon onClick={() => setDeleteMenuOpen(!deleteMenuOpen)} />
-            </span>
-            {deleteMenuOpen && (
-              <div className="routine__delete-modal">
-                <div className="routine__delete-menu" ref={deleteMenuRef}>
-                  <p className="routine__delete-title">演技構成のリセット</p>
-                  <p>リセットする対象を選んでください</p>
-                  <p className="routine__delete-line" />
-                  <label className="routine__delete-label">
-                    <input
-                      type="radio"
-                      name="resetTarget"
-                      value="1"
-                      defaultChecked={false}
-                      onChange={() => setResetTarget(1)}
-                    />
-                    <p>{getEventKey(selectEvent)}の演技構成</p>
-                  </label>
-                  <label className="routine__delete-label">
-                    <input
-                      type="radio"
-                      name="resetTarget"
-                      value="2"
-                      defaultChecked={false}
-                      onChange={() => setResetTarget(2)}
-                    />
-                    <p>全種目の演技構成</p>
-                  </label>
-                  {resetErrorMessage !== "" && <p className="routine__delete-alert">{resetErrorMessage}</p>}
-                  <p className="routine__delete-line" />
-                  <table className="common__table routine__delete-table">
-                    <tbody>
-                      <tr className="common__table-row">
-                        <td className="common__table-cell">
-                          <WarningIcon color="error" />
-                          この操作は元に戻せません
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div className="routine__delete-button-box">
-                    <div
-                      className="routine__delete-button"
-                      onClick={() => {
-                        setResetTarget(0);
-                        setDeleteMenuOpen(false);
-                      }}
-                    >
-                      キャンセル
-                    </div>
-                    <div
-                      className="routine__delete-button routine__delete-button--alert"
-                      onClick={() => {
-                        if (resetTarget === 0) {
-                          setResetErrorMessage("リセットする対象を選んでください");
-                          return;
-                        } else if (resetTarget === 2) {
-                          setRoutines(initialRoutines);
-                        }
-                        // 1,2共通処理
-                        setResetTarget(0);
-                        setResetErrorMessage("");
-                        setRoutine([]);
-                        setDeleteMenuOpen(false);
-                      }}
-                    >
-                      リセットする
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        ) : (
-          <></>
+        {routine.length > 0 && (
+          <RoutineDeleteModal
+            selectEvent={selectEvent}
+            setRoutine={setRoutine}
+            setRoutines={setRoutines}
+            allowIndividualReset={true} // ここで切り替え
+          />
         )}
       </div>
       <div className="routine__table">
@@ -170,7 +79,7 @@ const RoutineTable = ({ selectEvent, routine, setRoutine, setRoutineOpen, setRou
             <div
               className="common__button"
               onClick={() => {
-                setRoutineOpen(0);
+                setDisplayMode(0);
               }}
             >
               難度表を見る

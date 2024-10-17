@@ -8,6 +8,7 @@ import {
   hasStrengtElement,
   isSRStrengthLimit1,
 } from "./RoutineSRUtil";
+import { calculateVTScore } from "./RoutineVTUtil";
 import { ELEMENT_COUNT_DEDUCTIONS, ElementGroup, ElementStatus, ElementType, Events } from "./Type";
 
 // 6種目分のroutine
@@ -653,16 +654,27 @@ export const updateConnectionInRoutine = (
  * 完成済routineから値を取得する関数
  * ************************************************************/
 
+// 6種目のDスコア合計を計算
+export const calculateOverallScore = (routines: Routines): number => {
+  let overallScore = 0;
+
+  Object.values(Events)
+    .filter((event) => typeof event === "number") // イベントIDだけを抽出
+    .forEach((event) => {
+      const score = event === Events.跳馬 ? calculateVTScore(routines[event]) : calculateTotalScore(routines[event]);
+      overallScore += score;
+    });
+
+  return overallScore;
+};
+
 // 合計Dスコアを計算
 export const calculateTotalScore = (routine: RoutineElement[]): number => {
-  let totalDScore = 0;
-  // 難度点
-  totalDScore += calculateTotalDifficulty(routine);
-  // グループ得点
-  totalDScore += calculateTotalElementGroupScore(routine);
-  // 組み合わせ加点
-  totalDScore += calculateTotalConnectionValue(routine);
-  return totalDScore;
+  return (
+    calculateTotalDifficulty(routine) + // 難度点
+    calculateTotalElementGroupScore(routine) + // グループ得点
+    calculateTotalConnectionValue(routine) // 組み合わせ加点
+  );
 };
 
 // ニュートラルディダクションを計算

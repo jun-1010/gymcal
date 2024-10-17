@@ -8,7 +8,7 @@ import CheckIcon from "@mui/icons-material/Check";
 interface ElementsTileProps {
   selectEvent: Events;
   element: Element;
-  setRoutine: (routine: RoutineElement[]) => void;
+  setRoutine: React.Dispatch<React.SetStateAction<RoutineElement[]>>;
   routine: RoutineElement[];
   elementsTileKey: string;
   setHintNum: React.Dispatch<React.SetStateAction<number>>;

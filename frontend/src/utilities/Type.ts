@@ -11,10 +11,15 @@ export enum Events {
   跳馬 = 4,
   平行棒 = 5,
   鉄棒 = 6,
-  // 女子跳馬 = 7,
-  // 段違い平行棒 = 8,
-  // 平均台 = 9,
-  // 女子床 = 10,
+}
+
+export enum Events_en {
+  fx = 1,
+  ph = 2,
+  sr = 3,
+  vt = 4,
+  pb = 5,
+  hb = 6,
 }
 
 export const hasCVEvents = (event: Events) => {
@@ -29,7 +34,7 @@ export enum ElementGroup {
   EG5 = 5,
 }
 
-export const getEventKey = (event: number): string => {
+export const getEventKey = (event: Events): string => {
   for (const key in Events) {
     if (Events[key as keyof typeof Events] === event) {
       return key;
