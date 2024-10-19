@@ -128,18 +128,16 @@ const EventPage = ({
           setDisplayMode={setDisplayMode}
           isMobile={isMobile}
           setDetailOpens={setDetailOpens}
-          routine={routine}
+          routine={routines[selectEvent]}
         />
       )}
       <div className={`main ${drawerOpen ? "main--drawer-open" : ""}`}>
         <Header
           selectEvent={selectEvent}
-          setSelectEvent={setSelectEvent}
           displayMode={displayMode}
           setDisplayMode={setDisplayMode}
           isMobile={isMobile}
-          routine={routine}
-          routines={routines}
+          routine={routines[selectEvent]}
           drawerOpen={drawerOpen}
           setDrawerOpen={setDrawerOpen}
         />
