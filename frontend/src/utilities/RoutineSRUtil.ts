@@ -2,7 +2,7 @@ import { Element, isElementTypeIncluded } from "./ElementUtil";
 import { RoutineElement } from "./RoutineUtil";
 import { ElementGroup, ElementStatus, ElementType, getElementTypeName } from "./Type";
 
-const strenghTypes = [
+export const strenghTypes = [
   ElementType.つり輪_力技制限2_脚前挙,
   ElementType.つり輪_力技制限2_脚上挙,
   ElementType.つり輪_力技制限2_十字倒立,

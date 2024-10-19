@@ -974,6 +974,7 @@ export const RoutineRules = ({
           <RoutineRule
             detailOpens={detailOpens}
             setDetailOpens={setDetailOpens}
+            // 対象の力技の最初の要素が脚前挙なだけ
             elementStatus={ElementStatus.つり輪_力技制限2_脚前挙}
             summaryNode={
               <span className="rules__summary-title">

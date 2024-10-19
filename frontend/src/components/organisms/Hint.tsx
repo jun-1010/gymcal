@@ -4,6 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import LockIcon from "@mui/icons-material/Lock";
 import CheckIcon from "@mui/icons-material/Check";
 import { calculateTotalScore, RoutineElement } from "../../utilities/RoutineUtil";
+import { strenghTypes } from "../../utilities/RoutineSRUtil";
 
 interface HintProps {
   hintNum: number;
@@ -44,14 +45,17 @@ const Hint = ({ hintNum, setHintNum, setDisplayMode, isMobile, setDetailOpens, r
   }, []);
 
   const handleButtonClick = () => {
-    setHintNum(-1);
+    // 対象のルールの開閉状態を更新(対象ルールへのジャンプはaタグのhrefで制御)
     setDetailOpens((prevState) => {
-      // すでに hintNum が存在しない場合のみ追加
-      if (!prevState.includes(hintNum)) {
-        return [...prevState, hintNum];
+      const targetRule = strenghTypes.includes(hintNum) ? ElementStatus.つり輪_力技制限2_脚前挙 : hintNum;
+      // 対象のルールが開いていない場合は開ける
+      if (!prevState.includes(targetRule)) {
+        return [...prevState, targetRule];
       }
-      return prevState; // すでに存在する場合はそのまま返す
+      return prevState; // すでに開いている場合はそのまま
     });
+    setHintNum(-1);
+    // ルールを表示する
     setDisplayMode(isMobile ? 2 : 1);
   };
 
@@ -89,7 +93,11 @@ const Hint = ({ hintNum, setHintNum, setDisplayMode, isMobile, setDetailOpens, r
                 </span>
               )}
             </p>
-            <a href={`#${hintNum}`} className="common__button hint__button" onClick={handleButtonClick}>
+            <a
+              href={`#${strenghTypes.includes(hintNum) ? ElementStatus.つり輪_力技制限2_脚前挙 : hintNum}`}
+              className="common__button hint__button"
+              onClick={handleButtonClick}
+            >
               {hintNum === ElementStatus.選択可能 ? "演技構成を見る" : "ルールを見る"}
             </a>
           </div>
