@@ -18,7 +18,6 @@ import {
   isGroupLimited,
   RoutineElement,
   getRoutineElementsByType,
-  getElementStatus,
 } from "../../utilities/RoutineUtil";
 import {
   ELEMENT_COUNT_DEDUCTIONS,
@@ -497,11 +496,11 @@ export const RoutineRules = ({
                   <table className="common__table">
                     <tbody>
                       <tr className="common__table-row">
-                        <td className="common__table-cell common__table-cell--3rem">技数</td>
+                        <td className="common__table-cell common__table-cell--2rem">技数</td>
                         {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
                           <td
                             key={index}
-                            className={`common__table-cell common__table-cell--1-5rem ${
+                            className={`common__table-cell common__table-cell--1-4rem ${
                               routine.length === index ? "common__table-cell--active" : ""
                             }`}
                           >
@@ -510,11 +509,11 @@ export const RoutineRules = ({
                         ))}
                       </tr>
                       <tr className="common__table-row">
-                        <td className="common__table-cell common__table-cell--3rem">減点</td>
+                        <td className="common__table-cell common__table-cell--2rem">減点</td>
                         {ELEMENT_COUNT_DEDUCTIONS.map((deduction, index) => (
                           <td
                             key={index}
-                            className={`common__table-cell common__table-cell--1-5rem ${
+                            className={`common__table-cell common__table-cell--1-4rem ${
                               routine.length === index ? "common__table-cell--active" : ""
                             }`}
                           >
