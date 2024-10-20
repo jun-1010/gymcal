@@ -43,7 +43,7 @@ const RoutineRule: React.FC<RoutineRuleProps> = ({
       }}
     >
       <summary>
-        <span className="rules__summary-prefix">{elementStatus && elementStatus + "."}</span>
+        {elementStatus && <span className="rules__summary-prefix">{elementStatus + "."}</span>}
         {summaryNode}
       </summary>
       {descriptionNode}
